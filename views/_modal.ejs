@@ -1,0 +1,67 @@
+<!-- sign-up-modal -->
+<div class="modal fade" id="sign-up-modal" tabindex="-1" role="dialog" aria-labelledby="sign-up-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="sign-up-modal-label">Sign up</h4>
+      </div>
+      <div class="modal-body">
+        <form id="sign-up-form">
+          <div class="form-group">
+            <label for="user-first-name" class="control-label">First name:</label>
+            <input type="text" minlength="2" class="form-control" id="user-first-name" name="user-first-name" autofocus required>
+          </div>
+          <div class="form-group">
+            <label for="user-last-name" class="control-label">Last name:</label>
+            <input type="text" class="form-control" id="user-last-name" name="user-last-name" required>
+          </div>
+          <div class="form-group">
+            <label for="user-email" class="control-label">Email address:</label>
+            <input type="email" class="form-control" id="user-email" name="user-email" required>
+          </div>
+          <div class="form-group">
+            <label for="user-password" class="control-label">Password:</label>
+            <input type="password" class="form-control" id="user-password" name="user-password" required>
+          </div>
+          <div class="form-group">
+            <label for="user-books" class="control-label">Enter the title of three books you have read and enjoyed:</label>
+            <input type="text" class="form-control" id="user-book-one" name="user-book-one" required>
+            <input type="text" class="form-control" id="user-book-two" name="user-book-two" required>
+            <input type="text" class="form-control" id="user-book-three" name="user-book-three" required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- log in modal -->
+<div class="modal fade" id="log-in-modal" tabindex="-1" role="dialog" aria-labelledby="log-in-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="log-in-modal-label">Log in</h4>
+      </div>
+      <div class="modal-body">
+        <form id="log-in-form">
+          <div class="form-group">
+            <label for="user-email" class="control-label">Email address:</label>
+            <input type="text" class="form-control" id="user-email" name="user-email" autofocus required>
+          </div>
+          <div class="form-group">
+            <label for="user-password" class="control-label">Password:</label>
+            <input type="password" class="form-control" id="user-password" name="user-password" required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
