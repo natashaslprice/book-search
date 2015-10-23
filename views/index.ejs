@@ -25,24 +25,53 @@
     
     <!-- intro text -->
     <div id="intro-text-div">
-      <h3 id="intro-text">Welcome to Book Search! <br> Sign up or log in to search for books and view recommendations.</h3>
+      <h3 id="intro-text">
+        Welcome to Book Search! 
+        <br> 
+        Sign up or log in to search for books and view recommendations.
+      </h3>
     </div>
   </header>
 
   <div class="container">
     <div class="row">
-      <div class="col-8-sm col-offset-2">
+      
+      <!-- start of LHC -->
+      <div class="col-sm-6 col-offset-2"> 
         <div id="landing-page-list">
-          <h4>New York Times best seller lists</h4>
+          <h4>New York Times Hardcover Fiction Best-seller List</h4>
           <ul class="list-group">
-            <li class="list-group-item">
-              <%= hardcoverFictionList.results[0].book_details[0].title %>
-            </li>
+            <% for (var i = 0; i < hardcoverFictionList.results.length; i++) { %>
+              <li class="list-group-item">
+                <strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= hardcoverFictionList.results[i].book_details[0].title.toLowerCase() %> </strong></span> by <%= hardcoverFictionList.results[i].book_details[0].author %>
+                <br>
+                <%= hardcoverFictionList.results[i].book_details[0].description %>
+              </li>
+            <% } %>
           </ul>
         </div>
-      </div>
-    </div>
-  </div>
+      </div> 
+      <!-- end of LHC -->
+      
+      <!-- start of RHC -->
+      <div class="col-sm-6"> 
+        <div id="landing-page-list">
+          <h4>New York Times Paperback Mass-Market Fiction Best-seller List</h4>
+          <ul class="list-group">
+            <% for (var i = 0; i < paperbackFictionList.results.length; i++) { %>
+              <li class="list-group-item">
+                <strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= paperbackFictionList.results[i].book_details[0].title.toLowerCase() %> </strong></span> by <%= paperbackFictionList.results[i].book_details[0].author %>
+                <br>
+                <%= paperbackFictionList.results[i].book_details[0].description %>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      </div> 
+      <!-- end of RHC -->
+
+    </div> <!-- end of row div -->
+  </div> <!-- end of container div -->
 </body>
 </html>
 

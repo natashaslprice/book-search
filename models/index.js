@@ -1,7 +1,9 @@
 var mongoose = require("mongoose");
+
 mongoose.connect(process.env.MONGOLAB_URI ||
                  process.env.MONGOHQ_URL || 
                  "mongodb://localhost/book-search");
 
-// After creating a new model, require and export it:
-// module.exports.Tweet = require("./tweet.js");
+module.exports.User = require('./user.js');
+module.exports.Book = require('./book.js');
+

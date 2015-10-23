@@ -30,3 +30,7 @@ header {
 	border: solid black 2px;
 	text-align: center
 }
+
+#capitals {
+	text-transform: capitalize;
+}

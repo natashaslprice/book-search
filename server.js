@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // render index page
 app.get('/', function(req, res) {
-  res.render("index", { hardcoverFictionList: hardcoverFictionList });
+  res.render("index", { hardcoverFictionList: hardcoverFictionList, paperbackFictionList: paperbackFictionList });
 });
 
 // define NYT API key
@@ -27,7 +27,7 @@ var NYT_API_KEY = process.env.NYT_API_KEY;
 //this should log your secret key!
 console.log(NYT_API_KEY);
 
-// request data from NYT api
+// request data from NYT api for hardcover-fiction
 var hardcoverFictionList;
 request('http://api.nytimes.com/svc/books/v3/lists?list-name=hardcover-fiction&api-key=' + NYT_API_KEY, function(err, response, body){
 	if (!err && response.statusCode == 200) {
@@ -42,6 +42,65 @@ request('http://api.nytimes.com/svc/books/v3/lists?list-name=hardcover-fiction&a
 // get route for hardcoverFictionList api
 app.get('/api/hardcoverFictionList', function(req, res) {
 	res.json(hardcoverFictionList);
+});
+
+// request data from NYT api for paperback-fiction
+var paperbackFictionList;
+request('http://api.nytimes.com/svc/books/v3/lists?list-name=mass-market-paperback&api-key=' + NYT_API_KEY, function(err, response, body){
+	if (!err && response.statusCode == 200) {
+		paperbackFictionList = JSON.parse(body);
+		// console.log("API: " + paperbackFictionList);
+	}
+	else {
+		console.log("error in api: " + err);
+	}
+});
+
+// get route for paperbackFictionList api
+app.get('/api/paperbackFictionList', function(req, res) {
+	res.json(paperbackFictionList);
+});
+
+// post route for sign up form TBD - creates user but won't console.log
+app.post('/users', function(req, res) {
+	var firstName = req.body.firstName;
+	var lastName = req.body.lastName;
+	var email = req.body.email;
+	var password = req.body.password;
+	
+	//create new user with form data from post route
+	db.User.createSecure(firstName, lastName, email, password, function (err, user) {
+			console.log(user);
+			res.json(user);
+		if (err) {
+			console.log("Error with creating user is: " + err);
+		}
+		else {
+			console.log("New user: " + user);
+		}
+	});
+});
+
+// post route for log in form
+app.post('/login', function(req, res) {
+	db.User.authenticate(req.body.email, req.body.password, function(err, user){
+		console.log("Server.js login recognised");
+		if (err) {
+			console.log("Error with login form: " + err);
+		}
+		else if (user) {
+			console.log("user logging in is: " + user);
+			res.json(user);
+		}
+		else {
+			console.log("user doesn't exist");
+		}
+	});
+});
+
+// render homepage
+app.get('/homepage', function(req, res) {
+	res.render('homepage');
 });
 
 
