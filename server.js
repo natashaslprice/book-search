@@ -6,6 +6,7 @@ var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var request = require("request");
+var session = require("express-session");
 var db = require("./models/index");
 require('dotenv').load();
 
@@ -16,6 +17,14 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 // body parser config to accept our datatypes
 app.use(bodyParser.urlencoded({extended: true}));
+
+// use express-sessions
+app.use(session({
+  saveUninitialized: true,
+  resave: true,
+  secret: 'SuperSecretCookie',
+  cookie: { maxAge: 30 * 60 * 1000 } // 30 minute cookie lifespan (in milliseconds)
+}));
 
 // render index page
 app.get('/', function(req, res) {
@@ -62,7 +71,7 @@ app.get('/api/paperbackFictionList', function(req, res) {
 });
 
 // post route for sign up form TBD - creates user but won't console.log
-app.post('/users', function(req, res) {
+app.post('/api/users', function(req, res) {
 	var firstName = req.body.firstName;
 	var lastName = req.body.lastName;
 	var email = req.body.email;
@@ -70,13 +79,14 @@ app.post('/users', function(req, res) {
 	
 	//create new user with form data from post route
 	db.User.createSecure(firstName, lastName, email, password, function (err, user) {
-			console.log(user);
-			res.json(user);
 		if (err) {
 			console.log("Error with creating user is: " + err);
 		}
 		else {
 			console.log("New user: " + user);
+			req.session.userId = user._id;
+			console.log(req.session.userId);
+			res.json(user);
 		}
 	});
 });
@@ -90,6 +100,7 @@ app.post('/login', function(req, res) {
 		}
 		else if (user) {
 			console.log("user logging in is: " + user);
+			req.session.userId = user._id;
 			res.json(user);
 		}
 		else {
@@ -100,7 +111,16 @@ app.post('/login', function(req, res) {
 
 // render homepage
 app.get('/homepage', function(req, res) {
-	res.render('homepage');
+	db.User.findOne( { _id: req.session.userId } , function(err, user) {
+		console.log("user id: " + req.session.userId);
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log(user);
+			res.render('homepage', { user: user } );
+		}
+	});
 });
 
 

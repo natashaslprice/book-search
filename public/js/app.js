@@ -15,7 +15,7 @@ $(document).ready(function(){
 
 		// post route to server
 		$.ajax ({
-			url: '/users',
+			url: '/api/users',
 			type: 'POST',
 			data: formData
 		})

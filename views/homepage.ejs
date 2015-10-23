@@ -6,7 +6,28 @@
 </head>
 
 <body>
-	<h1>homepage</h1>
+	<header>
+	  <!-- logo -->
+	  <img id="logo" src="http://placehold.it/100x50">
+	  
+	  <!-- user name and log out button -->
+	  <div><%= user.firstName %></div>
+	  <button type="button" id="log-out-btn" class="btn btn-default">Log out</button>
+
+	  <!-- heading jumbotron -->
+	  <div class="jumbotron">
+	    <h1>Book search</h1>
+	  </div>
+	  
+	  <!-- intro text -->
+	  <div id="intro-text-div">
+	    <h3 id="intro-text">
+	      Welcome to Book Search! 
+	      <br> 
+	      Sign up or log in to search for books and view recommendations.
+	    </h3>
+	  </div>
+	</header>
 
 </body>
 </html>
