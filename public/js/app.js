@@ -52,7 +52,12 @@ $(document).ready(function(){
 				window.location.href = '/homepage';
 			}
 			else {
-				$('#alertDiv').append('<div class="alert alert-danger" role="alert">Oops! Your email or password is incorrect. Try again. </div>');
+				$("#logInPassword").val("");
+				$('#alertDiv').append('<div class="alert alert-danger log-in-alert" role="alert">Oops! Your email or password is incorrect. Try again. </div>');
+				$('.log-in-alert').alert();
+				window.setTimeout(function() {
+					$('.log-in-alert').alert('close');
+				}, 2000);
 			}
 		})
 		.fail(function(data){
@@ -88,6 +93,7 @@ $(document).ready(function(){
 		e.preventDefault();
 		relevantListItem = $(this).parent().data();
 		console.log(relevantListItem);
+		relevantBtn = $(this);
 
 		// post route to server to create book
 		$.ajax({
@@ -97,10 +103,17 @@ $(document).ready(function(){
 		})
 		.done(function(data){
 			console.log("addToListBtn click posted to server");
-			console.log(data);
+			$(relevantBtn).popover('show');
+			setTimeout(function() {
+				$(relevantBtn).popover('hide');
+			}, 2000);
 		})
 		.fail(function(data){
 			console.log("addToListBtn click failed to post to server");
+			$(relevantBtn).parent().append('<div class="alert alert-danger addToListAlert" role="alert">This book is already on your list. </div>');
+			setTimeout(function() {
+				$('.addToListAlert').alert('close');
+			}, 2000);
 		});
 	});
 

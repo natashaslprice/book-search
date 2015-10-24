@@ -223,9 +223,17 @@ app.post('/api/books', function(req, res) {
 					console.log("the error with finding the right user is: ", err);
 				}
 				else {
-					user.booksToRead.push(book);
-					user.save();
-					res.json(user);
+					for (var i = 0; i < user.booksToRead.length; i++) {
+						if (book !== user.booksToRead[i]) {
+							user.booksToRead.push(book);
+							user.save();
+							res.json(user);
+						}
+						else {
+							console.log("The user already has this book in their list");
+							res.json(null);
+						}
+					}
 				}
 			});
 		}

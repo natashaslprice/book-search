@@ -47,7 +47,7 @@
                 <!-- book synopsis -->
                 <%= hardcoverFictionList.results[i].book_details[0].description %>
               	<!-- add to to-read list button -->
-                <button class="btn btn-default btn-sm addToListBtn">Add to list</button>
+                <button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="right" data-content="This book has been added to your To-read list!">Add to list</button>
               </li>
             <% } %>
           </ul>
@@ -74,7 +74,7 @@
                 <!-- book synopsis -->
                 <%= paperbackFictionList.results[i].book_details[0].description %>
                 <!-- add to to-read list button -->
-                <button class="btn btn-default btn-sm addToListBtn">Add to list</button>
+                <button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="right" data-content="This book has been added to your To-read list!">Add to list</button>
               </li>
             <% } %>
           </ul>
