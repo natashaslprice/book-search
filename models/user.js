@@ -38,6 +38,9 @@ UserSchema.statics.authenticate = function (email, password, callback){
 		else if (user.checkPassword(password)) {
 			callback(null, user);
 		}
+		else {
+			callback(err, null);
+		}
 	});
 };
 

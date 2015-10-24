@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- include head partial from ./views/_head.ejs -->
+  <% include ./_head %>
+</head>
+
+<body>
+	<header>
+		<!-- include nav bar partial from ./views/_navBar.ejs -->
+		<% include ./_navBar %>
+	</header>
+
+	<!-- heading and intro text -->
+	<div class="container">
+		<div class="row">
+		  <div class="col-8 col-offset-2" id="homepageDiv">
+			  <h3 id="homepageIntroText">To-read list</h3>
+			  <hr>
+			  <h5>
+			  	By adding books to your to-read list you can keep track of books that you want to read in the future.
+			  </h5>
+		  </div> <!-- end of col -->
+  	</div> <!-- end of row div -->
+  </div> <!-- end of container div -->
+
+	<div class="container">
+			<div class="row">
+			  <div class="col-8 col-offset-2" id="toReadListDiv">
+				  <ul id="toReadList" class="list-group">
+				  	<% for (var i = 0; i < user.booksToRead.length; i++) { %>
+		  				<li class="list-group-item">
+		  					<!-- book titles and authors -->
+								<strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= user.booksToRead[i].title.toLowerCase() %> </strong></span> by <%= user.booksToRead[i].author %>
+								<br>
+                <!-- book synopsis -->
+                <%= user.booksToRead[i].synopsis %>
+		  				</li>
+				  	<% } %>
+				  </ul>
+	  		</div> <!-- end of col -->
+	  	</div> <!-- end of row div -->
+	  </div> <!-- end of container div -->
+
+</body>
+</html>

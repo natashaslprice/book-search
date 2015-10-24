@@ -7,27 +7,35 @@
 
 <body>
 	<header>
-	  <!-- logo -->
-	  <img id="logo" src="http://placehold.it/100x50">
-	  
-	  <!-- user name and log out button -->
-	  <div><%= user.firstName %></div>
-	  <button type="button" id="log-out-btn" class="btn btn-default">Log out</button>
+		<!-- include nav bar partial from ./views/_navBar.ejs -->
+		<% include ./_navBar %>
 
 	  <!-- heading jumbotron -->
 	  <div class="jumbotron">
 	    <h1>Book search</h1>
 	  </div>
-	  
-	  <!-- intro text -->
-	  <div id="intro-text-div">
-	    <h3 id="intro-text">
-	      Welcome to Book Search! 
-	      <br> 
-	      Sign up or log in to search for books and view recommendations.
-	    </h3>
-	  </div>
 	</header>
+
+	<div class="container">
+		<div class="row">
+		  <div class="col-8 col-offset-2" id="homepageDiv">
+			  <h3 id="homepageIntroText">Hi <%= user.firstName %>, welcome to Book Search!</h3>
+			  <hr>
+			  <p>You can use Book Search to:</p>
+			  <ul>
+			  	<li>View <strong>best-sellers</strong> lists</li>
+			  	<li><strong>Search</strong> for books based on your favourite authors</li>
+			  	<li>Get <strong>recommendations</strong> for books based on what you have read and enjoyed</li>
+			  	<li>Save books to your personal <strong>to-read</strong> list</li>
+			  </ul>
+			  <hr>
+			  <p>If you have already read a book, let us know whether you enjoyed it or not so we can tailor your recommendations.
+			  <br>
+			  If you see a book that you want to read, add it to your to-read list so you don't forget it!
+			  </p>
+		  </div> <!-- end of col -->
+  	</div> <!-- end of row -->
+  </div> <!-- end of container -->
 
 </body>
 </html>

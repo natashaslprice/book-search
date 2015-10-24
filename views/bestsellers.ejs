@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- include head partial from ./views/_head.ejs -->
+  <% include ./_head %>
+</head>
+
+<body>
+	<header>
+		<!-- include nav bar partial from ./views/_navBar.ejs -->
+		<% include ./_navBar %>
+	</header>
+		
+		<!-- heading and intro text -->
+		<div class="container">
+			<div class="row">
+			  <div class="col-8 col-offset-2" id="homepageDiv">
+				  <h3 id="homepageIntroText">Best-sellers lists</h3>
+				  <hr>
+				  <h5>
+				  	Use this page to view the latest best-sellers.
+				  </h5>
+			  </div> <!-- end of col -->
+	  	</div> <!-- end of row div -->
+	  </div> <!-- end of container div -->
+
+	  <div class="container bestsellersLists">
+	    <div class="row">
+
+	      <!-- start of LHC -->
+	      <div class="col-sm-6 col-offset-2 bestsellerList"> 
+          <h4>New York Times Hardcover Fiction Best-seller List</h4>
+          <ul class="list-group">
+            <% for (var i = 0; i < hardcoverFictionList.results.length; i++) { %>
+            	<!-- each book has a list item with data attributes =to the books attributes -->
+              <li class="list-group-item" 
+              		data-title="<%= hardcoverFictionList.results[i].book_details[0].title %>"
+              		data-author="<%= hardcoverFictionList.results[i].book_details[0].author %>"
+              		data-synopsis="<%= hardcoverFictionList.results[i].book_details[0].description %>"
+              		data-review="<%= hardcoverFictionList.results[i].reviews[0] %>"
+              		data-image=""
+              		data-isbn="<%= hardcoverFictionList.results[i].isbns[0].isbn10 %>"
+              >
+                <!-- book titles and authors -->
+                <strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= hardcoverFictionList.results[i].book_details[0].title.toLowerCase() %> </strong></span> by <%= hardcoverFictionList.results[i].book_details[0].author %>
+                <br>
+                <!-- book synopsis -->
+                <%= hardcoverFictionList.results[i].book_details[0].description %>
+              	<!-- add to to-read list button -->
+                <button class="btn btn-default btn-sm addToListBtn">Add to list</button>
+              </li>
+            <% } %>
+          </ul>
+	      </div> 
+	      <!-- end of LHC -->
+	      
+	      <!-- start of RHC -->
+	      <div class="col-sm-6 bestsellerList"> 
+          <h4>New York Times Paperback Mass-Market Fiction Best-seller List</h4>
+          <ul class="list-group">
+            <% for (var i = 0; i < paperbackFictionList.results.length; i++) { %>
+              <!-- each book has a list item with data attributes =to the books attributes -->
+              <li class="list-group-item"
+								data-title="<%= paperbackFictionList.results[i].book_details[0].title %>"
+								data-author="<%= paperbackFictionList.results[i].book_details[0].author %>"
+								data-synopsis="<%= paperbackFictionList.results[i].book_details[0].description %>"
+								data-review="<%= paperbackFictionList.results[i].reviews[0] %>"
+								data-image=""
+								data-ISBN="<%= paperbackFictionList.results[i].isbns[0].isbn10 %>"
+              >
+                <!-- book titles and authors -->
+                <strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= paperbackFictionList.results[i].book_details[0].title.toLowerCase() %> </strong></span> by <%= paperbackFictionList.results[i].book_details[0].author %>
+                <br>
+                <!-- book synopsis -->
+                <%= paperbackFictionList.results[i].book_details[0].description %>
+                <!-- add to to-read list button -->
+                <button class="btn btn-default btn-sm addToListBtn">Add to list</button>
+              </li>
+            <% } %>
+          </ul>
+	      </div> 
+	      <!-- end of RHC -->
+
+	    </div> <!-- end of row div -->
+	  </div> <!-- end of container div -->
+	  
+
+</body>
+</html>

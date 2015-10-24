@@ -6,31 +6,67 @@ header {
 	margin: 10px;
 }
 
+/*index.ejs*/
 .sign-up-log-in {
 	float:right;
 	margin: 10px;
 }
 
+/*index.ejs*/
 .jumbotron {
 	text-align: center;
 	background: transparent;
 }
 
+/*index.ejs*/
 #intro-text-div {
 	width: 100%;
 	text-align: center;
 }
 
+/*index.ejs*/
 #intro-text {
 	float: center;
 	/*margin-bottom: 20px;*/
 }
 
+/*index.ejs*/
 #landing-page-list {
 	border: solid black 2px;
 	text-align: center
 }
 
+/*index.ejs*/
 #capitals {
 	text-transform: capitalize;
 }
+
+/*homepage.ejs*/
+.user-log-out {
+	float: right;
+	margin: 10px;
+}
+
+/*homepage.ejs*/
+#homepageDiv {
+	text-align: center;
+	border: solid black 2px;
+}
+
+/*all logged in pages*/
+#userLoggedIn {
+	margin-right: 30px;
+}
+
+/*bestsellers.ejs*/
+.bestsellerList {
+	margin-top: 30px;
+}
+
+/*list.ejs*/
+#toReadListDiv {
+	border: solid black 2px;
+	margin-top: 30px;
+}
+
+

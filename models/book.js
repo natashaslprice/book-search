@@ -8,7 +8,7 @@ var BookSchema = new Schema({
 		synopsis: String,
 		review: String,
 		image: String,
-		ISBN: Number,
+		isbn: String,
 		usersReadEnjoyed: [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
 

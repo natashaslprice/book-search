@@ -26,11 +26,87 @@ app.use(session({
   cookie: { maxAge: 30 * 60 * 1000 } // 30 minute cookie lifespan (in milliseconds)
 }));
 
+
+// RENDER
 // render index page
 app.get('/', function(req, res) {
   res.render("index", { hardcoverFictionList: hardcoverFictionList, paperbackFictionList: paperbackFictionList });
 });
 
+// render homepage with user's unique info
+app.get('/homepage', function(req, res) {
+	db.User.findOne( { _id: req.session.userId } , function(err, user) {
+		console.log("user id: " + req.session.userId);
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log(user);
+			res.render('homepage', { user: user } );
+		}
+	});
+});
+
+// render best sellers page with user's unique info
+app.get('/bestsellers', function(req, res) {
+	db.User.findOne( { _id: req.session.userId } , function(err, user) {
+		console.log("user id: " + req.session.userId);
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log(user);
+			res.render('bestsellers', { user: user, hardcoverFictionList: hardcoverFictionList, paperbackFictionList: paperbackFictionList } );
+		}
+	});
+});
+
+// render search page with user's unique info
+app.get('/search', function(req, res) {
+	db.User.findOne( { _id: req.session.userId } , function(err, user) {
+		console.log("user id: " + req.session.userId);
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log(user);
+			res.render('search', { user: user } );
+		}
+	});
+});
+
+// render recommendations page with user's unique info
+app.get('/recommendations', function(req, res) {
+	db.User.findOne( { _id: req.session.userId } , function(err, user) {
+		console.log("user id: " + req.session.userId);
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log(user);
+			res.render('recommendations', { user: user } );
+		}
+	});
+});
+
+// render to-read list with user's unique info
+app.get('/list', function(req, res) {
+	db.User.findOne( { _id: req.session.userId })
+		// console.log("user id: " + req.session.userId);
+		.populate('booksToRead')
+		.exec(function(err, user){
+			if (err) {
+				console.log("the error with rendering the /list page is: ", err);
+			}
+			else {
+				// console.log("the unique user is: ", user.firstName, "the books are: ", books);
+				res.render('list', { user: user } );
+				}
+		});
+});
+
+
+// APIS
 // define NYT API key
 var NYT_API_KEY = process.env.NYT_API_KEY;
 //this should log your secret key!
@@ -70,6 +146,20 @@ app.get('/api/paperbackFictionList', function(req, res) {
 	res.json(paperbackFictionList);
 });
 
+// get route for books api
+app.get('/api/books', function(req, res) {
+	db.Book.find( {} , function(err, books){
+		if (err) {
+			console.log("the error with the api/books is: ", err);
+		}
+		else {
+			res.json(books);
+		}
+	});
+});
+
+
+// POST ROUTES
 // post route for sign up form TBD - creates user but won't console.log
 app.post('/api/users', function(req, res) {
 	var firstName = req.body.firstName;
@@ -84,6 +174,7 @@ app.post('/api/users', function(req, res) {
 		}
 		else {
 			console.log("New user: " + user);
+			// create session user
 			req.session.userId = user._id;
 			console.log(req.session.userId);
 			res.json(user);
@@ -95,33 +186,63 @@ app.post('/api/users', function(req, res) {
 app.post('/login', function(req, res) {
 	db.User.authenticate(req.body.email, req.body.password, function(err, user){
 		console.log("Server.js login recognised");
+		console.log(user);
 		if (err) {
 			console.log("Error with login form: " + err);
 		}
 		else if (user) {
 			console.log("user logging in is: " + user);
+			// create session user
 			req.session.userId = user._id;
 			res.json(user);
 		}
-		else {
+		else if (!user) {
 			console.log("user doesn't exist");
+			res.json({});
 		}
 	});
 });
 
-// render homepage
-app.get('/homepage', function(req, res) {
-	db.User.findOne( { _id: req.session.userId } , function(err, user) {
-		console.log("user id: " + req.session.userId);
+// post route for addToListBtn
+app.post('/api/books', function(req, res) {
+	var author = req.body.author;
+	var title = req.body.title;
+	var synopsis = req.body.synopsis;
+	var review = req.body.review;
+	var image = req.body.image;
+	var isbn = req.body.isbn;
+
+	db.Book.create(req.body, function (err, book){
 		if (err) {
-			console.log(err);
+			console.log("error with creating new book from addToListBtn: " + err);
 		}
 		else {
-			console.log(user);
-			res.render('homepage', { user: user } );
+			console.log("the book is: ", book);
+			db.User.findOne( { _id: req.session.userId } , function(err, user){
+				if (err) {
+					console.log("the error with finding the right user is: ", err);
+				}
+				else {
+					user.booksToRead.push(book);
+					user.save();
+					res.json(user);
+				}
+			});
 		}
 	});
 });
+
+
+// post route to log user out
+app.post('/logout', function(req, res) {
+	// remove session user
+	req.session.userId = null;
+	// render index
+	res.render('index', { hardcoverFictionList: hardcoverFictionList, paperbackFictionList: paperbackFictionList });
+});
+
+
+
 
 
 app.listen(process.env.PORT || 3000, function() {
