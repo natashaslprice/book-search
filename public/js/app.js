@@ -115,33 +115,55 @@ $(document).ready(function(){
 
 
 	// on click of readEnjoyedBtn
-	// $(document).on('click', '.readEnjoyedBtn', function(e){
-	// 	e.preventDefault();
-	// 	relevantListItem = $(this).parent().data();
-	// 	console.log(relevantListItem);
-	// 	relevantBtn = $(this);
+	$(document).on('click', '.readEnjoyedBtn', function(e){
+		e.preventDefault();
+		relevantListItem = $(this).parent().data();
+		console.log(relevantListItem);
+		relevantBtn = $(this);
 
-	// 	// post route to server to create book
-	// 	$.ajax({
-	// 		url: '/api/booksreadenjoyed',
-	// 		type: 'POST',
-	// 		data: relevantListItem
-	// 	})
-	// 	.done(function(data){
-	// 		console.log("readEnjoyedBtn click posted to server");
-	// 		$(relevantBtn).popover('show');
-	// 		setTimeout(function() {
-	// 			$(relevantBtn).popover('hide');
-	// 		}, 2000);
-	// 	})
-	// 	.fail(function(data){
-	// 		console.log("readEnjoyedBtn click failed to post to server");
-	// 		$(relevantBtn).parent().append('<div class="alert alert-success addToListAlert" role="alert">You have already told us that you liked this book! </div>');
-	// 		setTimeout(function() {
-	// 			$('.addToListAlert').alert('close');
-	// 		}, 2000);
-	// 	});
-	// });
+		// post route to server to create book
+		$.ajax({
+			url: '/api/booksreadenjoyed',
+			type: 'POST',
+			data: relevantListItem
+		})
+		.done(function(data){
+			console.log("readEnjoyedBtn click posted to server");
+			$(relevantBtn).popover('show');
+			setTimeout(function() {
+				$(relevantBtn).popover('hide');
+			}, 2000);
+		})
+		.fail(function(data){
+			console.log("readEnjoyedBtn click failed to post to server");
+		});
+	});
+
+
+	// on click of readNotEnjoyedBtn
+	$(document).on('click', '.readNotEnjoyedBtn', function(e){
+		e.preventDefault();
+		relevantListItem = $(this).parent().data();
+		console.log(relevantListItem);
+		relevantBtn = $(this);
+
+		// post route to server to create book
+		$.ajax({
+			url: '/api/booksreadnotenjoyed',
+			type: 'POST',
+			data: relevantListItem
+		})
+		.done(function(data){
+			console.log("readNotEnjoyedBtn click posted to server");
+			$(relevantBtn).popover('show');
+			setTimeout(function() {
+				$(relevantBtn).popover('hide');
+			}, 2000);
+		})
+		.fail(function(data){
+			console.log("readNotEnjoyedBtn click failed to post to server");
+		});
+	});
 
 
 
