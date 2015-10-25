@@ -97,7 +97,7 @@ $(document).ready(function(){
 
 		// post route to server to create book
 		$.ajax({
-			url: '/api/books',
+			url: '/api/bookslist',
 			type: 'POST',
 			data: relevantListItem
 		})
@@ -106,16 +106,42 @@ $(document).ready(function(){
 			$(relevantBtn).popover('show');
 			setTimeout(function() {
 				$(relevantBtn).popover('hide');
-			}, 2000);
+			}, 3000);
 		})
 		.fail(function(data){
 			console.log("addToListBtn click failed to post to server");
-			$(relevantBtn).parent().append('<div class="alert alert-danger addToListAlert" role="alert">This book is already on your list. </div>');
-			setTimeout(function() {
-				$('.addToListAlert').alert('close');
-			}, 2000);
 		});
 	});
+
+
+	// on click of readEnjoyedBtn
+	// $(document).on('click', '.readEnjoyedBtn', function(e){
+	// 	e.preventDefault();
+	// 	relevantListItem = $(this).parent().data();
+	// 	console.log(relevantListItem);
+	// 	relevantBtn = $(this);
+
+	// 	// post route to server to create book
+	// 	$.ajax({
+	// 		url: '/api/booksreadenjoyed',
+	// 		type: 'POST',
+	// 		data: relevantListItem
+	// 	})
+	// 	.done(function(data){
+	// 		console.log("readEnjoyedBtn click posted to server");
+	// 		$(relevantBtn).popover('show');
+	// 		setTimeout(function() {
+	// 			$(relevantBtn).popover('hide');
+	// 		}, 2000);
+	// 	})
+	// 	.fail(function(data){
+	// 		console.log("readEnjoyedBtn click failed to post to server");
+	// 		$(relevantBtn).parent().append('<div class="alert alert-success addToListAlert" role="alert">You have already told us that you liked this book! </div>');
+	// 		setTimeout(function() {
+	// 			$('.addToListAlert').alert('close');
+	// 		}, 2000);
+	// 	});
+	// });
 
 
 

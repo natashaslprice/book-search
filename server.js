@@ -98,10 +98,17 @@ app.get('/list', function(req, res) {
 			if (err) {
 				console.log("the error with rendering the /list page is: ", err);
 			}
-			else {
-				// console.log("the unique user is: ", user.firstName, "the books are: ", books);
+			else if (user.booksToRead.length > 1) {
+				console.log("the array before the function: ", user.booksToRead);
+				user.booksToRead.sort(compare);
+				console.log("the sorted array: ", user.booksToRead);
+				eliminateDuplicates(user.booksToRead);
+				console.log("the array after the function: ", user.booksToRead);
 				res.render('list', { user: user } );
-				}
+			}
+			else {
+				res.render('list', { user: user } );
+			}
 		});
 });
 
@@ -147,7 +154,7 @@ app.get('/api/paperbackFictionList', function(req, res) {
 });
 
 // get route for books api
-app.get('/api/books', function(req, res) {
+app.get('/api/bookslist', function(req, res) {
 	db.Book.find( {} , function(err, books){
 		if (err) {
 			console.log("the error with the api/books is: ", err);
@@ -204,7 +211,7 @@ app.post('/login', function(req, res) {
 });
 
 // post route for addToListBtn
-app.post('/api/books', function(req, res) {
+app.post('/api/bookslist', function(req, res) {
 	var author = req.body.author;
 	var title = req.body.title;
 	var synopsis = req.body.synopsis;
@@ -223,22 +230,53 @@ app.post('/api/books', function(req, res) {
 					console.log("the error with finding the right user is: ", err);
 				}
 				else {
-					for (var i = 0; i < user.booksToRead.length; i++) {
-						if (book !== user.booksToRead[i]) {
-							user.booksToRead.push(book);
-							user.save();
-							res.json(user);
-						}
-						else {
-							console.log("The user already has this book in their list");
-							res.json(null);
-						}
-					}
+					user.booksToRead.push(book);
+					user.save();
+					res.json(user);
 				}
 			});
 		}
 	});
 });
+
+// post route for readEnjoyedBtn
+// app.post('/api/booksreadenjoyed', function(req, res) {
+// 	var author = req.body.author;
+// 	var title = req.body.title;
+// 	var synopsis = req.body.synopsis;
+// 	var review = req.body.review;
+// 	var image = req.body.image;
+// 	var isbn = req.body.isbn;
+
+// 	db.Book.create(req.body, function (err, book){
+// 		if (err) {
+// 			console.log("error with creating new book from addToListBtn: " + err);
+// 		}
+// 		else {
+// 			console.log("the book is: ", book);
+// 			db.User.findOne( { _id: req.session.userId } , function(err, user){
+// 				if (err) {
+// 					console.log("the error with finding the right user is: ", err);
+// 				}
+// 				else {
+// 					for (var j = 0; j <= user.booksReadEnjoyed.length; j++) {
+// 						if (book !== user.booksReadEnjoyed[j] || user.booksReadEnjoyed.length === 0) {
+// 					console.log("the user at 263 is: ", user);
+// 							user.booksReadEnjoyed.push(book);
+// 							user.save();
+// 							res.json(user);
+// 						}
+// 						else {
+// 							console.log("The user has already told us they enjoyed this book");
+// 							res.json(null);
+// 						}
+// 					}
+// 				}
+// 			});
+// 		}
+// 	});
+// });
+
 
 
 // post route to log user out
@@ -256,4 +294,26 @@ app.post('/logout', function(req, res) {
 app.listen(process.env.PORT || 3000, function() {
   console.log("book-search is running on port 3000");
 });
+
+
+// sort by title function
+function compare(a,b) {
+  if (a.title < b.title)
+    return -1;
+  if (a.title > b.title)
+    return 1;
+  return 0;
+}
+
+// elimate duplicates function
+function eliminateDuplicates(arr) {
+  for (i = 0; i < arr.length - 1; i++) {
+    if (arr[i].title === arr[i + 1].title) {
+    	arr.splice(i, 1);
+    	i = i - 1;
+    }
+	// console.log("the function array is: ", arr);
+	}
+	return arr;
+}
 
