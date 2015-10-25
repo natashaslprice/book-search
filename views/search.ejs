@@ -11,10 +11,11 @@
 		<% include ./_navBar %>
 	</header>
 
-	<!-- heading and intro text -->
 	<div class="container">
+
+		<!-- heading and intro text -->
 		<div class="row">
-		  <div class="col-8 col-offset-2" id="homepageDiv">
+		  <div class="col-8 col-offset-2 introDiv">
 			  <h3 id="homepageIntroText">Search for books</h3>
 			  <hr>
 			  <h5>
@@ -22,8 +23,35 @@
 			  </h5>
 		  </div> <!-- end of col -->
   	</div> <!-- end of row div -->
+
+		<!-- search form -->
+		<div class="row">
+		  <div class="col-md-6 col-md-offset-3">
+		  	<form class="form-group" id="authorSearchForm"> <!-- author search form -->
+			  	<label for="authorSearchInput" id="authorLabel">Search by author:</label>
+	  	    <input type="text" id="authorSearchInput" class="form-control" name="authorSearchFirstName" placeholder="Enter author first name here..." autofocus>
+	  	    <input type="text" id="authorSearchInput" class="form-control" name="authorSearchLastName" placeholder="Enter author last name here..." autofocus>
+	  	    <button id="authorSearchBtn" class="btn btn-default" type="submit">Search!</button>
+	      </form> <!-- end of author search form -->
+	      <p>OR</p>
+	      <form class="form-group" id="bookSearchForm"> <!-- book search form -->
+	      	<label for="bookSearchInput" id="bookLabel">Search by book:</label> <!-- book search -->
+  	      <input type="text" id="bookSearchInput" class="form-control" name="bookSearchName" placeholder="Enter book name here...">  
+        	<button id="bookSearchBtn" class="btn btn-default" type="submit">Search!</button>
+	      </form> <!-- end of book search form -->
+		  </div> <!-- end of col -->
+  	</div> <!-- end of row div -->
+
+  	<!-- results div -->
+		<div class="row">
+		  <div class="col-md-8 col-md-offset-2" id="searchResultsDiv">
+		  	<ul id="searchResultsList">
+		  	</ul>
+		  </div> <!-- end of col -->
+  	</div> <!-- end of row div -->
+
   </div> <!-- end of container div -->
-	  
+  
 
 </body>
 </html>

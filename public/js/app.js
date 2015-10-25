@@ -166,10 +166,61 @@ $(document).ready(function(){
 	});
 
 
+	// on submit of authorSearchForm
+	$('#authorSearchForm').on('submit', function(e){
+		e.preventDefault();
+
+		// check search field not empty
+		if($('#authorSearchInput').val().trim().length > 0) {
+			// if not empty, get value from search field i.e. author name to search
+			var authorName = $(this).serialize();
+			console.log(authorName);
+			// reset input field
+			$('#authorSearchForm')[0].reset();
+			// ajax get request from server
+			$.ajax({
+				url: '/api/authorsearch',
+				type: 'POST',
+				data: authorName
+			})
+			.done(function(data){
+				console.log("authorSearchForm click posted to server");
+				$('#searchResultsList').append(dataIntoHTML(data));
+			})
+			.fail(function(data){
+				console.log("authorSearchForm click failed to post to server");
+			});
+		}
+		else {
+			$('#authorSearchForm').append('<div class="alert alert-danger" id="authorSearchAlert" role="alert">Please enter the name of an author and try again. </div>');
+				$('#authorSearchAlert').alert();
+				window.setTimeout(function() {
+					$('#authorSearchAlert').alert('close');
+				}, 3000);
+		}
+	});
 
 
 
 
 }); // end of doc ready
+
+function dataIntoHTML(data) {
+	for (var i = 0; i < data.items.length; i++) {
+		return '<li' + 
+			'class="list-group-item"' +
+			'data-title="' + data.items[i].volumeInfo.title + '"' +
+			'data-author="' + data.items[i].volumeInfo.authors[0] + '"' +
+			'data-synopsis="' + data.items[i].volumeInfo.description + '"' +
+			'data-image="' + data.items[i].volumeInfo.imageLinks.smallThumbnail + '"' +
+			'data-isbn="' + data.items[i].volumeInfo.industryIdentifiers[1].identifier + '"' +
+			'>' +
+				'<strong>' + (i + 1) + '. ' + data.items[i].volumeInfo.title + '</strong> by ' + data.items[i].volumeInfo.authors[0] +
+				'<br>' +
+				data.items[i].volumeInfo.description +
+				'<img class="bookImages" src="' + data.items[i].volumeInfo.imageLinks.smallThumbnail + '">' +
+			'</li>';
+	}
+}
 
 

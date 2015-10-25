@@ -41,7 +41,7 @@ app.get('/homepage', function(req, res) {
 			console.log(err);
 		}
 		else {
-			console.log(user);
+			// console.log(user);
 			res.render('homepage', { user: user } );
 		}
 	});
@@ -55,7 +55,7 @@ app.get('/bestsellers', function(req, res) {
 			console.log(err);
 		}
 		else {
-			console.log(user);
+			// console.log(user);
 			res.render('bestsellers', { user: user, hardcoverFictionList: hardcoverFictionList, paperbackFictionList: paperbackFictionList } );
 		}
 	});
@@ -69,7 +69,7 @@ app.get('/search', function(req, res) {
 			console.log(err);
 		}
 		else {
-			console.log(user);
+			// console.log(user);
 			res.render('search', { user: user } );
 		}
 	});
@@ -83,7 +83,7 @@ app.get('/recommendations', function(req, res) {
 			console.log(err);
 		}
 		else {
-			console.log(user);
+			// console.log(user);
 			res.render('recommendations', { user: user } );
 		}
 	});
@@ -113,59 +113,6 @@ app.get('/list', function(req, res) {
 });
 
 
-// APIS
-// define NYT API key
-var NYT_API_KEY = process.env.NYT_API_KEY;
-//this should log your secret key!
-console.log(NYT_API_KEY);
-
-// request data from NYT api for hardcover-fiction
-var hardcoverFictionList;
-request('http://api.nytimes.com/svc/books/v3/lists?list-name=hardcover-fiction&api-key=' + NYT_API_KEY, function(err, response, body){
-	if (!err && response.statusCode == 200) {
-		hardcoverFictionList = JSON.parse(body);
-		// console.log("API: " + hardcoverFictionList);
-	}
-	else {
-		console.log("error in api: " + err);
-	}
-});
-
-// get route for hardcoverFictionList api
-app.get('/api/hardcoverFictionList', function(req, res) {
-	res.json(hardcoverFictionList);
-});
-
-// request data from NYT api for paperback-fiction
-var paperbackFictionList;
-request('http://api.nytimes.com/svc/books/v3/lists?list-name=mass-market-paperback&api-key=' + NYT_API_KEY, function(err, response, body){
-	if (!err && response.statusCode == 200) {
-		paperbackFictionList = JSON.parse(body);
-		// console.log("API: " + paperbackFictionList);
-	}
-	else {
-		console.log("error in api: " + err);
-	}
-});
-
-// get route for paperbackFictionList api
-app.get('/api/paperbackFictionList', function(req, res) {
-	res.json(paperbackFictionList);
-});
-
-// get route for books api
-app.get('/api/bookslist', function(req, res) {
-	db.Book.find( {} , function(err, books){
-		if (err) {
-			console.log("the error with the api/books is: ", err);
-		}
-		else {
-			res.json(books);
-		}
-	});
-});
-
-
 // POST ROUTES
 // post route for sign up form TBD - creates user but won't console.log
 app.post('/api/users', function(req, res) {
@@ -183,7 +130,7 @@ app.post('/api/users', function(req, res) {
 			console.log("New user: " + user);
 			// create session user
 			req.session.userId = user._id;
-			console.log(req.session.userId);
+			// console.log(req.session.userId);
 			res.json(user);
 		}
 	});
@@ -193,12 +140,12 @@ app.post('/api/users', function(req, res) {
 app.post('/login', function(req, res) {
 	db.User.authenticate(req.body.email, req.body.password, function(err, user){
 		console.log("Server.js login recognised");
-		console.log(user);
+		// console.log(user);
 		if (err) {
 			console.log("Error with login form: " + err);
 		}
 		else if (user) {
-			console.log("user logging in is: " + user);
+			// console.log("user logging in is: " + user);
 			// create session user
 			req.session.userId = user._id;
 			res.json(user);
@@ -297,6 +244,24 @@ app.post('/api/booksreadnotenjoyed', function(req, res) {
 	});
 });
 
+// post route for authorSearch
+app.post('/api/authorsearch', function(req, res) {
+	console.log(req.body);
+	var authorSearchFirstName = req.body.authorSearchFirstName;
+	var authorSearchLastName = req.body.authorSearchLastName;
+	// request data from google books api
+	request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + authorSearchFirstName + '+' + authorSearchLastName + '"&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
+		if (!err && response.statusCode == 200) {
+			console.log("Found author");
+			var list = JSON.parse(body);
+			res.json(list);
+		}
+		else {
+			console.log("error finding author: ", err);
+			res.json({});
+		}
+	});
+});
 
 // post route to log user out
 app.post('/logout', function(req, res) {
@@ -306,6 +271,67 @@ app.post('/logout', function(req, res) {
 	res.render('index', { hardcoverFictionList: hardcoverFictionList, paperbackFictionList: paperbackFictionList });
 });
 
+
+// GET ROUTES
+
+
+
+// APIS
+// define NYT API key
+var NYT_API_KEY = process.env.NYT_API_KEY;
+//this should log your secret key!
+console.log(NYT_API_KEY);
+
+// request data from NYT api for hardcover-fiction
+var hardcoverFictionList;
+request('http://api.nytimes.com/svc/books/v3/lists?list-name=hardcover-fiction&api-key=' + NYT_API_KEY, function(err, response, body){
+	if (!err && response.statusCode == 200) {
+		hardcoverFictionList = JSON.parse(body);
+		// console.log("API: " + hardcoverFictionList);
+	}
+	else {
+		console.log("error in api: " + err);
+	}
+});
+
+// get route for hardcoverFictionList api
+app.get('/api/hardcoverFictionList', function(req, res) {
+	res.json(hardcoverFictionList);
+});
+
+// request data from NYT api for paperback-fiction
+var paperbackFictionList;
+request('http://api.nytimes.com/svc/books/v3/lists?list-name=mass-market-paperback&api-key=' + NYT_API_KEY, function(err, response, body){
+	if (!err && response.statusCode == 200) {
+		paperbackFictionList = JSON.parse(body);
+		// console.log("API: " + paperbackFictionList);
+	}
+	else {
+		console.log("error in api: " + err);
+	}
+});
+
+// get route for paperbackFictionList api
+app.get('/api/paperbackFictionList', function(req, res) {
+	res.json(paperbackFictionList);
+});
+
+// get route for books api
+app.get('/api/bookslist', function(req, res) {
+	db.Book.find( {} , function(err, books){
+		if (err) {
+			console.log("the error with the api/books is: ", err);
+		}
+		else {
+			res.json(books);
+		}
+	});
+});
+
+// define NYT API key
+var GOOGLE_BOOKS_API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
+//this should log your secret key!
+console.log(GOOGLE_BOOKS_API_KEY);
 
 
 
