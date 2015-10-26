@@ -358,7 +358,7 @@ app.post('/logout', function(req, res) {
 // define NYT API key
 var NYT_API_KEY = process.env.NYT_API_KEY;
 //this should log your secret key!
-console.log(NYT_API_KEY);
+// console.log(NYT_API_KEY);
 
 // request data from NYT api for hardcover-fiction
 var hardcoverFictionList;
@@ -414,7 +414,7 @@ app.get('/api/bookslist', function(req, res) {
 // define NYT API key
 var GOOGLE_BOOKS_API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
 //this should log your secret key!
-console.log(GOOGLE_BOOKS_API_KEY);
+// console.log(GOOGLE_BOOKS_API_KEY);
 
 
 
