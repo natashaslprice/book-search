@@ -30,7 +30,7 @@ app.use(session({
 // RENDER
 // render index page
 app.get('/', function(req, res) {
-  res.render("index", { hardcoverFictionList: hardcoverFictionList, paperbackFictionList: paperbackFictionList });
+  res.render("index", { lowerCaseHardcoverFictionList: lowerCaseHardcoverFictionList, lowerCasePaperbackFictionList: lowerCasePaperbackFictionList });
 });
 
 // render homepage with user's unique info
@@ -56,7 +56,7 @@ app.get('/bestsellers', function(req, res) {
 		}
 		else {
 			// console.log(user);
-			res.render('bestsellers', { user: user, hardcoverFictionList: hardcoverFictionList, paperbackFictionList: paperbackFictionList } );
+			res.render('bestsellers', { user: user, lowerCaseHardcoverFictionList: lowerCaseHardcoverFictionList, lowerCasePaperbackFictionList: lowerCasePaperbackFictionList } );
 		}
 	});
 });

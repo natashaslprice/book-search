@@ -41,11 +41,11 @@
         <div id="landing-page-list">
           <h4>New York Times Hardcover Fiction Best-seller List</h4>
           <ul class="list-group">
-            <% for (var i = 0; i < hardcoverFictionList.results.length; i++) { %>
+            <% for (var i = 0; i < lowerCaseHardcoverFictionList.length; i++) { %>
               <li class="list-group-item">
-                <strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= hardcoverFictionList.results[i].book_details[0].title.toLowerCase() %> </strong></span> by <%= hardcoverFictionList.results[i].book_details[0].author %>
+                <strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= lowerCaseHardcoverFictionList[i].book_details[0].title %> </strong></span> by <%= lowerCaseHardcoverFictionList[i].book_details[0].author %>
                 <br>
-                <%= hardcoverFictionList.results[i].book_details[0].description %>
+                <%= lowerCaseHardcoverFictionList[i].book_details[0].description %>
               </li>
             <% } %>
           </ul>
@@ -58,11 +58,11 @@
         <div id="landing-page-list">
           <h4>New York Times Paperback Mass-Market Fiction Best-seller List</h4>
           <ul class="list-group">
-            <% for (var i = 0; i < paperbackFictionList.results.length; i++) { %>
+            <% for (var i = 0; i < lowerCasePaperbackFictionList.length; i++) { %>
               <li class="list-group-item">
-                <strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= paperbackFictionList.results[i].book_details[0].title.toLowerCase() %> </strong></span> by <%= paperbackFictionList.results[i].book_details[0].author %>
+                <strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= lowerCasePaperbackFictionList[i].book_details[0].title %> </strong></span> by <%= lowerCasePaperbackFictionList[i].book_details[0].author %>
                 <br>
-                <%= paperbackFictionList.results[i].book_details[0].description %>
+                <%= lowerCasePaperbackFictionList[i].book_details[0].description %>
               </li>
             <% } %>
           </ul>
