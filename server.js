@@ -171,7 +171,7 @@ app.post('/api/bookslist', function(req, res) {
 			console.log("error with creating new book from addToListBtn: " + err);
 		}
 		else {
-			console.log("the book is: ", book);
+			console.log("the book being put on the list is: ", book);
 			db.User.findOne( { _id: req.session.userId } , function(err, user){
 				if (err) {
 					console.log("the error with finding the right user is: ", err);
@@ -259,7 +259,7 @@ app.post('/api/authorsearch', function(req, res) {
 			list.items.sort(compareGoogle);
 			// elimate duplicates from the list
 			eliminateDuplicatesGoogle(list.items);
-			console.log("the list after removing duplicates: ", list.items);
+			// console.log("the list after removing duplicates: ", list.items);
 			// send back sorted and cleaned list
 			res.json(list);
 		}

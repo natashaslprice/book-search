@@ -94,6 +94,7 @@ $(document).ready(function(){
 		relevantListItem = $(this).parent().data();
 		console.log(relevantListItem);
 		relevantBtn = $(this);
+		console.log(relevantBtn.parent());
 
 		// post route to server to create book
 		$.ajax({
@@ -290,13 +291,13 @@ function dataIntoHTML(query) {
 	// if an image and an isbn
 	if (query.volumeInfo.imageLinks && query.volumeInfo.industryIdentifiers) { 
 		var image1 = '<img class="bookImages media-object" src="' + query.volumeInfo.imageLinks.smallThumbnail + '">'; 
-		return '<div' + 
-			'class="media"' +
-			'data-title="' + query.volumeInfo.title + '"' +
-			'data-author="' + query.volumeInfo.authors[0] + '"' +
-			'data-synopsis="' + query.volumeInfo.description + '"' +
-			'data-image="' + query.volumeInfo.imageLinks.smallThumbnail + '"' +
-			'data-isbn="' + query.volumeInfo.industryIdentifiers[0].identifier + '"' +
+		return '<div ' + 
+			'class="media" ' +
+			'data-title="' + query.volumeInfo.title + '" ' +
+			'data-author="' + query.volumeInfo.authors[0] + '" ' +
+			'data-synopsis="' + query.volumeInfo.description + '" ' +
+			'data-image="' + query.volumeInfo.imageLinks.smallThumbnail + '" ' +
+			'data-isbn="' + query.volumeInfo.industryIdentifiers[0].identifier + '" ' +
 			'>' +
 				'<div class="media-body">' +
 					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
@@ -306,16 +307,20 @@ function dataIntoHTML(query) {
 			'<div class="media-right">' +
 				image1 +
 			'</div>' +
+			'<br>' +
+			'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
+			'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
+			'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
 			'<hr>';
 	}
 	// else if no image but an isbn
 	else if (query.volumeInfo.imageLinks === false && query.volumeInfo.industryIdentifiers){
-		return '<div' + 
-			'class="media"' +
-			'data-title="' + query.volumeInfo.title + '"' +
-			'data-author="' + query.volumeInfo.authors[0] + '"' +
-			'data-synopsis="' + query.volumeInfo.description + '"' +
-			'data-isbn="' + query.volumeInfo.industryIdentifiers[0].identifier + '"' +
+		return '<div ' + 
+			'class="media" ' +
+			'data-title="' + query.volumeInfo.title + '" ' +
+			'data-author="' + query.volumeInfo.authors[0] + '" ' +
+			'data-synopsis="' + query.volumeInfo.description + '" ' +
+			'data-isbn="' + query.volumeInfo.industryIdentifiers[0].identifier + '" ' +
 			'>' +
 				'<div class="media-body">' +
 					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
@@ -324,17 +329,21 @@ function dataIntoHTML(query) {
 				'</div>' +
 			'<div class="media-right">' +
 			'</div>' +
+			'<br>' +
+			'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
+			'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
+			'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
 			'<hr>';
 		}
 	// else if image but no isbn 
 	else if (query.volumeInfo.imageLinks && query.volumeInfo.industryIdentifiers === false) {
 		var image2 = '<img class="bookImages media-object" src="' + query.volumeInfo.imageLinks.smallThumbnail + '">'; 
-		return '<div' + 
-			'class="media"' +
-			'data-title="' + query.volumeInfo.title + '"' +
-			'data-author="' + query.volumeInfo.authors[0] + '"' +
-			'data-synopsis="' + query.volumeInfo.description + '"' +
-			'data-image="' + query.volumeInfo.imageLinks.smallThumbnail + '"' +
+		return '<div ' + 
+			'class="media" ' +
+			'data-title="' + query.volumeInfo.title + '" ' +
+			'data-author="' + query.volumeInfo.authors[0] + '" ' +
+			'data-synopsis="' + query.volumeInfo.description + '" ' +
+			'data-image="' + query.volumeInfo.imageLinks.smallThumbnail + '" ' +
 			'>' +
 				'<div class="media-body">' +
 					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
@@ -344,15 +353,19 @@ function dataIntoHTML(query) {
 			'<div class="media-right">' +
 			image2 +
 			'</div>' +
+			'<br>' +
+			'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
+			'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
+			'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
 			'<hr>';
 		}
 	// else if no image and no isbn
 	else {
-		return '<div' + 
-			'class="media"' +
-			'data-title="' + query.volumeInfo.title + '"' +
-			'data-author="' + query.volumeInfo.authors[0] + '"' +
-			'data-synopsis="' + query.volumeInfo.description + '"' +
+		return '<div ' + 
+			'class="media" ' +
+			'data-title="' + query.volumeInfo.title + '" ' +
+			'data-author="' + query.volumeInfo.authors[0] + '" ' +
+			'data-synopsis="' + query.volumeInfo.description + '" ' +
 			'>' +
 				'<div class="media-body">' +
 					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
@@ -361,6 +374,10 @@ function dataIntoHTML(query) {
 				'</div>' +
 			'<div class="media-right">' +
 			'</div>' +
+			'<br>' +
+			'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
+			'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
+			'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
 			'<hr>';
 	}
 	
