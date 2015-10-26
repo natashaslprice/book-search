@@ -362,36 +362,41 @@ console.log(NYT_API_KEY);
 
 // request data from NYT api for hardcover-fiction
 var hardcoverFictionList;
+var lowerCaseHardcoverFictionList;
 request('http://api.nytimes.com/svc/books/v3/lists?list-name=hardcover-fiction&api-key=' + NYT_API_KEY, function(err, response, body){
 	if (!err && response.statusCode == 200) {
 		hardcoverFictionList = JSON.parse(body);
-		// console.log("API: " + hardcoverFictionList);
+		// console.log("API before function: " + hardcoverFictionList.results[0].book_details[0].title);
+		lowerCaseHardcoverFictionList = toLowerCaseFunction(hardcoverFictionList.results);
+		// console.log("API after function: " + lowerCaseHardcoverFictionList[0].book_details[0].title);
 	}
 	else {
 		console.log("error in api: " + err);
 	}
 });
 
-// get route for hardcoverFictionList api
+// get route for lowerCaseHardcoverFictionList api
 app.get('/api/hardcoverFictionList', function(req, res) {
-	res.json(hardcoverFictionList);
+	res.json(lowerCaseHardcoverFictionList);
 });
 
 // request data from NYT api for paperback-fiction
 var paperbackFictionList;
+var lowerCasePaperbackFictionList;
 request('http://api.nytimes.com/svc/books/v3/lists?list-name=mass-market-paperback&api-key=' + NYT_API_KEY, function(err, response, body){
 	if (!err && response.statusCode == 200) {
 		paperbackFictionList = JSON.parse(body);
 		// console.log("API: " + paperbackFictionList);
+		lowerCasePaperbackFictionList = toLowerCaseFunction(paperbackFictionList.results);
 	}
 	else {
 		console.log("error in api: " + err);
 	}
 });
 
-// get route for paperbackFictionList api
+// get route for lowerCasePaperbackFictionList api
 app.get('/api/paperbackFictionList', function(req, res) {
-	res.json(paperbackFictionList);
+	res.json(lowerCasePaperbackFictionList);
 });
 
 // get route for books api
@@ -420,6 +425,16 @@ app.listen(process.env.PORT || 3000, function() {
 
 
 // FUNCTIONS
+
+// make all titles from NYT API lowercase
+function toLowerCaseFunction(arr) {
+	for (var i = 0; i < arr.length; i++) {
+		arr[i].book_details[0].title = arr[i].book_details[0].title.toLowerCase();
+		// console.log(arr[i].book_details[0].title.toLowerCase());
+	}
+	return arr;
+}
+
 // sort by title function in user arrays function
 function compare(a,b) {
   if (a.title < b.title)
@@ -469,6 +484,8 @@ function findAuthor(arr) {
 		}
 	}
 }
+
+
 
 
 
