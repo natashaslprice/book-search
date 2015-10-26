@@ -249,11 +249,18 @@ app.post('/api/authorsearch', function(req, res) {
 	console.log(req.body);
 	var authorSearchFirstName = req.body.authorSearchFirstName;
 	var authorSearchLastName = req.body.authorSearchLastName;
-	// request data from google books api
-	request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + authorSearchFirstName + '+' + authorSearchLastName + '"&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
+	// request data from google books api based on authors first and last name, ordered by newest, language en, max results (40)
+	request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + authorSearchFirstName + '+' + authorSearchLastName + '"&startIndex=0&maxResults=40&orderBy=newest&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
 		if (!err && response.statusCode == 200) {
 			console.log("Found author");
 			var list = JSON.parse(body);
+			// console.log(list.items);
+			// sort the list array
+			list.items.sort(compareGoogle);
+			// elimate duplicates from the list
+			eliminateDuplicatesGoogle(list.items);
+			console.log("the list after removing duplicates: ", list.items);
+			// send back sorted and cleaned list
 			res.json(list);
 		}
 		else {
@@ -341,7 +348,7 @@ app.listen(process.env.PORT || 3000, function() {
 });
 
 
-// sort by title function
+// sort by title function in user arrays function
 function compare(a,b) {
   if (a.title < b.title)
     return -1;
@@ -350,10 +357,30 @@ function compare(a,b) {
   return 0;
 }
 
-// elimate duplicates function
+// elimate duplicates from user arrays function
 function eliminateDuplicates(arr) {
   for (i = 0; i < arr.length - 1; i++) {
     if (arr[i].title === arr[i + 1].title) {
+    	arr.splice(i, 1);
+    	i = i - 1;
+    }
+	}
+	return arr;
+}
+
+// sort by title function in google search function
+function compareGoogle(a,b) {
+  if (a.volumeInfo.title < b.volumeInfo.title)
+    return -1;
+  if (a.volumeInfo.title > b.volumeInfo.title)
+    return 1;
+  return 0;
+}
+
+// elimate duplicates from google search function
+function eliminateDuplicatesGoogle(arr) {
+  for (i = 0; i < arr.length - 1; i++) {
+    if (arr[i].volumeInfo.title === arr[i + 1].volumeInfo.title) {
     	arr.splice(i, 1);
     	i = i - 1;
     }

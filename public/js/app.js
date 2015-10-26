@@ -177,6 +177,10 @@ $(document).ready(function(){
 			console.log(authorName);
 			// reset input field
 			$('#authorSearchForm')[0].reset();
+			// clear searchResultsList
+			$('#searchResultsList').empty();
+			// return focus to author first name
+			$('#authorSearchInput').focus();
 			// ajax get request from server
 			$.ajax({
 				url: '/api/authorsearch',
@@ -185,7 +189,14 @@ $(document).ready(function(){
 			})
 			.done(function(data){
 				console.log("authorSearchForm click posted to server");
-				$('#searchResultsList').append(dataIntoHTML(data));
+				// console.log(data);
+				// for each book in the array
+				for (var i = 0; i < data.items.length - 1; i++) {
+					// if there is a synopsis show that book
+					if (data.items[i].volumeInfo.description) {
+							$('#searchResultsList').append(dataIntoHTML(data.items[i]));
+					}
+				}
 			})
 			.fail(function(data){
 				console.log("authorSearchForm click failed to post to server");
@@ -205,22 +216,87 @@ $(document).ready(function(){
 
 }); // end of doc ready
 
-function dataIntoHTML(data) {
-	for (var i = 0; i < data.items.length; i++) {
-		return '<li' + 
-			'class="list-group-item"' +
-			'data-title="' + data.items[i].volumeInfo.title + '"' +
-			'data-author="' + data.items[i].volumeInfo.authors[0] + '"' +
-			'data-synopsis="' + data.items[i].volumeInfo.description + '"' +
-			'data-image="' + data.items[i].volumeInfo.imageLinks.smallThumbnail + '"' +
-			'data-isbn="' + data.items[i].volumeInfo.industryIdentifiers[1].identifier + '"' +
+
+// FUNCTIONS
+// dataIntoHTML function
+function dataIntoHTML(query) {
+	// if an image and an isbn
+	if (query.volumeInfo.imageLinks && query.volumeInfo.industryIdentifiers) { 
+		var image1 = '<img class="bookImages media-object" src="' + query.volumeInfo.imageLinks.smallThumbnail + '">'; 
+		return '<div' + 
+			'class="media"' +
+			'data-title="' + query.volumeInfo.title + '"' +
+			'data-author="' + query.volumeInfo.authors[0] + '"' +
+			'data-synopsis="' + query.volumeInfo.description + '"' +
+			'data-image="' + query.volumeInfo.imageLinks.smallThumbnail + '"' +
+			'data-isbn="' + query.volumeInfo.industryIdentifiers[0].identifier + '"' +
 			'>' +
-				'<strong>' + (i + 1) + '. ' + data.items[i].volumeInfo.title + '</strong> by ' + data.items[i].volumeInfo.authors[0] +
-				'<br>' +
-				data.items[i].volumeInfo.description +
-				'<img class="bookImages" src="' + data.items[i].volumeInfo.imageLinks.smallThumbnail + '">' +
-			'</li>';
+				'<div class="media-body">' +
+					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
+					'<br>' +
+					query.volumeInfo.description +
+				'</div>' +
+			'<div class="media-right">' +
+				image1 +
+			'</div>' +
+			'<hr>';
 	}
+	// else if no image but an isbn
+	else if (query.volumeInfo.imageLinks === false && query.volumeInfo.industryIdentifiers){
+		return '<div' + 
+			'class="media"' +
+			'data-title="' + query.volumeInfo.title + '"' +
+			'data-author="' + query.volumeInfo.authors[0] + '"' +
+			'data-synopsis="' + query.volumeInfo.description + '"' +
+			'data-isbn="' + query.volumeInfo.industryIdentifiers[0].identifier + '"' +
+			'>' +
+				'<div class="media-body">' +
+					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
+					'<br>' +
+					query.volumeInfo.description +
+				'</div>' +
+			'<div class="media-right">' +
+			'</div>' +
+			'<hr>';
+		}
+	// else if image but no isbn 
+	else if (query.volumeInfo.imageLinks && query.volumeInfo.industryIdentifiers === false) {
+		var image2 = '<img class="bookImages media-object" src="' + query.volumeInfo.imageLinks.smallThumbnail + '">'; 
+		return '<div' + 
+			'class="media"' +
+			'data-title="' + query.volumeInfo.title + '"' +
+			'data-author="' + query.volumeInfo.authors[0] + '"' +
+			'data-synopsis="' + query.volumeInfo.description + '"' +
+			'data-image="' + query.volumeInfo.imageLinks.smallThumbnail + '"' +
+			'>' +
+				'<div class="media-body">' +
+					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
+					'<br>' +
+					query.volumeInfo.description +
+				'</div>' +
+			'<div class="media-right">' +
+			image2 +
+			'</div>' +
+			'<hr>';
+		}
+	// else if no image and no isbn
+	else {
+		return '<div' + 
+			'class="media"' +
+			'data-title="' + query.volumeInfo.title + '"' +
+			'data-author="' + query.volumeInfo.authors[0] + '"' +
+			'data-synopsis="' + query.volumeInfo.description + '"' +
+			'>' +
+				'<div class="media-body">' +
+					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
+					'<br>' +
+					query.volumeInfo.description +
+				'</div>' +
+			'<div class="media-right">' +
+			'</div>' +
+			'<hr>';
+	}
+	
 }
 
 
