@@ -270,6 +270,77 @@ app.post('/api/authorsearch', function(req, res) {
 	});
 });
 
+// post route for bookSearch
+app.post('/api/booksearch', function(req, res) {
+	console.log(req.body);
+	var bookSearchName = req.body.bookSearchName;
+	// request data from google books api based on book name, ordered by relevance, language en
+	request('https://www.googleapis.com/books/v1/volumes?q=intitle:' + bookSearchName + '&orderBy=relevance&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
+		if (!err && response.statusCode == 200) {
+			console.log("Found book");
+			var books = JSON.parse(body);
+			var booksArr = books.items;
+			// if there is a descripton, find author of first book
+			var bookAuthor = findAuthor(booksArr);
+			// console.log("book author is: ", bookAuthor);
+			// find authors name parts
+			var bookAuthorObject = bookAuthor.split(" ");
+			var bookAuthorFirstName = bookAuthorObject[0];
+			var bookAuthorSecondName = bookAuthorObject[1];
+			var bookAuthorThirdName = bookAuthorObject[2];
+			// console.log(bookAuthorFirstName, bookAuthorSecondName, bookAuthorThirdName);
+			// if thirdName is undefined
+			if (bookAuthorThirdName === undefined) {
+				// new request for books by this author based on authors first and second name, ordered by newest, language en, max results (40)
+				request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + bookAuthorFirstName + '+' + bookAuthorSecondName + '"&startIndex=0&maxResults=40&orderBy=newest&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
+					if (!err && response.statusCode == 200) {
+						console.log("Found author");
+						var list = JSON.parse(body);
+						// console.log(list.items);
+						// sort the list array
+						list.items.sort(compareGoogle);
+						// elimate duplicates from the list
+						eliminateDuplicatesGoogle(list.items);
+						// console.log("the list after removing duplicates: ", list.items);
+						// send back sorted and cleaned list
+						res.json(list);
+					}
+					else {
+						console.log("error finding author: ", err);
+						res.json({});
+					}
+				});
+			}
+			// else if thirdName
+			else {
+				// new request for books by this author based on authors first and second and third name, ordered by newest, language en, max results (40)
+				request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + bookAuthorFirstName + '+' + bookAuthorSecondName + '+' + bookAuthorThirdName + '"&startIndex=0&maxResults=40&orderBy=newest&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
+					if (!err && response.statusCode == 200) {
+						console.log("Found author");
+						var list = JSON.parse(body);
+						// console.log(list.items);
+						// sort the list array
+						list.items.sort(compareGoogle);
+						// elimate duplicates from the list
+						eliminateDuplicatesGoogle(list.items);
+						// console.log("the list after removing duplicates: ", list.items);
+						// send back sorted and cleaned list
+						res.json(list);
+					}
+					else {
+						console.log("error finding author: ", err);
+						res.json({});
+					}
+				});
+			}
+		}
+		else {
+			console.log("error finding author: ", err);
+			res.json({});
+		}
+	});
+});
+
 // post route to log user out
 app.post('/logout', function(req, res) {
 	// remove session user
@@ -348,6 +419,7 @@ app.listen(process.env.PORT || 3000, function() {
 });
 
 
+// FUNCTIONS
 // sort by title function in user arrays function
 function compare(a,b) {
   if (a.title < b.title)
@@ -387,4 +459,18 @@ function eliminateDuplicatesGoogle(arr) {
 	}
 	return arr;
 }
+
+// find first book with a description and return that author function
+function findAuthor(arr) {
+	for (var i = 0; i < arr.length - 1; i++) {
+		if (arr[i].volumeInfo.description) {
+			// console.log("inside the function found: ", arr[i].volumeInfo.authors[0]);
+			return arr[i].volumeInfo.authors[0];
+		}
+	}
+}
+
+
+
+
 

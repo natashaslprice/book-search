@@ -190,12 +190,23 @@ $(document).ready(function(){
 			.done(function(data){
 				console.log("authorSearchForm click posted to server");
 				// console.log(data);
-				// for each book in the array
-				for (var i = 0; i < data.items.length - 1; i++) {
-					// if there is a synopsis show that book
-					if (data.items[i].volumeInfo.description) {
-							$('#searchResultsList').append(dataIntoHTML(data.items[i]));
+				// if a search result gets returned
+				if (data.items) {
+					// for each book in the array
+					for (var i = 0; i < data.items.length - 1; i++) {
+						// if there is a synopsis show that book
+						if (data.items[i].volumeInfo.description) {
+								$('#searchResultsList').append(dataIntoHTML(data.items[i]));
+						}
 					}
+				}
+				// if search return is empty
+				else {
+					$('#authorSearchForm').append('<div class="alert alert-danger" id="authorSearchAlert1" role="alert">It looks like there was an error finding that author. Please try again with a different name! </div>');
+					$('#authorSearchAlert1').alert();
+					window.setTimeout(function() {
+						$('#authorSearchAlert1').alert('close');
+					}, 3000);
 				}
 			})
 			.fail(function(data){
@@ -203,14 +214,70 @@ $(document).ready(function(){
 			});
 		}
 		else {
-			$('#authorSearchForm').append('<div class="alert alert-danger" id="authorSearchAlert" role="alert">Please enter the name of an author and try again. </div>');
-				$('#authorSearchAlert').alert();
-				window.setTimeout(function() {
-					$('#authorSearchAlert').alert('close');
-				}, 3000);
+			$('#authorSearchForm').append('<div class="alert alert-danger" id="authorSearchAlert2" role="alert">Please enter the name of an author and try again. </div>');
+			$('#authorSearchAlert2').alert();
+			window.setTimeout(function() {
+				$('#authorSearchAlert2').alert('close');
+			}, 3000);
 		}
 	});
 
+
+// on submit of bookSearchForm
+$('#bookSearchForm').on('submit', function(e){
+	e.preventDefault();
+
+	// check search field not empty
+	if($('#bookSearchInput').val().trim().length > 0) {
+		// if not empty, get value from search field i.e. book name to search
+		var bookName = $(this).serialize();
+		console.log(bookName);
+		// reset input field
+		$('#bookSearchForm')[0].reset();
+		// clear searchResultsList
+		$('#searchResultsList').empty();
+		// return focus to author first name
+		$('#bookSearchInput').focus();
+		// ajax get request from server
+		$.ajax({
+			url: '/api/booksearch',
+			type: 'POST',
+			data: bookName
+		})
+		.done(function(data){
+			console.log("bookSearchForm click posted to server");
+			// console.log(data);
+			// if a search result gets returned
+			if (data.items) {
+				// for each book in the array
+				for (var i = 0; i < data.items.length - 1; i++) {
+					// if there is a synopsis show that book
+					if (data.items[i].volumeInfo.description) {
+							$('#searchResultsList').append(dataIntoHTML(data.items[i]));
+					}
+				}
+			}
+			// if search return is empty
+			else {
+				$('#bookSearchForm').append('<div class="alert alert-danger" id="bookSearchAlert1" role="alert">It looks like there was an error finding that book. Please try again with a different title! </div>');
+				$('#bookSearchAlert1').alert();
+				window.setTimeout(function() {
+					$('#bookSearchAlert1').alert('close');
+				}, 3000);
+			}
+		})
+		.fail(function(data){
+			console.log("bookSearchForm click failed to post to server");
+		});
+	}
+	else {
+		$('#bookSearchForm').append('<div class="alert alert-danger" id="bookSearchAlert2" role="alert">Please enter the name of a book and try again. </div>');
+		$('#bookSearchAlert2').alert();
+		window.setTimeout(function() {
+			$('#bookSearchAlert2').alert('close');
+		}, 3000);
+	}
+});
 
 
 
