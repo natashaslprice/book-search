@@ -181,32 +181,6 @@ $(document).ready(function(){
 	});
 
 
-	// on click of readNotEnjoyedBtn
-	$(document).on('click', '.readNotEnjoyedBtn', function(e){
-		e.preventDefault();
-		relevantListItem = $(this).parent().data();
-		console.log(relevantListItem);
-		relevantBtn = $(this);
-
-		// post route to server to create book
-		$.ajax({
-			url: '/api/booksreadnotenjoyed',
-			type: 'POST',
-			data: relevantListItem
-		})
-		.done(function(data){
-			console.log("readNotEnjoyedBtn click posted to server");
-			$(relevantBtn).popover('show');
-			setTimeout(function() {
-				$(relevantBtn).popover('hide');
-			}, 2000);
-		})
-		.fail(function(data){
-			console.log("readNotEnjoyedBtn click failed to post to server");
-		});
-	});
-
-
 	// SEARCH
 	// on submit of authorSearchForm
 	$('#authorSearchForm').on('submit', function(e){
@@ -370,7 +344,6 @@ function dataIntoHTML(query) {
 		'<br>' +
 		'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
 		'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
-		'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
 		'<hr>';
 	}
 

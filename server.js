@@ -400,35 +400,6 @@ app.post('/api/booksreadenjoyed', function(req, res) {
 	});
 });
 
-// post route for readNotEnjoyedBtn
-app.post('/api/booksreadnotenjoyed', function(req, res) {
-	var author = req.body.author;
-	var title = req.body.title;
-	var synopsis = req.body.synopsis;
-	var review = req.body.review;
-	var image = req.body.image;
-	var isbn = req.body.isbn;
-
-	db.Book.create(req.body, function (err, book){
-		if (err) {
-			console.log("error with creating new book from booksReadNotEnjoyed: " + err);
-		}
-		else {
-			// console.log("the book is: ", book);
-			db.User.findOne( { _id: req.session.userId } , function(err, user){
-				if (err) {
-					console.log("the error with finding the right user is: ", err);
-				}
-				else {
-					user.booksReadNotEnjoyed.push(book);
-					user.save();
-					res.json(user);
-				}
-			});
-		}
-	});
-});
-
 // post route for authorSearch
 app.post('/api/authorsearch', function(req, res) {
 	// console.log(req.body);

@@ -11,7 +11,6 @@ var UserSchema = new Schema({
 		email: String,
 		passwordDigest: String,
 		booksReadEnjoyed: [{type: Schema.Types.ObjectId, ref: 'Book'}],
-		booksReadNotEnjoyed: [{type: Schema.Types.ObjectId, ref: 'Book'}],
 		booksToRead: [{type: Schema.Types.ObjectId, ref: 'Book'}]
 });
 
