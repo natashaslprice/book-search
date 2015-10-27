@@ -254,6 +254,7 @@ $('#bookSearchForm').on('submit', function(e){
 				for (var i = 0; i < data.items.length - 1; i++) {
 					// if there is a synopsis show that book
 					if (data.items[i].volumeInfo.description) {
+						console.log(dataIntoHTML(data.items[i]));
 							$('#searchResultsList').append(dataIntoHTML(data.items[i]));
 					}
 				}
@@ -288,99 +289,48 @@ $('#bookSearchForm').on('submit', function(e){
 // FUNCTIONS
 // dataIntoHTML function
 function dataIntoHTML(query) {
-	// if an image and an isbn
-	if (query.volumeInfo.imageLinks && query.volumeInfo.industryIdentifiers) { 
-		var image1 = '<img class="bookImages media-object" src="' + query.volumeInfo.imageLinks.smallThumbnail + '">'; 
-		return '<div ' + 
-			'class="media" ' +
-			'data-title="' + query.volumeInfo.title + '" ' +
-			'data-author="' + query.volumeInfo.authors[0] + '" ' +
-			'data-synopsis="' + query.volumeInfo.description + '" ' +
-			'data-image="' + query.volumeInfo.imageLinks.smallThumbnail + '" ' +
-			'data-isbn="' + query.volumeInfo.industryIdentifiers[0].identifier + '" ' +
-			'>' +
-				'<div class="media-body">' +
-					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
-					'<br>' +
-					query.volumeInfo.description +
-				'</div>' +
-			'<div class="media-right">' +
-				image1 +
-			'</div>' +
-			'<br>' +
-			'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
-			'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
-			'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
-			'<hr>';
+	var imageTag;
+	var imageLink;
+	// check if image - if exists then use, if not then use placeholder
+	if (query.volumeInfo.imageLinks) {
+		imageTag = '<img class="bookImages media-object" src="' + query.volumeInfo.imageLinks.smallThumbnail + '">';
+		imageLink = query.volumeInfo.imageLinks.smallThumbnail;
 	}
-	// else if no image but an isbn
-	else if (query.volumeInfo.imageLinks === false && query.volumeInfo.industryIdentifiers){
-		return '<div ' + 
-			'class="media" ' +
-			'data-title="' + query.volumeInfo.title + '" ' +
-			'data-author="' + query.volumeInfo.authors[0] + '" ' +
-			'data-synopsis="' + query.volumeInfo.description + '" ' +
-			'data-isbn="' + query.volumeInfo.industryIdentifiers[0].identifier + '" ' +
-			'>' +
-				'<div class="media-body">' +
-					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
-					'<br>' +
-					query.volumeInfo.description +
-				'</div>' +
-			'<div class="media-right">' +
-			'</div>' +
-			'<br>' +
-			'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
-			'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
-			'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
-			'<hr>';
-		}
-	// else if image but no isbn 
-	else if (query.volumeInfo.imageLinks && query.volumeInfo.industryIdentifiers === false) {
-		var image2 = '<img class="bookImages media-object" src="' + query.volumeInfo.imageLinks.smallThumbnail + '">'; 
-		return '<div ' + 
-			'class="media" ' +
-			'data-title="' + query.volumeInfo.title + '" ' +
-			'data-author="' + query.volumeInfo.authors[0] + '" ' +
-			'data-synopsis="' + query.volumeInfo.description + '" ' +
-			'data-image="' + query.volumeInfo.imageLinks.smallThumbnail + '" ' +
-			'>' +
-				'<div class="media-body">' +
-					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
-					'<br>' +
-					query.volumeInfo.description +
-				'</div>' +
-			'<div class="media-right">' +
-			image2 +
-			'</div>' +
-			'<br>' +
-			'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
-			'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
-			'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
-			'<hr>';
-		}
-	// else if no image and no isbn
 	else {
-		return '<div ' + 
-			'class="media" ' +
-			'data-title="' + query.volumeInfo.title + '" ' +
-			'data-author="' + query.volumeInfo.authors[0] + '" ' +
-			'data-synopsis="' + query.volumeInfo.description + '" ' +
-			'>' +
-				'<div class="media-body">' +
-					'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
-					'<br>' +
-					query.volumeInfo.description +
-				'</div>' +
-			'<div class="media-right">' +
-			'</div>' +
-			'<br>' +
-			'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
-			'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
-			'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
-			'<hr>';
+		imageTag = '<img class="bookImages media-object" src="/css/book-placeholder.png">';
+		imageLink = "/css/book-placeholder.png";
 	}
-	
-}
+
+	var isbn1;
+	// check if isbn - if exists then use, if not then use " "
+	if (query.volumeInfo.industryIdentifiers) {
+		isbn1 = query.volumeInfo.industryIdentifiers[0].identifier;
+	} 
+	else {
+		isbn1 = "";
+	}
+
+	return '<div ' + 
+		'class="media" ' +
+		'data-title="' + query.volumeInfo.title + '" ' +
+		'data-author="' + query.volumeInfo.authors[0] + '" ' +
+		'data-synopsis="' + query.volumeInfo.description + '" ' +
+		'data-image="' + imageLink +
+		'data-isbn="' + isbn1 + '" ' +
+		'>' +
+			'<div class="media-body">' +
+				'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
+				'<br>' +
+				query.volumeInfo.description +
+			'</div>' +
+		'<div class="media-right">' +
+			imageTag +
+		'</div>' +
+		'<br>' +
+		'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
+		'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
+		'<button type="button" class="btn btn-default btn-sm readNotEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you did not enjoy this.">Read and did not enjoy</button>' +
+		'<hr>';
+	}
 
 
