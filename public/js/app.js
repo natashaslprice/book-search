@@ -3,11 +3,13 @@
 $(document).ready(function(){
   console.log('Hey, Earth!');
 
-  // make all fields in sign up and log in forms required
+  // make all fields in sign up and log in forms, and userBookForm required
   $("#sign-up-form").validate();
   $("#log-in-form").validate();
+  $("#userBookForm").validate();
 
 
+  // INDEX
   // on submission of sign up form
 	$("#sign-up-form").on('submit', function(e){
 		e.preventDefault();
@@ -67,6 +69,7 @@ $(document).ready(function(){
 	// end of submission of log in form
 
 
+	// HOMEPAGE
 	// on click of log out button
 	$('#log-out-btn').on('click', function(e){
 		e.preventDefault();
@@ -88,6 +91,29 @@ $(document).ready(function(){
 	// end of log out click
 
 
+	// on submit of userBookForm
+	$('#userBookForm').on('submit', function(e){
+		e.preventDefault();
+		relevantFormItems = $(this).serialize();
+		console.log(relevantFormItems);
+		relevantBtn = $('#userBookBtn');
+
+		// post request to server to find and create books
+		$.ajax({
+			url: '/api/userbooks',
+			type: 'POST',
+			data: relevantFormItems
+		})
+		.done(function(data){
+			console.log("userBookForm posted to server");
+		})
+		.fail(function(data){
+			console.log("userBookForm failed to post to server");
+		});
+	});
+
+
+	// BEST-SELLERS AND SEARCH
 	// on click of addToListBtn
 	$(document).on('click', '.addToListBtn', function(e){
 		e.preventDefault();
@@ -96,7 +122,7 @@ $(document).ready(function(){
 		relevantBtn = $(this);
 		console.log(relevantBtn.parent());
 
-		// post route to server to create book
+		// post request to server to create book
 		$.ajax({
 			url: '/api/bookslist',
 			type: 'POST',
@@ -167,6 +193,7 @@ $(document).ready(function(){
 	});
 
 
+	// SEARCH
 	// on submit of authorSearchForm
 	$('#authorSearchForm').on('submit', function(e){
 		e.preventDefault();

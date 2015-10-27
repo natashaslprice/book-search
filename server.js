@@ -157,6 +157,30 @@ app.post('/login', function(req, res) {
 	});
 });
 
+// post route for userBookForm
+app.post('/api/userbooks', function(req, res) {
+	var userBooks = [];
+	var bookOne = req.body.userBookOne;
+	var bookTwo = req.body.userBookTwo;
+	var bookThree = req.body.userBookThree;
+	userBooks.push(bookOne, bookTwo, bookThree);
+	console.log(userBooks);
+	// request data from google books api based on each book name, ordered by relevance, language en
+	for (var i = 0; i < userBooks.length; i++) {
+		request('https://www.googleapis.com/books/v1/volumes?q=intitle:' + userBooks[i] + '&orderBy=relevance&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
+			if (!err && response.statusCode == 200) {
+				console.log("Found book");
+				var book_i = JSON.parse(body);
+				console.log(book_i);
+				// add function to find author, title, synopsis, isbn, image
+				// create book with those things
+				// db. find user based on session id
+				// push book into user read and enjoyed
+			}
+		});
+	}
+});
+
 // post route for addToListBtn
 app.post('/api/bookslist', function(req, res) {
 	var author = req.body.author;
