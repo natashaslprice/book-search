@@ -293,13 +293,40 @@ app.post('/api/bookslist', function(req, res) {
 	var image = req.body.image;
 	var isbn = req.body.isbn;
 
-	db.Book.create(req.body, function (err, book){
+	// find if book already exists on db
+	db.Book.findOne( { title: title } , function(err, book) {
+		// if err
 		if (err) {
-			console.log("error with creating new book from addToListBtn: " + err);
+			console.log("the error with finding the book was: ", err);
 		}
+		// if the book does not already exist
+		else if (book === null) {
+			console.log("book did not already exist");
+			// create book with those things
+			db.Book.create(req.body, function (err, book){
+				if (err) {
+					console.log("error with creating new book from booksReadEnjoyed: " + err);
+				}
+				else {
+					console.log("the book being put on the list is: ", book);
+					db.User.findOne( { _id: req.session.userId } , function(err, user){
+						if (err) {
+							console.log("the error with finding the right user is: ", err);
+						}
+						else {
+							user.booksToRead.push(book);
+							user.save();
+							res.json(user);
+						}
+					});
+				}
+			});
+		}
+		// if book does already exist, push book into user
 		else {
-			console.log("the book being put on the list is: ", book);
+			console.log("the book already existed");
 			db.User.findOne( { _id: req.session.userId } , function(err, user){
+				console.log("session user is: ", req.session.userId);
 				if (err) {
 					console.log("the error with finding the right user is: ", err);
 				}

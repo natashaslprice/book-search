@@ -9,8 +9,7 @@ var BookSchema = new Schema({
 		review: String,
 		image: String,
 		isbn: String,
-		usersReadEnjoyed: [{type: Schema.Types.ObjectId, ref: 'User'}],
-		usersToRead: [{type: Schema.Types.ObjectId, ref: 'User'}]
+		usersReadEnjoyed: [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
 
 var Book = mongoose.model('Book', BookSchema);
