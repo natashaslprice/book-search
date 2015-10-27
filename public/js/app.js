@@ -106,9 +106,19 @@ $(document).ready(function(){
 		})
 		.done(function(data){
 			console.log("userBookForm posted to server");
+			$('#userBookForm').append('<div class="alert alert-success" id="userBookAlert1" role="alert">Thanks! That will help us provide you with better recommendations. </div>');
+			$('#userBookAlert1').alert();
+			window.setTimeout(function() {
+				$('#userBookAlert1').alert('close');
+			}, 3000);
 		})
 		.fail(function(data){
 			console.log("userBookForm failed to post to server");
+			$('#userBookForm').append('<div class="alert alert-warning" id="userBookAlert2" role="alert">Oops! It looks like we couldn\'t find one of these books! Please try again with different titles. </div>');
+			$('#uuserBookAlert2').alert();
+			window.setTimeout(function() {
+				$('#userBookAlert2').alert('close');
+			}, 3000);
 		});
 	});
 

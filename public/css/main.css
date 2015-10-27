@@ -1,5 +1,7 @@
 header {
 	/*insert image*/
+	margin-bottom: 40px;
+	padding-bottom: 10px;
 }
 
 #logo {
@@ -15,6 +17,7 @@ header {
 .jumbotron {
 	text-align: center;
 	background: transparent;
+	padding: 0px, 0px;
 }
 
 #intro-text-div {
@@ -28,12 +31,15 @@ header {
 }
 
 #landing-page-list {
-	border: solid black 2px;
 	text-align: center
 }
 
 #capitals {
 	text-transform: capitalize;
+}
+
+.landingPageHeaders {
+	margin-bottom: 20px;
 }
 
 /*homepage.ejs*/

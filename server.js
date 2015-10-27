@@ -167,18 +167,41 @@ app.post('/api/userbooks', function(req, res) {
 	console.log(userBooks);
 	// request data from google books api based on each book name, ordered by relevance, language en
 	for (var i = 0; i < userBooks.length; i++) {
-		request('https://www.googleapis.com/books/v1/volumes?q=intitle:' + userBooks[i] + '&orderBy=relevance&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
-			if (!err && response.statusCode == 200) {
-				console.log("Found book");
-				var book_i = JSON.parse(body);
-				console.log(book_i);
-				// add function to find author, title, synopsis, isbn, image
-				// create book with those things
-				// db. find user based on session id
-				// push book into user read and enjoyed
-			}
+		var book_i = findUserBooks(userBooks[i], function(books) {
+			// console.log("book_i", books);
+			var booksArr_i = books.items;
+			// console.log(booksArr_i);
+			// use functions to find author, title, synopsis, isbn, image for each book
+			var bookAuthor_i = findAuthor(booksArr_i);
+			var bookTitle_i = findTitle(booksArr_i);
+			var bookSynopsis_i = findSynopsis(booksArr_i);
+			var bookImage_i = findImage(booksArr_i);
+			var bookIsbn_i = findIsbn(booksArr_i);
+			// console.log("The book", i, " details are ", bookAuthor_i, bookTitle_i, bookSynopsis_i, bookImage_i, bookIsbn_i);
+			// console.log("Book ", i, " is: ", book_i);
+			// create book with those things
+			db.Book.create( { author: bookAuthor_i, title: bookTitle_i, synopsis: bookSynopsis_i, image: bookImage_i, isbn: bookIsbn_i } , function (err, book){
+				if (err) {
+					console.log("error with creating new book from booksReadEnjoyed: " + err);
+				}
+				else {
+					console.log("the book", i, " is: ", book);
+					db.User.findOne( { _id: req.session.userId } , function(err, user){
+						if (err) {
+							console.log("the error with finding the right user is: ", err);
+						}
+						else {
+							user.booksReadEnjoyed.push(book);
+							user.save();
+							book.usersReadEnjoyed.push(user);
+							book.save();
+						}
+					});
+				}
+			});
 		});
 	}
+	res.status(200);
 });
 
 // post route for addToListBtn
@@ -509,8 +532,60 @@ function findAuthor(arr) {
 	}
 }
 
+// find first book with a description and return that title function
+function findTitle(arr) {
+	for (var i = 0; i < arr.length - 1; i++) {
+		if (arr[i].volumeInfo.description) {
+			// console.log("inside the function found: ", arr[i].volumeInfo.title);
+			return arr[i].volumeInfo.title;
+		}
+	}
+}
 
+// find first book with a description and return that synopsis function
+function findSynopsis(arr) {
+	for (var i = 0; i < arr.length - 1; i++) {
+		if (arr[i].volumeInfo.description) {
+			// console.log("inside the function found: ", arr[i].volumeInfo.description);
+			return arr[i].volumeInfo.description;
+		}
+	}
+}
 
+// find first book with an description and return that image function
+function findImage(arr) {
+	for (var i = 0; i < arr.length - 1; i++) {
+		if (arr[i].volumeInfo.description && arr[i].volumeInfo.imageLinks) {
+			// console.log("inside the function found: ", arr[i].volumeInfo.imageLinks.smallThumbnail);
+			return arr[i].volumeInfo.imageLinks.smallThumbnails;
+		}
+	}
+}
+
+// find first book with an description and return that isbn function
+function findIsbn(arr) {
+	for (var i = 0; i < arr.length - 1; i++) {
+		if (arr[i].volumeInfo.description && arr[i].volumeInfo.industryIdentifiers) {
+			// console.log("inside the function found: ", arr[i].volumeInfo.industryIdentifiers[0].identifier);
+			return arr[i].volumeInfo.industryIdentifiers[0].identifier;
+		}
+	}
+}
+
+// find userBooks function
+function findUserBooks(name, callback) {
+	request('https://www.googleapis.com/books/v1/volumes?q=intitle:' + name + '&orderBy=relevance&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
+		if (!err && response.statusCode == 200) {
+			console.log("Found book");
+			// console.log("the body json parsed is: ", JSON.parse(body));
+			callback(JSON.parse(body));
+	
+		}
+		else {
+			console.log("the error with getting the userBookForm data is: ", err);
+		}
+	});
+}
 
 
 
