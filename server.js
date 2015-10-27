@@ -232,14 +232,41 @@ app.post('/api/userbooks', function(req, res) {
 			var bookIsbn_i = findIsbn(booksArr_i);
 			// console.log("The book", i, " details are ", bookAuthor_i, bookTitle_i, bookSynopsis_i, bookImage_i, bookIsbn_i);
 			// console.log("Book ", i, " is: ", book_i);
-			// create book with those things
-			db.Book.create( { author: bookAuthor_i, title: bookTitle_i, synopsis: bookSynopsis_i, image: bookImage_i, isbn: bookIsbn_i } , function (err, book){
+			// find if book already exists on db
+			db.Book.findOne( { title: bookTitle_i } , function(err, book) {
+				// if err
 				if (err) {
-					console.log("error with creating new book from booksReadEnjoyed: " + err);
+					console.log("the error with finding the book was: ", err);
 				}
+				// if the book does not already exist
+				else if (book === null) {
+					console.log("book did not already exist");
+					// create book with those things
+					db.Book.create( { author: bookAuthor_i, title: bookTitle_i, synopsis: bookSynopsis_i, image: bookImage_i, isbn: bookIsbn_i } , function (err, book){
+						if (err) {
+							console.log("error with creating new book from booksReadEnjoyed: " + err);
+						}
+						else {
+							console.log("the book", i, " is: ", book);
+							db.User.findOne( { _id: req.session.userId } , function(err, user){
+								if (err) {
+									console.log("the error with finding the right user is: ", err);
+								}
+								else {
+									user.booksReadEnjoyed.push(book);
+									user.save();
+									book.usersReadEnjoyed.push(user);
+									book.save();
+								}
+							});
+						}
+					});
+				}
+				// if book does already exist, push book into user and user into book
 				else {
-					console.log("the book", i, " is: ", book);
+					console.log("the book already existed");
 					db.User.findOne( { _id: req.session.userId } , function(err, user){
+						console.log("session user is: ", req.session.userId);
 						if (err) {
 							console.log("the error with finding the right user is: ", err);
 						}
@@ -253,7 +280,7 @@ app.post('/api/userbooks', function(req, res) {
 				}
 			});
 		});
-	}
+	} 
 	res.json({});
 });
 
