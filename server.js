@@ -77,17 +77,70 @@ app.get('/search', function(req, res) {
 
 // render recommendations page with user's unique info
 app.get('/recommendations', function(req, res) {
-	db.User.findOne( { _id: req.session.userId } , function(err, user) {
+	// find user by session id
+	db.User.findOne( { _id: req.session.userId })
+	// populate the books the user has enjoyed
+	.populate('booksReadEnjoyed')
+	.exec(function(err, user) {
 		console.log("user id: " + req.session.userId);
 		if (err) {
-			console.log(err);
+			console.log("the error with finding the user was: ", err);
 		}
 		else {
 			// console.log(user);
-			res.render('recommendations', { user: user } );
+			// sort books by title
+			user.booksReadEnjoyed.sort(compare);
+			// elimate duplicates
+			eliminateDuplicates(user.booksReadEnjoyed);
+			// console.log(user.booksReadEnjoyed);
+			// console.log answer --> an array of book objects, in order with no duplicates
+			// for each book that user has read and enjoyed
+			for (var i = 0; i < user.booksReadEnjoyed.length; i++) {
+				// find title
+				var bookEnjoyedTitle_i = user.booksReadEnjoyed[i].title;
+				console.log("all the books this user has enjoyed are: ", bookEnjoyedTitle_i);
+				// find book on db
+				db.Book.findOne( { title: bookEnjoyedTitle_i })
+				// populate the users that have liked this book
+				.populate('usersReadEnjoyed')
+				.exec(function(err, book) {
+					if (err) {
+						console.log("the error with finding the book on the db is: ", err);
+					}
+					else {
+						console.log("the book was found in the db: ", book);
+						// for each user that has read and enjoyed this book
+						for (var j = 0; j < book.usersReadEnjoyed.length; j++) {
+							// find ids
+							var usersReadEnjoyedId_j = book.usersReadEnjoyed[j]._id;
+							console.log("the users who have enjoyed this book: ", usersReadEnjoyedId_j);
+							// find user on db
+							db.User.findOne( { _id: usersReadEnjoyedId_j })
+							// populate the books that these other users have read and enjoyed
+							.populate('booksReadEnjoyed')
+							.exec(function(err, user) {
+								if (err) {
+									console.log("the error with finding the users that have read and enjoyed this book is: ", err);
+								}
+								else {
+									var otherBooksReadEnjoyed = user.booksReadEnjoyed;
+									console.log("the other books to read and enjoy are: ", otherBooksReadEnjoyed);
+								}
+							});
+						}
+					}
+				});	
+			}
 		}
+			res.render('recommendations', { user: user } );
 	});
 });
+
+// search users db based on ids
+// find all books that those users have read and enjoyed
+
+
+
 
 // render to-read list with user's unique info
 app.get('/list', function(req, res) {
@@ -164,7 +217,7 @@ app.post('/api/userbooks', function(req, res) {
 	var bookTwo = req.body.userBookTwo;
 	var bookThree = req.body.userBookThree;
 	userBooks.push(bookOne, bookTwo, bookThree);
-	console.log(userBooks);
+	// console.log(userBooks);
 	// request data from google books api based on each book name, ordered by relevance, language en
 	for (var i = 0; i < userBooks.length; i++) {
 		var book_i = findUserBooks(userBooks[i], function(books) {
@@ -201,7 +254,7 @@ app.post('/api/userbooks', function(req, res) {
 			});
 		});
 	}
-	res.status(200);
+	res.json({});
 });
 
 // post route for addToListBtn
@@ -247,7 +300,7 @@ app.post('/api/booksreadenjoyed', function(req, res) {
 			console.log("error with creating new book from booksReadEnjoyed: " + err);
 		}
 		else {
-			console.log("the book is: ", book);
+			// console.log("the book is: ", book);
 			db.User.findOne( { _id: req.session.userId } , function(err, user){
 				if (err) {
 					console.log("the error with finding the right user is: ", err);
@@ -276,7 +329,7 @@ app.post('/api/booksreadnotenjoyed', function(req, res) {
 			console.log("error with creating new book from booksReadNotEnjoyed: " + err);
 		}
 		else {
-			console.log("the book is: ", book);
+			// console.log("the book is: ", book);
 			db.User.findOne( { _id: req.session.userId } , function(err, user){
 				if (err) {
 					console.log("the error with finding the right user is: ", err);
@@ -293,7 +346,7 @@ app.post('/api/booksreadnotenjoyed', function(req, res) {
 
 // post route for authorSearch
 app.post('/api/authorsearch', function(req, res) {
-	console.log(req.body);
+	// console.log(req.body);
 	var authorSearchFirstName = req.body.authorSearchFirstName;
 	var authorSearchLastName = req.body.authorSearchLastName;
 	// request data from google books api based on authors first and last name, ordered by newest, language en, max results (40)
@@ -319,7 +372,7 @@ app.post('/api/authorsearch', function(req, res) {
 
 // post route for bookSearch
 app.post('/api/booksearch', function(req, res) {
-	console.log(req.body);
+	// console.log(req.body);
 	var bookSearchName = req.body.bookSearchName;
 	// request data from google books api based on book name, ordered by relevance, language en
 	request('https://www.googleapis.com/books/v1/volumes?q=intitle:' + bookSearchName + '&orderBy=relevance&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){

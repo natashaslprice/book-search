@@ -94,9 +94,13 @@ $(document).ready(function(){
 	// on submit of userBookForm
 	$('#userBookForm').on('submit', function(e){
 		e.preventDefault();
+		// find form data
 		relevantFormItems = $(this).serialize();
 		console.log(relevantFormItems);
-		relevantBtn = $('#userBookBtn');
+		// clear form 
+		$('#userBookForm')[0].reset();
+		// send focus back to userBookOne input
+		$('#userBookOne').focus();
 
 		// post request to server to find and create books
 		$.ajax({
@@ -106,19 +110,19 @@ $(document).ready(function(){
 		})
 		.done(function(data){
 			console.log("userBookForm posted to server");
-			$('#userBookForm').append('<div class="alert alert-success" id="userBookAlert1" role="alert">Thanks! That will help us provide you with better recommendations. </div>');
+			$('#userBookFormAlert').append('<div class="alert alert-success" id="userBookAlert1" role="alert">Thanks! That will help us provide you with better recommendations. </div>');
 			$('#userBookAlert1').alert();
 			window.setTimeout(function() {
 				$('#userBookAlert1').alert('close');
-			}, 3000);
+			}, 4000);
 		})
 		.fail(function(data){
 			console.log("userBookForm failed to post to server");
-			$('#userBookForm').append('<div class="alert alert-warning" id="userBookAlert2" role="alert">Oops! It looks like we couldn\'t find one of these books! Please try again with different titles. </div>');
-			$('#uuserBookAlert2').alert();
+			$('#userBookFormAlert').append('<div class="alert alert-warning" id="userBookAlert2" role="alert">Oops! It looks like we couldn\'t find one of these books! Please try again with different titles. </div>');
+			$('#userBookAlert2').alert();
 			window.setTimeout(function() {
 				$('#userBookAlert2').alert('close');
-			}, 3000);
+			}, 4000);
 		});
 	});
 
