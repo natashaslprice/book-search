@@ -104,6 +104,62 @@ app.get('/recommendations', function(req, res) {
 	});
 });
 
+// recommendations function
+function recommendationsFunction(user, callback) {
+	for (var i = 0; i < user.booksReadEnjoyed.length; i++) {
+		// find title
+		var bookEnjoyedTitle_i = user.booksReadEnjoyed[i].title;
+		console.log("all the books this user has enjoyed are: ", bookEnjoyedTitle_i);
+		// find book on db
+		db.Book.findOne( { title: bookEnjoyedTitle_i })
+		// populate the users that have liked this book
+		.populate('usersReadEnjoyed')
+		.exec(function(err, book) {
+			if (err) {
+				console.log("the error with finding the book on the db is: ", err);
+			}
+			else {
+				// console.log("the book was found in the db: ", book);
+				// inside function with call back
+				var otherBooksReadEnjoyed = insideRecommendationsFunction(book, function(data) {
+					console.log("otherBooksReadEnjoyed are: ", data);
+					otherBooksReadEnjoyed = data;
+					if (i === user.booksReadEnjoyed.length-1) {	
+						callback(otherBooksReadEnjoyed);
+					}
+				});
+
+			}
+		});	
+	}
+}
+
+// inside recommendations function
+// for each user that has read and enjoyed this book
+function insideRecommendationsFunction(book, callback) {
+	for (var j = 0; j < book.usersReadEnjoyed.length; j++) {
+		// find ids
+		var usersReadEnjoyedId_j = book.usersReadEnjoyed[j]._id;
+		console.log("the users who have enjoyed this book: ", usersReadEnjoyedId_j);
+		// find user on db
+		db.User.findOne( { _id: usersReadEnjoyedId_j })
+		// populate the books that these other users have read and enjoyed
+		.populate('booksReadEnjoyed')
+		.exec(function(err, user2) {
+			if (err) {
+				console.log("the error with finding the users that have read and enjoyed this book is: ", err);
+			}
+			else {
+				otherBooksReadEnjoyed = user2.booksReadEnjoyed;
+				// console.log("the other books to read and enjoy are: ", otherBooksReadEnjoyed);
+				if (j === book.usersReadEnjoyed.length-1) {	
+					callback(otherBooksReadEnjoyed);
+				}
+			}
+		});
+	}
+}
+
 
 
 
@@ -290,7 +346,10 @@ app.post('/api/bookslist', function(req, res) {
 		// if book does already exist, push book into user
 		else {
 			console.log("the book already existed");
-			db.User.findOne( { _id: req.session.userId } , function(err, user){
+			db.User.findOne( { _id: req.session.userId } )
+			.populate('booksToRead')
+			.exec(function(err, user){
+				// check if book already exists in user
 				console.log("session user is: ", req.session.userId);
 				if (err) {
 					console.log("the error with finding the right user is: ", err);
@@ -700,60 +759,6 @@ function findUserBooks(name, callback) {
 }
 
 
-// recommendations function
-function recommendationsFunction(user, callback) {
-	for (var i = 0; i < user.booksReadEnjoyed.length; i++) {
-		// find title
-		var bookEnjoyedTitle_i = user.booksReadEnjoyed[i].title;
-		console.log("all the books this user has enjoyed are: ", bookEnjoyedTitle_i);
-		// find book on db
-		db.Book.findOne( { title: bookEnjoyedTitle_i })
-		// populate the users that have liked this book
-		.populate('usersReadEnjoyed')
-		.exec(function(err, book) {
-			if (err) {
-				console.log("the error with finding the book on the db is: ", err);
-			}
-			else {
-				// console.log("the book was found in the db: ", book);
-				// inside function with call back
-				var otherBooksReadEnjoyed = insideRecommendationsFunction(book, function(data) {
-					console.log("otherBooksReadEnjoyed are: ", data);
-					otherBooksReadEnjoyed = data;
-					if (i === user.booksReadEnjoyed.length-1) {	
-						callback(otherBooksReadEnjoyed);
-					}
-				});
 
-			}
-		});	
-	}
-}
-
-// inside recommendations function
-// for each user that has read and enjoyed this book
-function insideRecommendationsFunction(book, callback) {
-	for (var j = 0; j < book.usersReadEnjoyed.length; j++) {
-		// find ids
-		var usersReadEnjoyedId_j = book.usersReadEnjoyed[j]._id;
-		console.log("the users who have enjoyed this book: ", usersReadEnjoyedId_j);
-		// find user on db
-		db.User.findOne( { _id: usersReadEnjoyedId_j })
-		// populate the books that these other users have read and enjoyed
-		.populate('booksReadEnjoyed')
-		.exec(function(err, user2) {
-			if (err) {
-				console.log("the error with finding the users that have read and enjoyed this book is: ", err);
-			}
-			else {
-				otherBooksReadEnjoyed = user2.booksReadEnjoyed;
-				// console.log("the other books to read and enjoy are: ", otherBooksReadEnjoyed);
-				if (j === book.usersReadEnjoyed.length-1) {	
-					callback(otherBooksReadEnjoyed);
-				}
-			}
-		});
-	}
-}
 
 
