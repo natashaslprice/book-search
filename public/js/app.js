@@ -297,6 +297,30 @@ $('#bookSearchForm').on('submit', function(e){
 	}
 });
 
+// LIST
+// on click of deleteBook button
+$(document).on('click', '.deleteBook', function(e) {
+	e.preventDefault();
+	// find id of book to delete
+	var relevantId = $(this).data().id;
+	// console.log(relevantId);
+	// find list item to delete from page
+	var relevantListItem = $(this).parent();
+	// console.log(relevantListItem);
+
+	// ajax delete request
+	$.ajax({
+		url: '/api/bookslist/' + relevantId,
+		type: 'DELETE' 
+	})
+	.done(function(data){
+		$(relevantListItem).remove();
+	})
+	.fail(function(data){
+		console.log("the book was not deleted");
+	});
+});
+
 
 
 }); // end of doc ready

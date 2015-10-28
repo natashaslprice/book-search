@@ -29,12 +29,13 @@
 		  <div class="col-8 col-offset-2" id="toReadListDiv">
 			  <ul id="toReadList" class="list-group">
 			  	<% for (var i = 0; i < user.booksToRead.length; i++) { %>
-	  				<li class="list-group-item">
+	  				<li class="list-group-item" data-id="<%= user.booksToRead[i]._id %>">
 	  					<!-- book titles and authors -->
-							<strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= user.booksToRead[i].title %> </strong></span> by <%= user.booksToRead[i].author %>
+							<span id="capitals"><strong> <%= user.booksToRead[i].title %> </strong></span> by <%= user.booksToRead[i].author %>
 							<br>
               <!-- book synopsis -->
               <%= user.booksToRead[i].synopsis %>
+              <button type="button" data-id="<%= user.booksToRead[i]._id %>" class="deleteBook btn btn-default btn-sm"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
 	  				</li>
 			  	<% } %>
 			  </ul>

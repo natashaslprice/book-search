@@ -486,7 +486,30 @@ app.post('/logout', function(req, res) {
 });
 
 
-// GET ROUTES
+// DELETE ROUTES
+// delete route for deleteBook button
+app.delete('/api/bookslist/:id', function(req, res) {
+	var bookId = req.params.id;
+	console.log(bookId);	
+	// find session user
+	db.User.findOne( { _id: req.session.userId } , function(err, user){
+		if (err) {
+			console.log("the error with finding the user is: ", err);
+		}
+		else {
+			// console.log(user.booksToRead);
+			// find index of bookId in the booksToRead array
+			var index = user.booksToRead.indexOf(bookId);
+			// console.log(index);
+			// remove the book and save the user
+			user.booksToRead.splice(index, 1);
+			user.save();
+			// console.log(user.booksToRead);
+			// send back the response with the new array
+			res.json(user.booksToRead); 
+		}
+	});
+});
 
 
 

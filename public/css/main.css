@@ -85,6 +85,14 @@ header {
 	margin-top: 30px;
 }
 
+.deleteBook {
+	float: right;
+}
+
+.list-group-item {
+	padding:20px 10px;
+}
+
 /*bestsellers, search, recommendations, list*/
 .introDiv {
 	text-align: center;
