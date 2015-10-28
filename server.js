@@ -182,67 +182,76 @@ app.post('/api/userbooks', function(req, res) {
 	// request data from google books api based on each book name, ordered by relevance, language en
 	for (var i = 0; i < userBooks.length; i++) {
 		var book_i = findUserBooks(userBooks[i], function(books) {
-			// console.log("book_i", books);
-			var booksArr_i = books.items;
-			// console.log(booksArr_i);
-			// use functions to find author, title, synopsis, isbn, image for each book
-			var bookAuthor_i = findAuthor(booksArr_i);
-			var bookTitle_i = findTitle(booksArr_i);
-			var bookSynopsis_i = findSynopsis(booksArr_i);
-			var bookImage_i = findImage(booksArr_i);
-			var bookIsbn_i = findIsbn(booksArr_i);
-			// console.log("The book", i, " details are ", bookAuthor_i, bookTitle_i, bookSynopsis_i, bookImage_i, bookIsbn_i);
-			// console.log("Book ", i, " is: ", book_i);
-			// find if book already exists on db
-			db.Book.findOne( { title: bookTitle_i } , function(err, book) {
-				// if err
-				if (err) {
-					console.log("the error with finding the book was: ", err);
-				}
-				// if the book does not already exist
-				else if (book === null) {
-					console.log("book did not already exist");
-					// create book with those things
-					db.Book.create( { author: bookAuthor_i, title: bookTitle_i, synopsis: bookSynopsis_i, image: bookImage_i, isbn: bookIsbn_i } , function (err, book){
-						if (err) {
-							console.log("error with creating new book from booksReadEnjoyed: " + err);
-						}
-						else {
-							console.log("the book", i, " is: ", book);
-							db.User.findOne( { _id: req.session.userId } , function(err, user){
-								if (err) {
-									console.log("the error with finding the right user is: ", err);
-								}
-								else {
-									user.booksReadEnjoyed.push(book);
-									user.save();
-									book.usersReadEnjoyed.push(user);
-									book.save();
-								}
-							});
-						}
-					});
-				}
-				// if book does already exist, push book into user and user into book
-				else {
-					console.log("the book already existed");
-					db.User.findOne( { _id: req.session.userId } , function(err, user){
-						console.log("session user is: ", req.session.userId);
-						if (err) {
-							console.log("the error with finding the right user is: ", err);
-						}
-						else {
-							user.booksReadEnjoyed.push(book);
-							user.save();
-							book.usersReadEnjoyed.push(user);
-							book.save();
-						}
-					});
-				}
-			});
+			console.log("Books are: ", books);
+			// if there are books
+			if (books) {
+				// console.log("book_i", books);
+				var booksArr_i = books.items;
+				// console.log(booksArr_i);
+				// use functions to find author, title, synopsis, isbn, image for each book
+				var bookAuthor_i = findAuthor(booksArr_i);
+				var bookTitle_i = findTitle(booksArr_i);
+				var bookSynopsis_i = findSynopsis(booksArr_i);
+				var bookImage_i = findImage(booksArr_i);
+				var bookIsbn_i = findIsbn(booksArr_i);
+				// console.log("The book", i, " details are ", bookAuthor_i, bookTitle_i, bookSynopsis_i, bookImage_i, bookIsbn_i);
+				// console.log("Book ", i, " is: ", book_i);
+				// find if book already exists on db
+				db.Book.findOne( { title: bookTitle_i } , function(err, book) {
+					// if err
+					if (err) {
+						console.log("the error with finding the book was: ", err);
+					}
+					// if the book does not already exist
+					else if (book === null) {
+						console.log("book did not already exist");
+						// create book with those things
+						db.Book.create( { author: bookAuthor_i, title: bookTitle_i, synopsis: bookSynopsis_i, image: bookImage_i, isbn: bookIsbn_i } , function (err, book){
+							if (err) {
+								console.log("error with creating new book from booksReadEnjoyed: " + err);
+							}
+							else {
+								console.log("the book", i, " is: ", book);
+								db.User.findOne( { _id: req.session.userId } , function(err, user){
+									if (err) {
+										console.log("the error with finding the right user is: ", err);
+									}
+									else {
+										user.booksReadEnjoyed.push(book);
+										user.save();
+										book.usersReadEnjoyed.push(user);
+										book.save();
+									}
+								});
+							}
+						});
+					}
+					// if book does already exist, push book into user and user into book
+					else {
+						console.log("the book already existed");
+						db.User.findOne( { _id: req.session.userId } , function(err, user){
+							console.log("session user is: ", req.session.userId);
+							if (err) {
+								console.log("the error with finding the right user is: ", err);
+							}
+							else {
+								user.booksReadEnjoyed.push(book);
+								user.save();
+								book.usersReadEnjoyed.push(user);
+								book.save();
+							}
+						});
+					}
+				});
+			}
+			// if there are no books
+			else {
+				console.log("ending loop and sending back empty books!");
+				return;
+			}
 		});
 	} 
-	res.json({});
+	res.json(books);
 });
 
 // post route for addToListBtn
@@ -704,9 +713,23 @@ function findUserBooks(name, callback) {
 	request('https://www.googleapis.com/books/v1/volumes?q=intitle:' + name + '&orderBy=relevance&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
 		if (!err && response.statusCode == 200) {
 			console.log("Found book");
-			// console.log("the body json parsed is: ", JSON.parse(body));
-			callback(JSON.parse(body));
-	
+			// check results have books and if so send back books
+			var list = JSON.parse(body);
+			if (list.items) {
+				console.log("the function has found items");
+				// sort the list array
+				list.items.sort(compareGoogle);
+				// elimate duplicates from the list
+				eliminateDuplicatesGoogle(list.items);
+				// console.log("the list after removing duplicates: ", list.items);
+				// send back sorted and cleaned list
+				callback(JSON.parse(body));
+			}
+			// else send back empty object
+			else {
+				console.log("the function failed to find items");
+				callback(false);
+			}
 		}
 		else {
 			console.log("the error with getting the userBookForm data is: ", err);
