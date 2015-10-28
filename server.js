@@ -78,12 +78,24 @@ app.get('/search', function(req, res) {
 // render recommendations page with user's unique info
 app.get('/recommendations', function(req, res) {
 	// find user by session id
-	db.User.findById(req.session.userId, function(err, user) {
+	db.User.findById(req.session.userId)
+	.populate('booksReadEnjoyed')
+	.exec(function(err, user) {
 		// find other users who have read these books
+		console.log("session user is: ", user);
 		db.User.find( { booksReadEnjoyed: { $in: user.booksReadEnjoyed } } , function(err, users) {
-			// console.log("allUsers found are: ", users);
+			console.log("allUsers found are: ", users.length);
 			// find all books in these users
 			db.Book.find( { usersReadEnjoyed: { $in: users } } , function(err, books) {
+				for (var i = 0; i < books.length; i++) {
+					for (var j = 0; j < user.booksReadEnjoyed.length; j++) {
+						if (books[i] && user.booksReadEnjoyed[j]) {
+							if (books[i].title === user.booksReadEnjoyed[j].title) {
+								books.splice(i, 1);
+							}
+						}
+					}
+				}
 				console.log("allBooks found are: ", books);
 				res.render('recommendations', { user: user, books: books } );
 			});
@@ -102,9 +114,9 @@ app.get('/list', function(req, res) {
 			}
 			else if (user.booksToRead.length > 1) {
 				// console.log("the array before the function: ", user.booksToRead);
-				user.booksToRead.sort(compare);
+				// user.booksToRead.sort(compare);
 				// console.log("the sorted array: ", user.booksToRead);
-				eliminateDuplicates(user.booksToRead);
+				// eliminateDuplicates(user.booksToRead);
 				// console.log("the array after the function: ", user.booksToRead);
 				res.render('list', { user: user } );
 			}
@@ -277,16 +289,32 @@ app.post('/api/bookslist', function(req, res) {
 			db.User.findOne( { _id: req.session.userId } )
 			.populate('booksToRead')
 			.exec(function(err, user){
-				// check if book already exists in user
-				console.log("session user is: ", req.session.userId);
 				if (err) {
 					console.log("the error with finding the right user is: ", err);
 				}
-				else {
+				console.log("session user is: ", req.session.userId);
+				// check if book already exists in user
+				if (user.booksToRead.length === 0) {
 					user.booksToRead.push(book);
 					user.save();
-					res.json(user);
+					console.log("booksToRead was empty, first book pushed");
 				}
+				else {
+					var found = false;
+					for (var i = 0; i < user.booksToRead.length; i++) {
+						if (book.title === user.booksToRead[i].title) {
+							console.log("the book already exists in the user so not pushed");
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						user.booksToRead.push(book);
+						user.save();
+						console.log("the book not in user yet, so pushed");
+					}
+				}
+				res.json(user);
 			});
 		}
 	});
