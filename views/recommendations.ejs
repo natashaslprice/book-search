@@ -25,12 +25,23 @@
   </div> <!-- end of container div -->
 
 	<!-- results div -->
-	<div class="row">
-	  <div class="col-md-10 col-md-offset-1" id="recommendationsResultsDiv">
-	  	<ul id="recommendationsResultsList">
-	  	</ul>
-	  </div> <!-- end of col -->
-	</div> <!-- end of row div -->
+	<div class="container">
+		<div class="row">
+		  <div class="col-8 col-offset-2" id="recommendationsResultsDiv">
+			  <ul id="recommendationsResultsDiv" class="list-group">
+			  	<% for (var i = 0; i < otherBooksReadEnjoyed.length; i++) { %>
+	  				<li class="list-group-item">
+	  					<!-- book titles and authors -->
+							<strong><%= i + 1 %>. </strong> <span id="capitals"><strong> <%= otherBooksReadEnjoyed[i].title %> </strong></span> by <%= otherBooksReadEnjoyed[i].author %>
+							<br>
+              <!-- book synopsis -->
+              <%= otherBooksReadEnjoyed.synopsis %>
+	  				</li>
+			  	<% } %>
+			  </ul>
+  		</div> <!-- end of col -->
+  	</div> <!-- end of row div -->
+  </div> <!-- end of container div -->
 	  
 
 </body>

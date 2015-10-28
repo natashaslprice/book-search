@@ -94,50 +94,15 @@ app.get('/recommendations', function(req, res) {
 			eliminateDuplicates(user.booksReadEnjoyed);
 			// console.log(user.booksReadEnjoyed);
 			// console.log answer --> an array of book objects, in order with no duplicates
-			// for each book that user has read and enjoyed
-			for (var i = 0; i < user.booksReadEnjoyed.length; i++) {
-				// find title
-				var bookEnjoyedTitle_i = user.booksReadEnjoyed[i].title;
-				console.log("all the books this user has enjoyed are: ", bookEnjoyedTitle_i);
-				// find book on db
-				db.Book.findOne( { title: bookEnjoyedTitle_i })
-				// populate the users that have liked this book
-				.populate('usersReadEnjoyed')
-				.exec(function(err, book) {
-					if (err) {
-						console.log("the error with finding the book on the db is: ", err);
-					}
-					else {
-						console.log("the book was found in the db: ", book);
-						// for each user that has read and enjoyed this book
-						for (var j = 0; j < book.usersReadEnjoyed.length; j++) {
-							// find ids
-							var usersReadEnjoyedId_j = book.usersReadEnjoyed[j]._id;
-							console.log("the users who have enjoyed this book: ", usersReadEnjoyedId_j);
-							// find user on db
-							db.User.findOne( { _id: usersReadEnjoyedId_j })
-							// populate the books that these other users have read and enjoyed
-							.populate('booksReadEnjoyed')
-							.exec(function(err, user) {
-								if (err) {
-									console.log("the error with finding the users that have read and enjoyed this book is: ", err);
-								}
-								else {
-									var otherBooksReadEnjoyed = user.booksReadEnjoyed;
-									console.log("the other books to read and enjoy are: ", otherBooksReadEnjoyed);
-								}
-							});
-						}
-					}
-				});	
-			}
+			// function with call back
+			var otherBooksReadEnjoyed = recommendationsFunction(user, function(data) {
+				console.log("otherBooksReadEnjoyed are: ", data);
+				otherBooksReadEnjoyed = data;
+				res.render('recommendations', {user: user, otherBooksReadEnjoyed: otherBooksReadEnjoyed } );
+			});
 		}
-			res.render('recommendations', { user: user } );
 	});
 });
-
-// search users db based on ids
-// find all books that those users have read and enjoyed
 
 
 
@@ -697,5 +662,60 @@ function findUserBooks(name, callback) {
 }
 
 
+// recommendations function
+function recommendationsFunction(user, callback) {
+	for (var i = 0; i < user.booksReadEnjoyed.length; i++) {
+		// find title
+		var bookEnjoyedTitle_i = user.booksReadEnjoyed[i].title;
+		console.log("all the books this user has enjoyed are: ", bookEnjoyedTitle_i);
+		// find book on db
+		db.Book.findOne( { title: bookEnjoyedTitle_i })
+		// populate the users that have liked this book
+		.populate('usersReadEnjoyed')
+		.exec(function(err, book) {
+			if (err) {
+				console.log("the error with finding the book on the db is: ", err);
+			}
+			else {
+				// console.log("the book was found in the db: ", book);
+				// inside function with call back
+				var otherBooksReadEnjoyed = insideRecommendationsFunction(book, function(data) {
+					console.log("otherBooksReadEnjoyed are: ", data);
+					otherBooksReadEnjoyed = data;
+					if (i === user.booksReadEnjoyed.length-1) {	
+						callback(otherBooksReadEnjoyed);
+					}
+				});
+
+			}
+		});	
+	}
+}
+
+// inside recommendations function
+// for each user that has read and enjoyed this book
+function insideRecommendationsFunction(book, callback) {
+	for (var j = 0; j < book.usersReadEnjoyed.length; j++) {
+		// find ids
+		var usersReadEnjoyedId_j = book.usersReadEnjoyed[j]._id;
+		console.log("the users who have enjoyed this book: ", usersReadEnjoyedId_j);
+		// find user on db
+		db.User.findOne( { _id: usersReadEnjoyedId_j })
+		// populate the books that these other users have read and enjoyed
+		.populate('booksReadEnjoyed')
+		.exec(function(err, user2) {
+			if (err) {
+				console.log("the error with finding the users that have read and enjoyed this book is: ", err);
+			}
+			else {
+				otherBooksReadEnjoyed = user2.booksReadEnjoyed;
+				// console.log("the other books to read and enjoy are: ", otherBooksReadEnjoyed);
+				if (j === book.usersReadEnjoyed.length-1) {	
+					callback(otherBooksReadEnjoyed);
+				}
+			}
+		});
+	}
+}
 
 

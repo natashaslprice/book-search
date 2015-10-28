@@ -64,6 +64,7 @@ $(document).ready(function(){
 		})
 		.fail(function(data){
 			console.log("log-in form failed to post to server");
+			console.log(data);
 		});
 	});
 	// end of submission of log in form
