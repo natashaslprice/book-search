@@ -79,141 +79,17 @@ app.get('/search', function(req, res) {
 app.get('/recommendations', function(req, res) {
 	// find user by session id
 	db.User.findById(req.session.userId, function(err, user) {
-		// make var of booksReadEnjoyed array
-		var booksReadEnjoyed = user.booksReadEnjoyed;
-		var allBooksObjects = [];
 		// find other users who have read these books
-		for (var i = 0; i < booksReadEnjoyed.length; i++) {
-			db.User.find( { booksReadEnjoyed: booksReadEnjoyed[i] } , function(err, users) {
-				var allUsers = users;
-				console.log("allUsers are: ", allUsers);
-				// find books in users
-				var allBooks = [];
-				var allBooksFunction = findAllBooks(allUsers, function(data) {
-					allBooks = data;
-					console.log("allBooks data being returned: ", allBooks);
-				});
-				console.log("outside for loop allBooks: ", allBooks);
-				// create an array of book objects
-				allBooksObjects = findAllBooksObjects(allBooks, function(data) {
-					allBooksObjects = data;
-				});
+		db.User.find( { booksReadEnjoyed: { $in: user.booksReadEnjoyed } } , function(err, users) {
+			// console.log("allUsers found are: ", users);
+			// find all books in these users
+			db.Book.find( { usersReadEnjoyed: { $in: users } } , function(err, books) {
+				console.log("allBooks found are: ", books);
+				res.render('recommendations', { user: user, books: books } );
 			});
-		}
-		res.render('recommendations', { user: user, books: allBooksObjects } );
+		});
 	});
 });
-
-
-function findAllBooks(users, callback) {
-	var allBooks = [];
-	console.log("allUsers in function: ", users);
-	for (var j = 0; j < users.length; j++) {
-		var books_j = users[j].booksReadEnjoyed;
-		allBooks = allBooks.concat(books_j);
-		console.log("inside for loop allBooks: ", allBooks);
-	}
-	callback(allBooks);
-}
-
-function findAllBooksObjects(allBooks, callback) {
-	var allBooksObjects = [];
-	for (var k = 0; k < allBooks.length; k++) {
-		db.Book.findById(allBooks[k], function(err, book) {
-			allBooksObjects.push(book);
-			console.log("inside the loop objects: ", allBooksObjects);
-		});
-	console.log("outside the loop objects: ", allBooksObjects);
-	callback(allBooksObjects);
-	}
-}
-
-
-// 	// find user by session id
-// 	db.User.findOne( { _id: req.session.userId })
-// 	// populate the books the user has enjoyed
-// 	.populate('booksReadEnjoyed')
-// 	.exec(function(err, user) {
-// 		console.log("user id: " + req.session.userId);
-// 		if (err) {
-// 			console.log("the error with finding the user was: ", err);
-// 		}
-// 		else {
-// 			// console.log(user);
-// 			// sort books by title
-// 			user.booksReadEnjoyed.sort(compare);
-// 			// elimate duplicates
-// 			eliminateDuplicates(user.booksReadEnjoyed);
-// 			// console.log(user.booksReadEnjoyed);
-// 			// console.log answer --> an array of book objects, in order with no duplicates
-// 			// function with call back
-// 			var otherBooksReadEnjoyed = recommendationsFunction(user, function(data) {
-// 				console.log("otherBooksReadEnjoyed are: ", data);
-// 				otherBooksReadEnjoyed = data;
-// 				res.render('recommendations', {user: user, otherBooksReadEnjoyed: otherBooksReadEnjoyed } );
-// 			});
-// 		}
-// 	});
-// });
-
-// // recommendations function
-// function recommendationsFunction(user, callback) {
-// 	for (var i = 0; i < user.booksReadEnjoyed.length; i++) {
-// 		// find title
-// 		var bookEnjoyedTitle_i = user.booksReadEnjoyed[i].title;
-// 		console.log("all the books this user has enjoyed are: ", bookEnjoyedTitle_i);
-// 		// find book on db
-// 		db.Book.findOne( { title: bookEnjoyedTitle_i })
-// 		// populate the users that have liked this book
-// 		.populate('usersReadEnjoyed')
-// 		.exec(function(err, book) {
-// 			if (err) {
-// 				console.log("the error with finding the book on the db is: ", err);
-// 			}
-// 			else {
-// 				// console.log("the book was found in the db: ", book);
-// 				// inside function with call back
-// 				var otherBooksReadEnjoyed = insideRecommendationsFunction(book, function(data) {
-// 					console.log("otherBooksReadEnjoyed are: ", data);
-// 					otherBooksReadEnjoyed = data;
-// 					if (i === user.booksReadEnjoyed.length-1) {	
-// 						callback(otherBooksReadEnjoyed);
-// 					}
-// 				});
-
-// 			}
-// 		});	
-// 	}
-// }
-
-// // inside recommendations function
-// // for each user that has read and enjoyed this book
-// function insideRecommendationsFunction(book, callback) {
-// 	for (var j = 0; j < book.usersReadEnjoyed.length; j++) {
-// 		// find ids
-// 		var usersReadEnjoyedId_j = book.usersReadEnjoyed[j]._id;
-// 		console.log("the users who have enjoyed this book: ", usersReadEnjoyedId_j);
-// 		// find user on db
-// 		db.User.findOne( { _id: usersReadEnjoyedId_j })
-// 		// populate the books that these other users have read and enjoyed
-// 		.populate('booksReadEnjoyed')
-// 		.exec(function(err, user2) {
-// 			if (err) {
-// 				console.log("the error with finding the users that have read and enjoyed this book is: ", err);
-// 			}
-// 			else {
-// 				otherBooksReadEnjoyed = user2.booksReadEnjoyed;
-// 				// console.log("the other books to read and enjoy are: ", otherBooksReadEnjoyed);
-// 				if (j === book.usersReadEnjoyed.length-1) {	
-// 					callback(otherBooksReadEnjoyed);
-// 				}
-// 			}
-// 		});
-// 	}
-// }
-
-
-
 
 // render to-read list with user's unique info
 app.get('/list', function(req, res) {
