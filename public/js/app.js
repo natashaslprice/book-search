@@ -206,7 +206,7 @@ $(document).ready(function(){
 			})
 			.done(function(data){
 				console.log("authorSearchForm click posted to server");
-				// console.log(data);
+				console.log(data);
 				// if a search result gets returned
 				if (data.items) {
 					// for each book in the array

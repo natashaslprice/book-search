@@ -373,16 +373,23 @@ app.post('/api/authorsearch', function(req, res) {
 	// request data from google books api based on authors first and last name, ordered by newest, language en, max results (40)
 	request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + authorSearchFirstName + '+' + authorSearchLastName + '"&startIndex=0&maxResults=40&orderBy=newest&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
 		if (!err && response.statusCode == 200) {
-			console.log("Found author");
+			console.log("Server request worked");
 			var list = JSON.parse(body);
 			// console.log(list.items);
-			// sort the list array
-			list.items.sort(compareGoogle);
-			// elimate duplicates from the list
-			eliminateDuplicatesGoogle(list.items);
-			// console.log("the list after removing duplicates: ", list.items);
-			// send back sorted and cleaned list
-			res.json(list);
+			// check results have books and if so send back books
+			if (list.items) {
+				// sort the list array
+				list.items.sort(compareGoogle);
+				// elimate duplicates from the list
+				eliminateDuplicatesGoogle(list.items);
+				// console.log("the list after removing duplicates: ", list.items);
+				// send back sorted and cleaned list
+				res.json(list);
+			}
+			// else send back empty object
+			else {
+				res.json({});
+			}
 		}
 		else {
 			console.log("error finding author: ", err);
@@ -400,59 +407,67 @@ app.post('/api/booksearch', function(req, res) {
 		if (!err && response.statusCode == 200) {
 			console.log("Found book");
 			var books = JSON.parse(body);
-			var booksArr = books.items;
-			// if there is a descripton, find author of first book
-			var bookAuthor = findAuthor(booksArr);
-			// console.log("book author is: ", bookAuthor);
-			// find authors name parts
-			var bookAuthorObject = bookAuthor.split(" ");
-			var bookAuthorFirstName = bookAuthorObject[0];
-			var bookAuthorSecondName = bookAuthorObject[1];
-			var bookAuthorThirdName = bookAuthorObject[2];
-			// console.log(bookAuthorFirstName, bookAuthorSecondName, bookAuthorThirdName);
-			// if thirdName is undefined
-			if (bookAuthorThirdName === undefined) {
-				// new request for books by this author based on authors first and second name, ordered by newest, language en, max results (40)
-				request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + bookAuthorFirstName + '+' + bookAuthorSecondName + '"&startIndex=0&maxResults=40&orderBy=newest&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
-					if (!err && response.statusCode == 200) {
-						console.log("Found author");
-						var list = JSON.parse(body);
-						// console.log(list.items);
-						// sort the list array
-						list.items.sort(compareGoogle);
-						// elimate duplicates from the list
-						eliminateDuplicatesGoogle(list.items);
-						// console.log("the list after removing duplicates: ", list.items);
-						// send back sorted and cleaned list
-						res.json(list);
-					}
-					else {
-						console.log("error finding author: ", err);
-						res.json({});
-					}
-				});
+			// check results have books
+			if (books.items) {
+				// if so, send back books
+				var booksArr = books.items;
+				// if there is a descripton, find author of first book
+				var bookAuthor = findAuthor(booksArr);
+				// console.log("book author is: ", bookAuthor);
+				// find authors name parts
+				var bookAuthorObject = bookAuthor.split(" ");
+				var bookAuthorFirstName = bookAuthorObject[0];
+				var bookAuthorSecondName = bookAuthorObject[1];
+				var bookAuthorThirdName = bookAuthorObject[2];
+				// console.log(bookAuthorFirstName, bookAuthorSecondName, bookAuthorThirdName);
+				// if thirdName is undefined
+				if (bookAuthorThirdName === undefined) {
+					// new request for books by this author based on authors first and second name, ordered by newest, language en, max results (40)
+					request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + bookAuthorFirstName + '+' + bookAuthorSecondName + '"&startIndex=0&maxResults=40&orderBy=newest&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
+						if (!err && response.statusCode == 200) {
+							console.log("Found author");
+							var list = JSON.parse(body);
+							// console.log(list.items);
+							// sort the list array
+							list.items.sort(compareGoogle);
+							// elimate duplicates from the list
+							eliminateDuplicatesGoogle(list.items);
+							// console.log("the list after removing duplicates: ", list.items);
+							// send back sorted and cleaned list
+							res.json(list);
+						}
+						else {
+							console.log("error finding author: ", err);
+							res.json({});
+						}
+					});
+				}
+				// else if thirdName
+				else {
+					// new request for books by this author based on authors first and second and third name, ordered by newest, language en, max results (40)
+					request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + bookAuthorFirstName + '+' + bookAuthorSecondName + '+' + bookAuthorThirdName + '"&startIndex=0&maxResults=40&orderBy=newest&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
+						if (!err && response.statusCode == 200) {
+							console.log("Found author");
+							var list = JSON.parse(body);
+							// console.log(list.items);
+							// sort the list array
+							list.items.sort(compareGoogle);
+							// elimate duplicates from the list
+							eliminateDuplicatesGoogle(list.items);
+							// console.log("the list after removing duplicates: ", list.items);
+							// send back sorted and cleaned list
+							res.json(list);
+						}
+						else {
+							console.log("error finding author: ", err);
+							res.json({});
+						}
+					});
+				}
 			}
-			// else if thirdName
+			// else send back empty object
 			else {
-				// new request for books by this author based on authors first and second and third name, ordered by newest, language en, max results (40)
-				request('https://www.googleapis.com/books/v1/volumes?q=inauthor:"' + bookAuthorFirstName + '+' + bookAuthorSecondName + '+' + bookAuthorThirdName + '"&startIndex=0&maxResults=40&orderBy=newest&langRestrict=en&key=' + GOOGLE_BOOKS_API_KEY, function(err, response, body){
-					if (!err && response.statusCode == 200) {
-						console.log("Found author");
-						var list = JSON.parse(body);
-						// console.log(list.items);
-						// sort the list array
-						list.items.sort(compareGoogle);
-						// elimate duplicates from the list
-						eliminateDuplicatesGoogle(list.items);
-						// console.log("the list after removing duplicates: ", list.items);
-						// send back sorted and cleaned list
-						res.json(list);
-					}
-					else {
-						console.log("error finding author: ", err);
-						res.json({});
-					}
-				});
+				res.json({});
 			}
 		}
 		else {
