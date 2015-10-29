@@ -30,12 +30,16 @@
 			  <ul id="toReadList" class="list-group">
 			  	<% for (var i = 0; i < user.booksToRead.length; i++) { %>
 	  				<li class="list-group-item" data-id="<%= user.booksToRead[i]._id %>">
-	  					<!-- book titles and authors -->
-							<span id="capitals"><strong> <%= user.booksToRead[i].title %> </strong></span> by <%= user.booksToRead[i].author %>
-							<br>
-              <!-- book synopsis -->
-              <%= user.booksToRead[i].synopsis %>
-              <button type="button" data-id="<%= user.booksToRead[i]._id %>" class="deleteBook btn btn-default btn-sm"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+	  					<div class="row">
+	  						<div class="col-sm-11">
+			  					<!-- book titles and authors -->
+									<span id="capitals"><strong> <%= user.booksToRead[i].title %> </strong></span> by <%= user.booksToRead[i].author %>
+									<br>
+		              <!-- book synopsis -->
+		              <%= user.booksToRead[i].synopsis %>
+		             </div>
+	              <button type="button" data-id="<%= user.booksToRead[i]._id %>" class="col-sm-1 deleteBook mdl-button mdl-js-button mdl-button--accent"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+	  					</div>
 	  				</li>
 			  	<% } %>
 			  </ul>

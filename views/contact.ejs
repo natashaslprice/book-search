@@ -25,18 +25,20 @@
 		  <div class="col-sm-6 col-sm-offset-3">
 			  <form id="contactUsForm">
 			  	<div class="form-group">
-				  	<input type="text" id="contactUsName" class="form-control" placeholder="<%= user.firstName %> <%= user.lastName %>" required>
+				  	<input type="text" id="contactUsName" name="contactUsName" class="form-control" value="<%= user.firstName %> <%= user.lastName %>" required>
 				  </div>
 				  <div class="form-group">
-				  	<input type="email" id="contactUsEmail" class="form-control" placeholder="<%= user.email %>" required>
+				  	<input type="email" id="contactUsEmail" name="contactUsEmail" class="form-control" value="<%= user.email %>" required>
 				  </div>
 				  <div class="form-group">
-				  	<textarea id="contactUsMessage" class="form-control" placeholder="Enter your message here..." required></textarea>
+				  	<textarea id="contactUsMessage" name="contactUsMessage" class="form-control" placeholder="Enter your message here..." required autofocus></textarea>
 				  </div>
 				  <div>
 				  	<button type="submit" id="contactUsBtn" class="btn btn-default">Submit</button>
 			  	</div>
 			  </form>
+			  <br>
+			  <div id="contactAlertDiv"><div>
 		  </div> <!-- end of col -->
   	</div> <!-- end of row div -->
   </div> <!-- end of container div -->

@@ -1,3 +1,37 @@
+/*navbar*/
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+	color: gray;  /*Sets the text hover color on navbar*/
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active >   
+ a:hover, .navbar-default .navbar-nav > .active > a:focus {
+	color: #ffffff; /*BACKGROUND color for active*/
+	background-color: #719FE8;
+}
+
+.navbar-default {
+  background-color: white;
+  border-color: #ffffff;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+	color: #262626;
+	text-decoration: none;
+	background-color: #66CCFF;  /*change color of links in drop down here*/
+}
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+	text-decoration: none;
+	background-color: silver; /*Change rollover cell color here*/
+}
+
+
+.navbar-default .navbar-nav > li > a {
+	color: gray; /*Change active text color here*/
+}
+
 header {
 	/*insert image*/
 }
@@ -16,6 +50,7 @@ footer {
 
 hr {
 	width: 70%;
+	display: inline-block;
 }
 
 /*index.ejs*/
@@ -138,6 +173,10 @@ hr {
 	width: 100%;
 }
 
+#progressBar {
+	/*text-align: center;*/
+}
+
 /*recommendations*/
 #recommendationsResultsDiv {
 	margin-top: 30px;
@@ -145,7 +184,7 @@ hr {
 
 /*contact*/
 #contactUsForm {
-	margin-top: 30px;
+	margin: 30px 0px;
 }
 
 

@@ -13,6 +13,9 @@ $(document).ready(function(){
     $(this).find('[autofocus]').focus();
   });
 
+  // set navbar active
+  $('a[href="' + this.location.pathname + '"]').parent().addClass('active');
+
 
   // INDEX
   // on submission of sign up form
@@ -464,6 +467,39 @@ $('#bookSearchForm').on('submit', function(e){
 		});
 	});
 
+	// CONTACT FORM
+	// on click of contactUsBtn
+	$('#contactUsForm').on('submit', function(e){
+		e.preventDefault();
+		// find form data
+		var data = $(this).serialize();
+		console.log(data);
+		// clear form
+		$(this)[0].reset();
+		// send focus back to textarea
+		$('#contactUsMessage').focus();
+
+		// ajax post request
+		$.ajax({
+			url: '/api/contact',
+			type: 'POST',
+			data: data
+		})
+		.done(function(data){
+			console.log("contact form request sent to server");
+			$('#contactAlertDiv').append('<div class="alert alert-success" id="contactAlert1" role="alert">Thank you for your message! We will get back to you as soon as possible. </div>');
+			$('#contactAlert1').alert();
+		})
+		.fail(function(data){
+			console.log("contact form failed to send to server");
+			$('#contactAlertDiv').append('<div class="alert alert-success" id="contactAlert2" role="alert">There seems to be an error with sending your message. Please try again. </div>');
+			$('#contactAlert2').alert();
+			window.setTimeout(function() {
+				$('#contactAlert2').alert('close');
+			}, 4000);
+		});
+	});
+
 
 
 }); // end of doc ready
@@ -510,8 +546,8 @@ function dataIntoHTML(query) {
 			imageTag +
 		'</div>' +
 		'<br>' +
-		'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
-		'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
+		'<button type="button" class="mdl-button mdl-js-button mdl-button--accent addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
+		'<button type="button" class="mdl-button mdl-js-button mdl-button--accent readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
 		'<hr class="hrSearch">';
 	}
 

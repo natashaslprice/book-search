@@ -7,8 +7,10 @@ var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var request = require("request");
 var session = require("express-session");
+var nodemailer = require('nodemailer');
 var cookieParser = require('cookie-parser');
 var db = require("./models/index");
+// var transporter = nodemailer.createTransport(transport);
 require('dotenv').load();
 
 // CONFIG //
@@ -28,6 +30,15 @@ app.use(session({
   secret: 'SuperSecretCookie',
   cookie: { maxAge: 30 * 60 * 1000 } // 30 minute cookie lifespan (in milliseconds)
 }));
+
+// create reusable transporter object using SMTP transport
+var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'nextbookusermessages@gmail.com',
+    pass: 'nextbook'
+  }
+});
 
 
 // RENDER
@@ -534,6 +545,27 @@ app.post('/logout', function(req, res) {
 	req.session.userId = null;
 	// render index
 	res.render('index', { hardcoverFictionList: hardcoverFictionList, paperbackFictionList: paperbackFictionList });
+});
+
+// post route for mailer
+app.post('/api/contact', function(req, res){
+	// setup email data
+	var mailOptions = {
+	    from: 'nextbookusermessages@gmail.com', // sender address
+	    to: 'nextbookusermessages@gmail.com', // list of receivers
+	    subject: 'Next Book user message', // Subject line
+	    html: req.body.contactUsName + "<br>" + req.body.contactUsEmail + "<br>" + req.body.contactUsMessage // html body
+	};
+
+	transporter.sendMail(mailOptions, function(err, email){
+		if (err) {
+			console.log("the error with sending the email is: ", err);
+		}
+		else {
+			console.log("email sent: ", email);
+			res.json(email);
+		}
+	});
 });
 
 
