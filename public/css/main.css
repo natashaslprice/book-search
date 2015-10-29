@@ -59,7 +59,13 @@ header {
 	text-align: center;
 }
 
-#userBookForm {
+.userBookOuterDivs {
+	width: 50%;
+	display: inline-block;
+}
+
+.userBookInnerDivs {
+	width: 70%;
 	display: inline-block;
 }
 

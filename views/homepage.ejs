@@ -35,19 +35,27 @@
 			  </p>
 			  <hr>
 			  	<h5>To help us provide you with book recommendations, please enter the names of <strong>three</strong> books that you have read and enjoyed.</h5>
-			  	<form id="userBookForm" class="form-group">
+		  		<br>
+		  		<div if="userBooksDiv">
+			  		<div class="userBookOuterDivs">
 			  		<label for="userBookOne">The name of a book you enjoyed:</label>
-			  		<input type="text" id="userBookOne" class="form-control userBookInputs" name="userBookOne" placeholder="enter book title..." required>
+			  			<input type="text" id="userBookOne" class="form-control userBookInputs" name="userBookOne" placeholder="enter book title..." required>
+			  			<div id="userBookOneInnerDiv"></div>
+			  		</div>
 			  		<br>
-			  		<label for="userBookTwo">The name of another book you enjoyed:</label>
-			  		<input type="text" id="userBookTwo" class="form-control userBookInputs" name="userBookTwo" placeholder="enter book title..." required>
+			  		<div class="userBookOuterDivs">
+				  		<label for="userBookTwo">The name of another book you enjoyed:</label>
+				  		<input type="text" id="userBookTwo" class="form-control userBookInputs" name="userBookTwo" placeholder="enter book title..." required>
+			  		<div id="userBookTwoInnerDiv"></div>
+			  		</div>
 			  		<br>
-			  		<label for="userBookThree">And one more please:</label>
-			  		<input type="text" id="userBookThree" class="form-control userBookInputs" name="userBookThree" placeholder="enter book title..." required>
+			  		<div class="userBookOuterDivs">
+				  		<label for="userBookThree">And one more please:</label>
+				  		<input type="text" id="userBookThree" class="form-control userBookInputs" name="userBookThree" placeholder="enter book title..." required>
+			  		<div id="userBookThreeInnerDiv"></div>
+			  		</div>
 			  		<br>
-			  		<input type="submit" id="userBookBtn" class="form-control" value="Go!">
-			  	</form>
-			  	<div id="userBookFormAlert"></div>
+		  		</div>
 		  </div> <!-- end of col -->
   	</div> <!-- end of row -->
   </div> <!-- end of container -->
