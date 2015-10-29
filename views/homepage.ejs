@@ -12,19 +12,19 @@
 
 	  <!-- heading jumbotron -->
 	  <div class="jumbotron">
-	    <h1>Book search</h1>
+	    <h1>Next book</h1>
 	  </div>
 	</header>
 
 	<div class="container">
 		<div class="row">
 		  <div class="col-8 col-offset-2" id="homepageDiv">
-			  <h3 id="homepageIntroText">Hi <%= user.firstName %>, welcome to Book Search!</h3>
+			  <h3 id="homepageIntroText">Hi <%= user.firstName %>, welcome to Next Book!</h3>
 			  <hr>
-			  <p>You can use Book Search to:</p>
-			  <ul>
+			  <p>You can use Next Book to:</p>
+			  <ul id="homepageList">
 			  	<li>View <strong>best-sellers</strong> lists</li>
-			  	<li><strong>Search</strong> for books based on your favourite authors</li>
+			  	<li><strong>Search</strong> for books based on your favourite authors or books</li>
 			  	<li>Get <strong>recommendations</strong> for books based on what you have read and enjoyed</li>
 			  	<li>Save books to your personal <strong>to-read</strong> list</li>
 			  </ul>
@@ -36,7 +36,7 @@
 			  <hr>
 			  	<h5>To help us provide you with book recommendations, please enter the names of <strong>three</strong> books that you have read and enjoyed.</h5>
 		  		<br>
-		  		<div if="userBooksDiv">
+		  		<div id="userBooksDiv">
 			  		<div class="userBookOuterDivs">
 			  		<label for="userBookOne">The name of a book you enjoyed:</label>
 			  			<input type="text" id="userBookOne" class="form-control userBookInputs" name="userBookOne" placeholder="enter book title..." required>
@@ -60,5 +60,8 @@
   	</div> <!-- end of row -->
   </div> <!-- end of container -->
 
+  <!-- include footer from ./views/_footer.ejs -->
+  <% include ./_footer %>
+  
 </body>
 </html>

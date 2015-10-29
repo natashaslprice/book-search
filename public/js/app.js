@@ -8,6 +8,11 @@ $(document).ready(function(){
   $("#log-in-form").validate();
   $("#userBookForm").validate();
 
+  // if modal opens, set autofocus
+  $('.modal').on('shown.bs.modal', function() {
+    $(this).find('[autofocus]').focus();
+  });
+
 
   // INDEX
   // on submission of sign up form
@@ -23,9 +28,19 @@ $(document).ready(function(){
 			data: formData
 		})
 		.done(function(data){
-			console.log("sign-up form posted to server");
-			// if successful, send user to /homepage
-			window.location.href = '/homepage';
+			if (data.firstName) {
+				console.log("sign-up form posted to server and user did not already exist");
+				// if successful, send user to /homepage
+				window.location.href = '/homepage';
+			}
+			else {
+				console.log("sign-up form posted to server but user did already exist");
+				$('#sign-up-form').append('<div class="alert alert-danger sign-up-alert" role="alert">A user already exists with this email address. Please log in or sign up with a different email. </div>');
+				$('#sign-up-form').alert();
+				window.setTimeout(function() {
+					$('.sign-up-alert').alert('close');
+				}, 2000);
+			}
 		})
 		.fail(function(data){
 			console.log("sign-up form failed to post to server");
@@ -449,7 +464,7 @@ function dataIntoHTML(query) {
 		'<br>' +
 		'<button type="button" class="btn btn-default btn-sm addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
 		'<button type="button" class="btn btn-default btn-sm readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
-		'<hr>';
+		'<hr class="hrSearch">';
 	}
 
 

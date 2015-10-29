@@ -7,6 +7,7 @@ var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var request = require("request");
 var session = require("express-session");
+var cookieParser = require('cookie-parser');
 var db = require("./models/index");
 require('dotenv').load();
 
@@ -17,6 +18,8 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 // body parser config to accept our datatypes
 app.use(bodyParser.urlencoded({extended: true}));
+// use cookie-parser
+app.use(cookieParser());
 
 // use express-sessions
 app.use(session({
@@ -126,26 +129,55 @@ app.get('/list', function(req, res) {
 		});
 });
 
+// render contact us with user's unique info
+app.get('/contact', function(req, res) {
+	db.User.findOne( { _id: req.session.userId } , function(err, user) {
+		console.log("user id: " + req.session.userId);
+		if (err) {
+			console.log(err);
+		}
+		else {
+			// console.log(user);
+			res.render('contact', { user: user } );
+		}
+	});
+});
+
 
 // POST ROUTES
-// post route for sign up form TBD - creates user but won't console.log
+// post route for sign up form 
 app.post('/api/users', function(req, res) {
 	var firstName = req.body.firstName;
 	var lastName = req.body.lastName;
 	var email = req.body.email;
 	var password = req.body.password;
-	
-	//create new user with form data from post route
-	db.User.createSecure(firstName, lastName, email, password, function (err, user) {
+
+	// check user with that email doesn't already exist
+	db.User.findOne( { email: email } , function(err, user) {
 		if (err) {
-			console.log("Error with creating user is: " + err);
+			console.log("the error with finding the user by email is: ", err);
 		}
+		// if the user does not already exist
+		else if (user === null) {
+			console.log("the user does not already exist, proceed to make new user");
+			//create new user with form data from post route
+			db.User.createSecure(firstName, lastName, email, password, function (err, user) {
+				if (err) {
+					console.log("Error with creating user is: " + err);
+				}
+				else {
+					console.log("New user: " + user);
+					// create session user
+					req.session.userId = user._id;
+					// console.log(req.session.userId);
+					res.json(user);
+				}
+			});
+		}
+		// else user does already exist, send back empty object and alert on client
 		else {
-			console.log("New user: " + user);
-			// create session user
-			req.session.userId = user._id;
-			// console.log(req.session.userId);
-			res.json(user);
+			console.log("the user already exists");
+			res.json({});
 		}
 	});
 });
