@@ -110,116 +110,146 @@ $(document).ready(function(){
 	// on submit of userBookOne
 	$('#userBookOne').focusout(function(e){
 		e.preventDefault();
-		// find form data
-		var data = { title: $('#userBookOne').val() };
-		// console.log(data);
+		// check search field not empty
+		if($('#userBookOne').val().trim().length > 0) {
+			// if not empty, find form data
+			var data = { title: $('#userBookOne').val() };
+			// console.log(data);
 
-		// post request to server to find and create userBookOne
-		$.ajax({
-			url: '/api/userbooks',
-			type: 'POST',
-			data: data
-		})
-		.done(function(data){
-			// if books found append tick
-			if (data.title) {
-				console.log("userBookOne posted to server and books exist");
-				$('#userBookOneInnerDiv').append('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
-			}
-			// else if no books found
-			else {
-				console.log("userBookForm posted to server but no books");
-				$('#userBookOneInnerDiv').append('<div class="alert alert-warning" id="userBookAlert1" role="alert">Oops! It looks like we couldn\'t find this book! Please try again with different titles. </div>');
-				$('#userBookAlert1').alert();
+			// post request to server to find and create userBookOne
+			$.ajax({
+				url: '/api/userbooks',
+				type: 'POST',
+				data: data
+			})
+			.done(function(data){
+				// if books found append tick
+				if (data.title) {
+					console.log("userBookOne posted to server and books exist");
+					$('#userBookOneInnerDiv').append('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
+				}
+				// else if no books found
+				else {
+					console.log("userBookForm posted to server but no books");
+					$('#userBookOneInnerDiv').append('<div class="alert alert-warning" id="userBookAlert1" role="alert">Oops! It looks like we couldn\'t find this book! Please try again with different titles. </div>');
+					$('#userBookAlert1').alert();
+					window.setTimeout(function() {
+						$('#userBookAlert1').alert('close');
+					}, 4000);
+				}
+			})
+			.fail(function(data){
+				console.log("userBookForm failed to post to server");
+				$('#userBookOneInnerDiv').append('<div class="alert alert-warning" id="userBookAlert2" role="alert">Oops! It looks like we couldn\'t find one of these books! Please try again with different titles. </div>');
+				$('#userBookAlert2').alert();
 				window.setTimeout(function() {
-					$('#userBookAlert1').alert('close');
+					$('#userBookAlert2').alert('close');
 				}, 4000);
-			}
-		})
-		.fail(function(data){
-			console.log("userBookForm failed to post to server");
-			$('#userBookOneInnerDiv').append('<div class="alert alert-warning" id="userBookAlert2" role="alert">Oops! It looks like we couldn\'t find one of these books! Please try again with different titles. </div>');
-			$('#userBookAlert2').alert();
+			});
+		}
+		else {
+			$('#userBookOneInnerDiv').append('<div class="alert alert-danger" id="userBookAlert3" role="alert">Please enter the name of an author and try again. </div>');
+			$('#userBookAlert3').alert();
 			window.setTimeout(function() {
-				$('#userBookAlert2').alert('close');
-			}, 4000);
-		});
+				$('#userBookAlert3').alert('close');
+			}, 3000);
+		}
 	});
 
 	// on submit of userBookTwo
 	$('#userBookTwo').focusout(function(e){
 		e.preventDefault();
-		// find form data
-		var data = { title: $('#userBookTwo').val() };
-		// console.log(data);
-		// post request to server to find and create userBookTwo
-		$.ajax({
-			url: '/api/userbooks',
-			type: 'POST',
-			data: data
-		})
-		.done(function(data){
-			// if books found append tick
-			if (data.title) {
-				console.log("userBookForm posted to server and books exist");
-				$('#userBookTwoInnerDiv').append('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
-			}
-			// else if no books found
-			else {
-				console.log("userBookForm posted to server but no books");
-				$('#userBookTwoInnerDiv').append('<div class="alert alert-warning" id="userBookAlert3" role="alert">Oops! It looks like we couldn\'t find this book! Please try again with different titles. </div>');
-				$('#userBookAlert3').alert();
+		// check search field not empty
+		if($('#userBookTwo').val().trim().length > 0) {
+			// if not empty, find form data
+			var data = { title: $('#userBookTwo').val() };
+			// console.log(data);
+			// post request to server to find and create userBookTwo
+			$.ajax({
+				url: '/api/userbooks',
+				type: 'POST',
+				data: data
+			})
+			.done(function(data){
+				// if books found append tick
+				if (data.title) {
+					console.log("userBookForm posted to server and books exist");
+					$('#userBookTwoInnerDiv').append('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
+				}
+				// else if no books found
+				else {
+					console.log("userBookForm posted to server but no books");
+					$('#userBookTwoInnerDiv').append('<div class="alert alert-warning" id="userBookAlert4" role="alert">Oops! It looks like we couldn\'t find this book! Please try again with different titles. </div>');
+					$('#userBookAlert4').alert();
+					window.setTimeout(function() {
+						$('#userBookAlert4').alert('close');
+					}, 4000);
+				}
+			})
+			.fail(function(data){
+				console.log("userBookForm failed to post to server");
+				$('#userBookTwoInnerDiv').append('<div class="alert alert-warning" id="userBookAlert5" role="alert">Oops! It looks like we couldn\'t find one of these books! Please try again with different titles. </div>');
+				$('#userBookAlert5').alert();
 				window.setTimeout(function() {
-					$('#userBookAlert3').alert('close');
+					$('#userBookAlert5').alert('close');
 				}, 4000);
-			}
-		})
-		.fail(function(data){
-			console.log("userBookForm failed to post to server");
-			$('#userBookTwoInnerDiv').append('<div class="alert alert-warning" id="userBookAlert4" role="alert">Oops! It looks like we couldn\'t find one of these books! Please try again with different titles. </div>');
-			$('#userBookAlert4').alert();
+			});
+		}
+		else {
+			$('#userBookTwoInnerDiv').append('<div class="alert alert-danger" id="userBookAlert6" role="alert">Please enter the name of an author and try again. </div>');
+			$('#userBookAlert6').alert();
 			window.setTimeout(function() {
-				$('#userBookAlert4').alert('close');
-			}, 4000);
-		});
+				$('#userBookAlert6').alert('close');
+			}, 3000);
+		}
 	});
 
 	// on submit of userBookThree
 	$('#userBookThree').focusout(function(e){
 		e.preventDefault();
-		// find form data
-		var data = { title: $('#userBookThree').val() };
-		// console.log(data);
-		// post request to server to find and create userBookThree
-		$.ajax({
-			url: '/api/userbooks',
-			type: 'POST',
-			data: data
-		})
-		.done(function(data){
-			// if books found append tick
-			if (data.title) {
-				console.log("userBookForm posted to server and books exist");
-				$('#userBookThreeInnerDiv').append('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
-			}
-			// else if no books found
-			else {
-				console.log("userBookForm posted to server but no books");
-				$('#userBookThreeInnerDiv').append('<div class="alert alert-warning" id="userBookAlert5" role="alert">Oops! It looks like we couldn\'t find this book! Please try again with different titles. </div>');
-				$('#userBookAlert5').alert();
+		// check search field not empty
+		if($('#userBookThree').val().trim().length > 0) {
+			// if not empty, find form data
+			var data = { title: $('#userBookThree').val() };
+			// console.log(data);
+			// post request to server to find and create userBookThree
+			$.ajax({
+				url: '/api/userbooks',
+				type: 'POST',
+				data: data
+			})
+			.done(function(data){
+				// if books found append tick
+				if (data.title) {
+					console.log("userBookForm posted to server and books exist");
+					$('#userBookThreeInnerDiv').append('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
+				}
+				// else if no books found
+				else {
+					console.log("userBookForm posted to server but no books");
+					$('#userBookThreeInnerDiv').append('<div class="alert alert-warning" id="userBookAlert7" role="alert">Oops! It looks like we couldn\'t find this book! Please try again with different titles. </div>');
+					$('#userBookAlert7').alert();
+					window.setTimeout(function() {
+						$('#userBookAlert7').alert('close');
+					}, 4000);
+				}
+			})
+			.fail(function(data){
+				console.log("userBookForm failed to post to server");
+				$('#userBookThreeInnerDiv').append('<div class="alert alert-warning" id="userBookAlert8" role="alert">Oops! It looks like we couldn\'t find one of these books! Please try again with different titles. </div>');
+				$('#userBookAlert8').alert();
 				window.setTimeout(function() {
-					$('#userBookAlert5').alert('close');
+					$('#userBookAlert8').alert('close');
 				}, 4000);
-			}
-		})
-		.fail(function(data){
-			console.log("userBookForm failed to post to server");
-			$('#userBookThreeInnerDiv').append('<div class="alert alert-warning" id="userBookAlert6" role="alert">Oops! It looks like we couldn\'t find one of these books! Please try again with different titles. </div>');
-			$('#userBookAlert6').alert();
+			});
+		}
+		else {
+			$('#userBookThreeInnerDiv').append('<div class="alert alert-danger" id="userBookAlert9" role="alert">Please enter the name of an author and try again. </div>');
+			$('#userBookAlert9').alert();
 			window.setTimeout(function() {
-				$('#userBookAlert6').alert('close');
-			}, 4000);
-		});
+				$('#userBookAlert9').alert('close');
+			}, 3000);
+		}
 	});
 
 
@@ -293,6 +323,9 @@ $(document).ready(function(){
 			$('#searchResultsList').empty();
 			// return focus to author first name
 			$('#authorSearchInput').focus();
+
+			// change cursor to wait
+			$('html, body').css("cursor", "wait");
 			// ajax get request from server
 			$.ajax({
 				url: '/api/authorsearch',
@@ -304,6 +337,8 @@ $(document).ready(function(){
 				console.log(data);
 				// if a search result gets returned
 				if (data.items) {
+					// change cursor to auto
+					$('html, body').css("cursor", "auto");
 					// for each book in the array
 					for (var i = 0; i < data.items.length - 1; i++) {
 						// if there is a synopsis show that book
@@ -314,6 +349,8 @@ $(document).ready(function(){
 				}
 				// if search return is empty
 				else {
+					// change cursor to auto
+					$('html, body').css("cursor", "auto");
 					$('#authorSearchForm').append('<div class="alert alert-danger" id="authorSearchAlert1" role="alert">It looks like there was an error finding that author. Please try again with a different name! </div>');
 					$('#authorSearchAlert1').alert();
 					window.setTimeout(function() {
@@ -322,6 +359,8 @@ $(document).ready(function(){
 				}
 			})
 			.fail(function(data){
+				// change cursor to auto
+				$('html, body').css("cursor", "auto");
 				console.log("authorSearchForm click failed to post to server");
 			});
 		}
@@ -350,6 +389,9 @@ $('#bookSearchForm').on('submit', function(e){
 		$('#searchResultsList').empty();
 		// return focus to author first name
 		$('#bookSearchInput').focus();
+
+		// change cursor to wait
+		$('html, body').css("cursor", "wait");
 		// ajax get request from server
 		$.ajax({
 			url: '/api/booksearch',
@@ -361,6 +403,8 @@ $('#bookSearchForm').on('submit', function(e){
 			// console.log(data);
 			// if a search result gets returned
 			if (data.items) {
+				// change cursor to auto
+				$('html, body').css("cursor", "auto");
 				// for each book in the array
 				for (var i = 0; i < data.items.length - 1; i++) {
 					// if there is a synopsis show that book
@@ -372,6 +416,8 @@ $('#bookSearchForm').on('submit', function(e){
 			}
 			// if search return is empty
 			else {
+				// change cursor to auto
+				$('html, body').css("cursor", "auto");
 				$('#bookSearchForm').append('<div class="alert alert-danger" id="bookSearchAlert1" role="alert">It looks like there was an error finding that book. Please try again with a different title! </div>');
 				$('#bookSearchAlert1').alert();
 				window.setTimeout(function() {
@@ -380,6 +426,8 @@ $('#bookSearchForm').on('submit', function(e){
 			}
 		})
 		.fail(function(data){
+			// change cursor to auto
+			$('html, body').css("cursor", "auto");
 			console.log("bookSearchForm click failed to post to server");
 		});
 	}
