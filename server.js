@@ -173,7 +173,8 @@ app.post('/login', function(req, res) {
 
 // post route for userBookForm
 app.post('/api/userbooks', function(req, res) {
-	var title = console.log(req.body.title);
+	var title = req.body.title;
+	console.log("the title of the book entered is: ", title);
 	// request data from google books api based on book title, ordered by relevance, language en
 	var book = findUserBooks(title, function(books) {
 		// console.log("Books are: ", books);
@@ -188,13 +189,6 @@ app.post('/api/userbooks', function(req, res) {
 			var bookImage = findImage(booksArr);
 			var bookIsbn = findIsbn(booksArr);
 			console.log("The book details are ", bookAuthor, bookTitle, bookSynopsis, bookImage, bookIsbn);
-			// if book name is undefined, splice form array
-			for (var i = 0; i < booksArr.length; i++) {
-				if (booksArr[i].title == "undefined") {
-					booksArr.splice(i, 1);
-				}
-			}
-			console.log(booksArr);
 			// find if book already exists on db
 			db.Book.findOne( { title: bookTitle } , function(err, book) {
 				// if err
@@ -722,9 +716,9 @@ function findUserBooks(title, callback) {
 				list.items.sort(compareGoogle);
 				// elimate duplicates from the list
 				eliminateDuplicatesGoogle(list.items);
-				console.log("the list after removing duplicates: ", list.items);
+				// console.log("the list after removing duplicates: ", list.items);
 				// send back sorted and cleaned list
-				callback(JSON.parse(body));
+				callback(list);
 			}
 			// else send back empty object
 			else {
@@ -734,9 +728,12 @@ function findUserBooks(title, callback) {
 		}
 		else {
 			console.log("the error with getting the userBookForm data is: ", err);
+			callback({});
 		}
 	});
 }
+
+
 
 
 
