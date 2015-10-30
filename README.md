@@ -10,10 +10,8 @@ name or book title. Recommendations are provided based on books that users
 have read and enjoyed. A personal to-read list helps users keep track of books
 that they would like to read in the future. 
 
-next-book.herokuapp.com
+![Link to Heroku](next-book.herokuapp.com)
 
-Wireframes:
-![wireframe](./readme/Screen Shot 2015-10-30 at 08.22.02.png)
 
 User Stories:
 
@@ -67,4 +65,13 @@ Wishlist / Future Development:
 or use of another API
 
 5. Work on add to list and read and enjoyed buttons so don't stay grey
+
+
+Wireframes:
+![wireframe](./readme/Screen Shot 2015-10-30 at 08.22.02.png)
+![wireframe](./readme/Screen Shot 2015-10-30 at 08.22.15.png)
+![wireframe](./readme/Screen Shot 2015-10-30 at 08.22.25.png)
+![wireframe](./readme/Screen Shot 2015-10-30 at 08.22.37.png)
+![wireframe](./readme/Screen Shot 2015-10-30 at 08.22.49.png)
+![wireframe](./readme/Screen Shot 2015-10-30 at 08.22.57.png)
 
