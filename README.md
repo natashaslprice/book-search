@@ -1,6 +1,7 @@
 NEXT BOOK
 
 Built 22nd - 29th October 2015
+
 First full app built after 4 weeks of coding
 
 Next Book is an app for book lovers to help them find their next books. 
@@ -12,7 +13,7 @@ that they would like to read in the future.
 next-book.herokuapp.com
 
 Wireframes:
-
+![wireframe](/readme/Screen Shot 2015-10-30 at 08.22.02)
 
 User Stories:
 
@@ -28,14 +29,18 @@ have also read and enjoyed them.
 4. My name is Edd and I like lists. I want to have a list of books that I want 
 to read in the future.
 
+
 An Entity Relationship Diagram:
 
+
 APIs used:
+
 New York Times Best Sellers API: 
 http://developer.nytimes.com/docs/best_sellers_api
 
 Google Books API:
 https://developers.google.com/books/docs/overview
+
 
 Libraries used:
 
@@ -49,6 +54,7 @@ Other: JQuery, JQuery validate, Ajax, Bcrypt, Body-parser, Cookie-parser, Ejs,
 
 Express-session, Request, Nodemailer, Dotenv, Bootstrap, Google Fonts
 
+
 Wishlist / Future Development:
 
 1. Fine tuning of the recommendations function
@@ -59,4 +65,6 @@ Wishlist / Future Development:
 
 4. Further work on Google books API - enhance search function either through fine-tuning 
 or use of another API
+
+5. Work on add to list and read and enjoyed buttons so don't stay grey
 
