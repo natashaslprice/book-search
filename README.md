@@ -1,4 +1,4 @@
-NEXT BOOK
+<strong>NEXT BOOK</strong>
 
 Built 22nd - 29th October 2015
 
@@ -26,9 +26,6 @@ have also read and enjoyed them.
 
 4. My name is Edd and I like lists. I want to have a list of books that I want 
 to read in the future.
-
-
-An Entity Relationship Diagram:
 
 
 APIs used:
