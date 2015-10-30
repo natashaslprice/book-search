@@ -17,10 +17,8 @@
 		<div class="row">
 		  <div class="col-8 col-offset-2 introDiv">
 			  <h3 id="homepageIntroText">SEARCH FOR BOOKS</h3>
-			  <hr>
-			  <h5>
-			  	Use this page to search for books by authors that you like.
-			  </h5>
+			  <hr id="introHr">
+			  <h4>USE THIS PAGE TO SEARCH FOR BOOKS BY AUTHORS OR BOOKS THAT YOU LIKE</h4>
 		  </div> <!-- end of col -->
   	</div> <!-- end of row div -->
 
@@ -28,33 +26,30 @@
 		<div class="row">
 		  <div class="col-md-6 col-md-offset-3">
 		  	<form id="authorSearchForm"> <!-- author search form -->
-			  	<div class="mdl-textfield mdl-js-textfield">
-				  	<label for="authorSearchInput" id="authorLabel" class="mdl-textfield__label">Enter author's first name:</label>
-		  	    <input type="text" id="authorSearchInput" class="mdl-textfield__input" name="authorSearchFirstName" autofocus>
+			  	<div class="form-group">
+		  	    <input type="text" id="authorSearchInput" class="form-control" name="authorSearchFirstName" placeholder="author's first name..." autofocus>
 		  	   </div>
 		  	   <div class="mdl-textfield mdl-js-textfield">
-		  	    <label for="authorSearchInput" id="authorLabel" class="mdl-textfield__label">Enter author's last name:</label>
-		  	    <input type="text" id="authorSearchInput" class="mdl-textfield__input" name="authorSearchLastName">
+		  	    <input type="text" id="authorSearchInput" class="form-control" name="authorSearchLastName" placeholder="author's last name..." >
 	      	</div>
 	      	<br>
-		  	  <button id="authorSearchBtn" class="mdl-button mdl-js-button mdl-button--accent" type="submit">Search</button>
+		  	  <button id="authorSearchBtn" class="btn btn-default" type="submit">Search</button>
 	      </form> <!-- end of author search form -->
 	      <br>
 	      <p>OR</p>
 	      <form id="bookSearchForm"> <!-- book search form -->
-	      	<div class="mdl-textfield mdl-js-textfield">
-		      	<label for="bookSearchInput" id="bookLabel" class="mdl-textfield__label">Enter book name here:</label> <!-- book search -->
-	  	      <input type="text" id="bookSearchInput" class="mdl-textfield__input" name="bookSearchName">  
+	      	<div class="form-group">
+	  	      <input type="text" id="bookSearchInput" class="form-control" name="bookSearchName" placeholder="book title...">  
 	      	</div>
 	      	<br>
-	        <button id="bookSearchBtn" class="mdl-button mdl-js-button mdl-button--accent" type="submit">Search</button>
+	        <button id="bookSearchBtn" class="btn btn-default" type="submit">Search</button>
 	      </form> <!-- end of book search form -->
 		  </div> <!-- end of col -->
   	</div> <!-- end of row div -->
 
   	<!-- results div -->
 		<div class="row">
-		  <div class="col-md-10 col-md-offset-1" id="searchResultsDiv">
+		  <div class="col-md-10 col-md-offset-1" id="searchResultsDiv" style="display: none;">
 		  	<ul id="searchResultsList">
 		  	</ul>
 		  </div> <!-- end of col -->

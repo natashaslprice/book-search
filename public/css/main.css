@@ -119,8 +119,15 @@ h1 {
 	text-align: center;
 }
 
+#userBookDivTitle {
+	font-size: 20px;
+	margin-top: 40px;
+	text-align: center;
+}
+
 #userBooksDiv {
 	margin-bottom: 50px;
+	color: #627681;
 }
 
 #userBookFormAlert {
@@ -128,42 +135,64 @@ h1 {
 	width: 60%;
 }
 
+#userBookAlert1, #userBookAlert2, #userBookAlert3, #userBookAlert4, #userBookAlert5, #userBookAlert6, #userBookAlert7, #userBookAlert8, #userBookAlert9 {
+	font-size: 15px;
+	background-color: #ff5e31;
+	border: #ff5e31;
+	color: #ffffff;
+}
+
+.glyphicon {
+	color: #ff5e31;
+}
+
 /*all logged in pages*/
 #userLoggedIn {
 	margin-right: 30px;
+}
+
+.introDiv {
+	text-align: center;
 }
 
 #homepageIntroText {
 	font-family: 'Roboto Slab', serif;
 }
 
+#introHr {
+	border: solid 2px;
+	background-color: #ffffff;
+}
+
 /*bestsellers.ejs*/
 .bestsellerList {
 	margin-top: 30px;
-}
-
-/*list.ejs*/
-#toReadListDiv {
-	margin-top: 30px;
+	text-align: center;
 	color: #627681;
 }
 
-.deleteBook {
-	float: right;
+.addToListBtn, .readEnjoyedBtn {
+	background-color: #ff5e31;
+	color: #ffffff;
+	border: none;
+	margin: 10px 10px 0px 10px;
 }
 
-.list-group-item {
-	padding:20px 10px;
-}
-
-/*bestsellers, search, recommendations, list*/
-.introDiv {
+.popover {
+	color: #627681;
 	text-align: center;
 }
+
+
 
 /*search*/
 #searchResultsDiv {
 	margin-top: 30px;
+	text-align: center;
+	background-color: #ffffff;
+	color: #627681;
+	border-radius: 7px;
+	padding-top: 10px
 }
 
 .bookImages {
@@ -175,13 +204,42 @@ h1 {
 	margin-top: 20px;
 }
 
+#authorSearchBtn, #bookSearchBtn, #contactUsBtn {
+	background-color: #ff5e31;
+	color: #ffffff;
+	border: none;
+}
+
 .hrSearch {
 	width: 100%;
+	border: solid 1px;
+	background-color: #627681;
+
 }
 
 /*recommendations*/
 #recommendationsResultsDiv {
 	margin-top: 30px;
+	margin-top: 30px;
+	text-align: center;
+	color: #627681;
+}
+
+/*list.ejs*/
+#toReadListDiv {
+	margin-top: 30px;
+	text-align: center;
+	color: #627681;
+}
+
+.deleteBook {
+	background-color: #ffffff;
+	border: none;
+	width: auto;
+}
+
+.list-group-item {
+	padding:20px 10px;
 }
 
 /*contact*/

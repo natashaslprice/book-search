@@ -16,10 +16,8 @@
 		<div class="row">
 		  <div class="col-8 col-offset-2 introDiv">
 			  <h3 id="homepageIntroText">T0-READ LIST</h3>
-			  <hr>
-			  <h5>
-			  	By adding books to your to-read list you can keep track of books that you want to read in the future.
-			  </h5>
+			  <hr id="introHr">
+			  <h4>By adding books to your to-read list you can keep track of books that you want to read in the future</h4>
 		  </div> <!-- end of col -->
   	</div> <!-- end of row div -->
   </div> <!-- end of container div -->
@@ -33,12 +31,12 @@
 	  					<div class="row">
 	  						<div class="col-sm-11">
 			  					<!-- book titles and authors -->
-									<span id="capitals"><strong> <%= user.booksToRead[i].title %> </strong></span> by <%= user.booksToRead[i].author %>
+									<span class="boldFont"><strong> <%= user.booksToRead[i].title.toUpperCase() %> </strong></span> by <%= user.booksToRead[i].author %>
 									<br>
 		              <!-- book synopsis -->
 		              <%= user.booksToRead[i].synopsis %>
 		             </div>
-	              <button type="button" data-id="<%= user.booksToRead[i]._id %>" class="col-sm-1 deleteBook mdl-button mdl-js-button mdl-button--accent"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+	              <button type="button" data-id="<%= user.booksToRead[i]._id %>" class="col-sm-1 deleteBook"> <span class="glyphicon glyphicon-trash icon-trash" aria-hidden="true"></span></button>
 	  					</div>
 	  				</li>
 			  	<% } %>

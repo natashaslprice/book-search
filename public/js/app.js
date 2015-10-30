@@ -340,6 +340,7 @@ $(document).ready(function(){
 				console.log(data);
 				// if a search result gets returned
 				if (data.items) {
+				$('#searchResultsDiv').show();
 					// change cursor to auto
 					$('html, body').css("cursor", "auto");
 					// for each book in the array
@@ -406,6 +407,7 @@ $('#bookSearchForm').on('submit', function(e){
 			// console.log(data);
 			// if a search result gets returned
 			if (data.items) {
+				$('#searchResultsDiv').show();
 				// change cursor to auto
 				$('html, body').css("cursor", "auto");
 				// for each book in the array
@@ -538,7 +540,7 @@ function dataIntoHTML(query) {
 		'data-isbn="' + isbn1 + '" ' +
 		'>' +
 			'<div class="media-body">' +
-				'<strong>' + query.volumeInfo.title + '</strong> by ' + query.volumeInfo.authors[0] +
+				'<span class="boldFont"><strong>' + query.volumeInfo.title.toUpperCase() + '</strong></span> by ' + query.volumeInfo.authors[0] +
 				'<br>' +
 				query.volumeInfo.description +
 			'</div>' +
@@ -546,8 +548,8 @@ function dataIntoHTML(query) {
 			imageTag +
 		'</div>' +
 		'<br>' +
-		'<button type="button" class="mdl-button mdl-js-button mdl-button--accent addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
-		'<button type="button" class="mdl-button mdl-js-button mdl-button--accent readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
+		'<button type="button" class="btn btn-default addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>' +
+		'<button type="button" class="btn btn-default readEnjoyedBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Thank you for letting us know you enjoyed this.">Read and enjoyed</button>' +
 		'<hr class="hrSearch">';
 	}
 
