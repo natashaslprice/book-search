@@ -8,7 +8,7 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
 		firstName: String,
 		lastName: String,
-		email: String,
+		email: { type: String, set: toLower },
 		passwordDigest: String,
 		booksReadEnjoyed: [{type: Schema.Types.ObjectId, ref: 'Book'}],
 		booksToRead: [{type: Schema.Types.ObjectId, ref: 'Book'}]
@@ -47,6 +47,10 @@ UserSchema.statics.authenticate = function (email, password, callback){
 UserSchema.methods.checkPassword = function(password){
 	return bcrypt.compareSync(password, this.passwordDigest);
 };
+
+function toLower(v) {
+	return v.toLowerCase();
+}
 
 var User = mongoose.model('User', UserSchema);
 
