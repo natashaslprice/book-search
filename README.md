@@ -33,11 +33,10 @@ An Entity Relationship Diagram:
 
 APIs used:
 
-New York Times Best Sellers API: 
-http://developer.nytimes.com/docs/best_sellers_api
+[New York Times Best Sellers API](http://developer.nytimes.com/docs/best_sellers_api) 
 
-Google Books API:
-https://developers.google.com/books/docs/overview
+
+[Google Books API](https://developers.google.com/books/docs/overview)
 
 
 Libraries used:
