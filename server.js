@@ -127,11 +127,6 @@ app.get('/list', function(req, res) {
 				console.log("the error with rendering the /list page is: ", err);
 			}
 			else if (user.booksToRead.length > 1) {
-				// console.log("the array before the function: ", user.booksToRead);
-				// user.booksToRead.sort(compare);
-				// console.log("the sorted array: ", user.booksToRead);
-				// eliminateDuplicates(user.booksToRead);
-				// console.log("the array after the function: ", user.booksToRead);
 				res.render('list', { user: user } );
 			}
 			else {
@@ -673,26 +668,6 @@ function toLowerCaseFunction(arr) {
 	for (var i = 0; i < arr.length; i++) {
 		arr[i].book_details[0].title = arr[i].book_details[0].title.toLowerCase();
 		// console.log(arr[i].book_details[0].title.toLowerCase());
-	}
-	return arr;
-}
-
-// sort by title function in user arrays function
-function compare(a,b) {
-  if (a.title < b.title)
-    return -1;
-  if (a.title > b.title)
-    return 1;
-  return 0;
-}
-
-// elimate duplicates from user arrays function
-function eliminateDuplicates(arr) {
-  for (i = 0; i < arr.length - 1; i++) {
-    if (arr[i].title === arr[i + 1].title) {
-    	arr.splice(i, 1);
-    	i = i - 1;
-    }
 	}
 	return arr;
 }

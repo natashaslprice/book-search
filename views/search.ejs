@@ -16,7 +16,7 @@
 		<!-- heading and intro text -->
 		<div class="row">
 		  <div class="col-8 col-offset-2 introDiv">
-			  <h3 id="homepageIntroText">Search for books</h3>
+			  <h3 id="homepageIntroText">SEARCH FOR BOOKS</h3>
 			  <hr>
 			  <h5>
 			  	Use this page to search for books by authors that you like.
@@ -27,17 +27,27 @@
 		<!-- search form -->
 		<div class="row">
 		  <div class="col-md-6 col-md-offset-3">
-		  	<form class="form-group" id="authorSearchForm"> <!-- author search form -->
-			  	<label for="authorSearchInput" id="authorLabel">Search by author:</label>
-	  	    <input type="text" id="authorSearchInput" class="form-control" name="authorSearchFirstName" placeholder="Enter author first name here..." autofocus>
-	  	    <input type="text" id="authorSearchInput" class="form-control" name="authorSearchLastName" placeholder="Enter author last name here..." autofocus>
-	  	    <button id="authorSearchBtn" class="mdl-button mdl-js-button mdl-button--accent" type="submit">Search</button>
+		  	<form id="authorSearchForm"> <!-- author search form -->
+			  	<div class="mdl-textfield mdl-js-textfield">
+				  	<label for="authorSearchInput" id="authorLabel" class="mdl-textfield__label">Enter author's first name:</label>
+		  	    <input type="text" id="authorSearchInput" class="mdl-textfield__input" name="authorSearchFirstName" autofocus>
+		  	   </div>
+		  	   <div class="mdl-textfield mdl-js-textfield">
+		  	    <label for="authorSearchInput" id="authorLabel" class="mdl-textfield__label">Enter author's last name:</label>
+		  	    <input type="text" id="authorSearchInput" class="mdl-textfield__input" name="authorSearchLastName">
+	      	</div>
+	      	<br>
+		  	  <button id="authorSearchBtn" class="mdl-button mdl-js-button mdl-button--accent" type="submit">Search</button>
 	      </form> <!-- end of author search form -->
+	      <br>
 	      <p>OR</p>
-	      <form class="form-group" id="bookSearchForm"> <!-- book search form -->
-	      	<label for="bookSearchInput" id="bookLabel">Search by book:</label> <!-- book search -->
-  	      <input type="text" id="bookSearchInput" class="form-control" name="bookSearchName" placeholder="Enter book name here...">  
-        	<button id="bookSearchBtn" class="mdl-button mdl-js-button mdl-button--accent" type="submit">Search</button>
+	      <form id="bookSearchForm"> <!-- book search form -->
+	      	<div class="mdl-textfield mdl-js-textfield">
+		      	<label for="bookSearchInput" id="bookLabel" class="mdl-textfield__label">Enter book name here:</label> <!-- book search -->
+	  	      <input type="text" id="bookSearchInput" class="mdl-textfield__input" name="bookSearchName">  
+	      	</div>
+	      	<br>
+	        <button id="bookSearchBtn" class="mdl-button mdl-js-button mdl-button--accent" type="submit">Search</button>
 	      </form> <!-- end of book search form -->
 		  </div> <!-- end of col -->
   	</div> <!-- end of row div -->

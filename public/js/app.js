@@ -276,7 +276,7 @@ $(document).ready(function(){
 			$(relevantBtn).popover('show');
 			setTimeout(function() {
 				$(relevantBtn).popover('hide');
-			}, 3000);
+			}, 2000);
 		})
 		.fail(function(data){
 			console.log("addToListBtn click failed to post to server");

@@ -11,47 +11,51 @@
 		<% include ./_navBar %>
 
 	  <!-- heading jumbotron -->
-	  <div class="jumbotron">
-	    <h1>Next book</h1>
-	  </div>
+	  <h1>HI <%= user.firstName.toUpperCase() %></h1> 
+	  <h1>WELCOME TO NEXT BOOK!</h1>
 	</header>
 
 	<div class="container">
 		<div class="row">
-		  <div class="col-8 col-offset-2" id="homepageDiv">
-			  <h3 id="homepageIntroText">Hi <%= user.firstName %>, welcome to Next Book!</h3>
-			  <hr>
-			  <p>You can use Next Book to:</p>
-			  <ul id="homepageList">
-			  	<li>View <strong>best-sellers</strong> lists</li>
-			  	<li><strong>Search</strong> for books based on your favourite authors or books</li>
-			  	<li>Get <strong>recommendations</strong> for books based on what you have read and enjoyed</li>
-			  	<li>Save books to your personal <strong>to-read</strong> list</li>
-			  </ul>
-			  <hr>
-			  <p>If you have already read a book, let us know whether you enjoyed it or not so we can tailor your recommendations.
+		  <div class="col-sm-6" id="homepageLeftDiv">
+			  <p>YOU CAN USE NEXT BOOK TO:</p>
+		  	<p>view <span class="boldFont">BEST-SELLERS</span> lists
+		  	<br>
+		  	<span class="boldFont">SEARCH</span> for books based on your favourite authors or books
+		  	<br>
+		  	get <span class="boldFont">RECOMMENDATIONS</span> for books based on what you have read and enjoyed
+		  	<br>
+		  	save books to your personal <span class="boldFont">TO-READ</span> list</p>
+			</div> <!-- end of left div -->
+
+			<div class="col-sm-6" id="homepageRightDiv">
+				<p>WHEN YOU SEE A BOOK:</p>
+			  <p>that you have <span class="boldFont">READ AND ENJOYED</span> let us know so we can tailor your recommendations
 			  <br>
-			  If you see a book that you want to read, add it to your to-read list so you don't forget it!
+			  that you want to read, add it to your <span class="boldFont">TO-READ LIST</span> so you don't forget it
 			  </p>
-			  <hr>
+			</div> <!-- end of right div -->
+		</div> <!-- end of row -->
+
+		<div class="row">
 			  	<h5>To help us provide you with book recommendations, please enter the names of <strong>three</strong> books that you have read and enjoyed.</h5>
 		  		<br>
 		  		<div id="userBooksDiv">
-			  		<div class="userBookOuterDivs">
-			  		<label for="userBookOne">The name of a book you enjoyed:</label>
-			  			<input type="text" id="userBookOne" class="form-control userBookInputs" name="userBookOne" placeholder="enter book title..." required>
+			  		<div class="mdl-textfield mdl-js-textfield">
+			  		<label for="userBookOne" class="mdl-textfield__label">The name of a book you enjoyed:</label>
+			  			<input type="text" id="userBookOne" class="mdl-textfield__input userBookInputs" name="userBookOne"  required>
 			  			<div id="userBookOneInnerDiv"></div>
 			  		</div>
 			  		<br>
-			  		<div class="userBookOuterDivs">
-				  		<label for="userBookTwo">The name of another book you enjoyed:</label>
-				  		<input type="text" id="userBookTwo" class="form-control userBookInputs" name="userBookTwo" placeholder="enter book title..." required>
+			  		<div class="mdl-textfield mdl-js-textfield">
+				  		<label for="userBookTwo" class="mdl-textfield__label">The name of another book you enjoyed:</label>
+				  		<input type="text" id="userBookTwo" class="mdl-textfield__input userBookInputs" name="userBookTwo" required>
 			  		<div id="userBookTwoInnerDiv"></div>
 			  		</div>
 			  		<br>
-			  		<div class="userBookOuterDivs">
-				  		<label for="userBookThree">And one more please:</label>
-				  		<input type="text" id="userBookThree" class="form-control userBookInputs" name="userBookThree" placeholder="enter book title..." required>
+			  		<div class="mdl-textfield mdl-js-textfield">
+				  		<label for="userBookThree" class="mdl-textfield__label">And one more please:</label>
+				  		<input type="text" id="userBookThree" class="mdl-textfield__input userBookInputs" name="userBookThree" required>
 			  		<div id="userBookThreeInnerDiv"></div>
 			  		</div>
 			  		<br>
