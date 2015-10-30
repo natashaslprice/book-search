@@ -130,6 +130,12 @@ h1 {
 	color: #627681;
 }
 
+#userBookBtn {
+	background-color: #ff5e31;
+	border: #ff5e31;
+	color: #ffffff;
+}
+
 #userBookFormAlert {
 	text-align: center;
 	width: 60%;

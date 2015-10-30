@@ -255,6 +255,13 @@ $(document).ready(function(){
 		}
 	});
 
+	// on click of userBookBtn (next)
+	$('#userBookBtn').click(function(e){
+		e.preventDefault();
+		// redirect to best-sellers pate
+		window.location.href = '/bestsellers';
+	});
+
 
 	// BEST-SELLERS AND SEARCH
 	// on click of addToListBtn
