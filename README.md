@@ -10,7 +10,7 @@ name or book title. Recommendations are provided based on books that users
 have read and enjoyed. A personal to-read list helps users keep track of books
 that they would like to read in the future. 
 
-![Link to Heroku](http://next-book.herokuapp.com)
+[Link to Heroku](https://next-book.herokuapp.com)
 
 
 User Stories:
