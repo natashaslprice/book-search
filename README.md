@@ -13,7 +13,7 @@ that they would like to read in the future.
 next-book.herokuapp.com
 
 Wireframes:
-![wireframe](/readme/Screen Shot 2015-10-30 at 08.22.02)
+![wireframe](./readme/Screen Shot 2015-10-30 at 08.22.02.png)
 
 User Stories:
 
