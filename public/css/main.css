@@ -135,7 +135,7 @@ h1 {
 	width: 60%;
 }
 
-#userBookAlert1, #userBookAlert2, #userBookAlert3, #userBookAlert4, #userBookAlert5, #userBookAlert6, #userBookAlert7, #userBookAlert8, #userBookAlert9 {
+#userBookAlert1, #userBookAlert2, #userBookAlert3, #userBookAlert4, #userBookAlert5, #userBookAlert6, #userBookAlert7, #userBookAlert8, #userBookAlert9, #authorSearchAlert1, #authorSearchAlert2, #bookSearchAlert1, #bookSearchAlert2 {
 	font-size: 15px;
 	background-color: #ff5e31;
 	border: #ff5e31;

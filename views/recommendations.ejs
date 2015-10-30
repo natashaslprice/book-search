@@ -40,7 +40,7 @@
 							<span class="boldFont"><strong> <%= books[i].title.toUpperCase() %> </strong></span> by <%= books[i].author %>
 							<br>
               <!-- book synopsis -->
-              <%= books.synopsis %>
+              <%= books[i].synopsis %>
             	<!-- add to to-read list button -->
               <br>
               <button type="button" class="btn btn-default addToListBtn" data-container="body" data-toggle="popover" data-placement="bottom" data-content="This book has been added to your To-read list!">Add to list</button>
