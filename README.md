@@ -15,10 +15,13 @@ You can view Next Book on [Heroku](https://next-book.herokuapp.com).
 User Stories:
 1. My name is Natasha and I always struggle to choose a new book once I have finished
 reading one. I want the ability to find good books quickly and easily.
+
 2. My name is Lesley and I want the ability to search for books by authors I like.
+
 3. My name is Chris and I read really fast. I want to find more books quickly,
 which I know I'll enjoy because other people who have read the same books as me
 have also read and enjoyed them.
+
 4. My name is Edd and I like lists. I want to have a list of books that I want
 to read in the future.
 
