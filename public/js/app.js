@@ -460,13 +460,13 @@ $('#bookSearchForm').on('submit', function(e){
 		var relevantId = $(this).data().id;
 		// console.log(relevantId);
 		// find list item to delete from page
-		var relevantListItem = $(this).parent();
+		var relevantListItem = $(this).closest("li");
 		// console.log(relevantListItem);
 
 		// ajax delete request
 		$.ajax({
 			url: '/api/bookslist/' + relevantId,
-			type: 'DELETE' 
+			type: 'DELETE'
 		})
 		.done(function(data){
 			$(relevantListItem).remove();
