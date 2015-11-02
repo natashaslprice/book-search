@@ -13,17 +13,13 @@ that they would like to read in the future.
 You can view Next Book on [Heroku](https://next-book.herokuapp.com).
 
 User Stories:
-
-1. My name is Natasha and I always struggle to choose a new book once I have finished
+- My name is Natasha and I always struggle to choose a new book once I have finished
 reading one. I want the ability to find good books quickly and easily.
-
-2. My name is Lesley and I want the ability to search for books by authors I like.
-
-3. My name is Chris and I read really fast. I want to find more books quickly,
+- My name is Lesley and I want the ability to search for books by authors I like.
+- My name is Chris and I read really fast. I want to find more books quickly,
 which I know I'll enjoy because other people who have read the same books as me
 have also read and enjoyed them.
-
-4. My name is Edd and I like lists. I want to have a list of books that I want
+- My name is Edd and I like lists. I want to have a list of books that I want
 to read in the future.
 
 
@@ -40,17 +36,12 @@ Libraries used:
 
 
 Wishlist / Future Development:
-
-1. Fine tuning of the recommendations function
-
-2. Further error handling/ testing
-
-3. Further work on Google books API - enhance search function either through fine-tuning
+- Fine tuning of the recommendations function
+- Further error handling/ testing
+- Further work on Google books API - enhance search function either through fine-tuning
 or use of another API
-
-4. Work on add to list and read and enjoyed buttons so don't stay grey
-
-5. Be able to recommend books to other users
+- Work on add to list and read and enjoyed buttons so don't stay grey
+- Be able to recommend books to other users
 
 
 Wireframes:
