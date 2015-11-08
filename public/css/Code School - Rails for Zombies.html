@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)http://railsforzombies.org/levels/2/challenges/2 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>
+Code School - Rails for Zombies
+</title>
+<link href="http://railsforzombies.org/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="./Code School - Rails for Zombies_files/application-ac42615b22b72e1f8ca76a72770b2bad.css" media="screen" rel="stylesheet" type="text/css">
+<script type="text/javascript" async="" src="./Code School - Rails for Zombies_files/ga.js"></script><script type="text/javascript" async="" src="./Code School - Rails for Zombies_files/mixpanel-2.2.min.js"></script><script src="./Code School - Rails for Zombies_files/application-724cb4280087bb5bda550d186c1c9574.js" type="text/javascript"></script>
+
+<script src="./Code School - Rails for Zombies_files/widgets.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+mixpanel.init("33adeab13a273d8765bb6f715261313e");
+//]]>
+</script>
+<meta content="authenticity_token" name="csrf-param">
+<meta content="D8NjMj6rdIlMZFPsVWqQ5aCtmPBFpJ80IbjUFY1r0FA=" name="csrf-token">
+<script type="text/javascript">
+/* <![CDATA[ */
+var _gaq = _gaq || [];
+_gaq.push(['ua974074912._setAccount', 'UA-9740749-12']);_gaq.push(['ua974074923._setAccount', 'UA-9740749-23']);
+_gaq.push(['ua974074923._setDomainName', 'none']);_gaq.push(['ua974074923._setAllowLinker', true]);_gaq.push(['ua974074923._addIgnoredRef', 'codeschool.com']);
+_gaq.push(['ua974074923._addIgnoredRef', 'railsforzombies.com']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+var _gaq = _gaq || [];
+_gaq.push(['ua974074912._trackPageview', '/levels/2/challenges/2']);
+_gaq.push(['ua974074923._trackPageview', '/railsforzombies.org/levels/2/challenges/2']);/* ]]> */
+</script>
+
+<script type="text/javascript" charset="utf-8" async="" src="./Code School - Rails for Zombies_files/button.6619238bf476cc3999511336bc046bfa.js"></script></head>
+<body class="responsive lab-2">
+<div id="codeschool">
+<a href="https://www.codeschool.com/" id="codeschool-logo" rel="internal">Code School</a>
+<ul>
+<li><a href="https://www.codeschool.com/" rel="internal">Home</a></li>
+<li><a href="https://www.codeschool.com/code_tv" rel="internal">Code TV</a></li>
+<li><a href="https://www.codeschool.com/account" rel="internal">My Account</a></li>
+<li><a href="https://www.codeschool.com/support" rel="internal">Support</a></li>
+</ul>
+<a href="https://www.codeschool.com/users/sign_up" id="codeschool-session" rel="internal">Sign Up</a>
+<h2 id="sidebar-points"><em>1750</em>
+<b>Total Points</b></h2>
+</div>
+
+<div id="notifications" style="display: block;"><div class="error">
+  <h3>Sorry, Try Again</h3>
+  <p class="error-msg ">
+    
+    #&lt;SyntaxError: syntax error, unexpected tSYMBEG, expecting keyword_do or '{' or '('&gt;
+  </p>
+  <span class="notifications-close">Click to Close</span>
+</div></div>
+<div id="challenge">
+<header id="challenge-objective" class=""><h1 class="">Validations I</h1>
+
+
+  <h3 id="challenge-points" class="points-250">
+    <em>250</em>
+    <b>Points</b>
+  </h3>
+
+
+<h4>Objective</h4>
+
+<div id="instructions">
+  <p class="">Add a validation that checks for the presence of a <code>Zombie</code>'s name</p>
+</div>
+
+<div id="extra-credit-instructions">
+  <p class="">Try to verify that the validation works by trying to create a <code>Zombie</code> with no name.</p>
+
+</div></header>
+<section id="challenge-panels" style="height: 456px;">
+<nav>
+<ol id="editor-tabs" class="tabs-1"><li><a class="editor-tab editor-active" href="http://railsforzombies.org/levels/2/challenges/2#" title="app/models/zombie.rb">app/models/zombie.rb</a></li></ol>
+<ol id="resource-tabs" class="tabs-2"><li><a href="http://railsforzombies.org/levels/2/challenges/2#" id="database" class="resource-tab" title="Database">Database</a></li><li><a href="http://railsforzombies.org/levels/2/challenges/2#" id="hints_tab" class="resource-tab active resource-active" title="Hints">Hints</a></li></ol>
+<a href="http://railsforzombies.org/levels/2/challenges/2#" id="view-mode" title="Switch to Single Panel">
+Toggle Editor Mode
+</a>
+</nav>
+<div class="panel-group editor-reference" id="editor-group"><div class="editor panel editor-active"><div class="content content-editor"><div class="CodeMirror cm-s-zombies"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 27px; left: 283px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="min-width: 18px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true" style="min-height: 18px;"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1" draggable="false"><div class="CodeMirror-sizer" style="margin-left: 0px; min-width: 324.844px; margin-bottom: 0px; border-right-width: 30px; min-height: 77px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 283px; top: 23px; height: 23px;">&nbsp;</div></div><div class="CodeMirror-code"><pre class=""><span style="padding-right: 0.1px;"><span class="cm-keyword">class</span> <span class="cm-tag">Zombie</span> <span class="cm-operator">&lt;</span> <span class="cm-atom">ActiveRecord::Base</span></span></pre><pre><span style="padding-right: 0.1px;">  <span class="cm-variable">validates_presence_of</span> <span class="cm-atom">:name</span></span></pre><pre class=""><span style="padding-right: 0.1px;"><span class="cm-keyword">end</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px; top: 77px;"></div><div class="CodeMirror-gutters" style="display: none; height: 371px;"></div></div></div></div></div><footer class=""><a href="http://railsforzombies.org/levels/2/challenges/2#" id="manual_submit" class="button"><b><span>Submit Code</span></b></a></footer></div>
+<div class="panel-group" id="resource-group"><div id="database-table" class="resource-panel panel"></div><div id="hints" class="resource-panel panel active resource-active">
+  <p id="next-hint-button">
+  <a id="next_hint" class="button" href="http://railsforzombies.org/levels/2/challenges/2/next_hint.json"><b>View Answer <span>(-75 Points)</span></b></a>
+</p>
+
+
+<ol><li>Use Rails' <code>validates_presence_of</code> method to check for a name.
+</li></ol></div></div>
+</section>
+</div>
+<section id="sidebar">
+<a href="http://railsforzombies.org/levels/2" id="sidebar-logo"><b>Rails for Zombies</b>
+</a><nav id="sidebar-nav"><h2>
+  <b>Level</b>2
+  <a class="change-level button" href="http://railsforzombies.org/levels/switch"><b>Change Level</b></a>
+</h2>
+<h3>
+  <b><span class="sidebar-progress" style="width: 17.0%">X% Complete</span></b>
+</h3>
+<ol><li class="completed"><a href="http://railsforzombies.org/levels/2/challenges/1">Create Model</a></li><li class="current"><a href="./Code School - Rails for Zombies_files/Code School - Rails for Zombies.html">Validations I</a></li><li><a href="http://railsforzombies.org/levels/2/challenges/3">Validations II</a></li><li><a href="http://railsforzombies.org/levels/2/challenges/4">Validations III</a></li><li><a href="http://railsforzombies.org/levels/2/challenges/5">Belongs To</a></li><li><a href="http://railsforzombies.org/levels/2/challenges/6">Relationship Find</a></li></ol></nav>
+<ul id="sidebar-controls">
+<li><a href="http://railsforzombies.org/levels/2" class="sidebar-rewatch" title="Rewatch Video">Rewatch Video</a></li>
+<li><a href="http://railsforzombies.org/levels/2/challenges/2#" class="sidebar-shortcuts" title="Keyboard Shortcuts">Keyboard Shortcuts</a></li>
+<li><a href="http://railsforzombies.com.s3.amazonaws.com/Rails-For-Zombies-Slides.pdf" class="sidebar-slides" target="blank" title="Download Slides">Download Slides</a></li>
+</ul>
+<footer>
+<a href="http://projector.codeschool.com/videos/a25140bb.mp4?profile=720p&site=course&sso=T6Q2kRZSQcK8yVbcBAc8Oq-WjJ7-jAWsk88xYOzgMAO-y1uxpBlb7NJvi5nlJWJy2qutkZ-V9gmbCkjrlvBSryVBxjpZbfMMEJ2d4a1CV7ne1h_7GqA7oPeybwOUKUM2" class="sidebar-video">Download Video</a>
+<a href="http://envylabs.com/" id="sidebar-envy">An Envy Labs Product</a>
+<a href="http://newrelic.com/" id="sidebar-newrelic">Sponsored by New Relic</a>
+</footer>
+</section>
+<div id="shortcuts" style="display: none;">
+<ul>
+<li><span>⌘</span> + <span>enter</span> Submit code</li>
+<li><span>ctrl</span> + <span>enter</span> Submit code</li>
+<li><span>esc</span> Hide errors or modal windows</li>
+<li><span>→</span> After success, advance to the next challenge</li>
+</ul>
+<a href="http://railsforzombies.org/levels/2/challenges/2#" class="shortcuts-close">Close</a>
+</div>
+<div id="twitter-button-wrapper" style="display:none">
+<iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" title="Twitter Tweet Button" src="./Code School - Rails for Zombies_files/tweet_button.3beb63f1e7d4b547a42d79c021627bc3.en.html" data-url="https://www.codeschool.com/courses/rails-for-zombies-redux" style="position: static; visibility: visible; width: 97px; height: 20px;"></iframe>
+
+</div>
+<script>
+  //<![CDATA[
+    $(document).ready(function(){
+    
+      CourseApp.init({
+        lab: {"created_at":"2012-06-19T01:45:19Z","free_play":true,"id":2,"name":"Models Taste Like Chicken","number":2,"updated_at":"2012-08-14T13:24:10Z","video_id":null,"video_mov_file":null,"video_mp4_file":null,"progress":"17.0"},
+        tabs: [{"anchor":"Database","id":"database","panel_id":"database","render":{"data":{"zombies":[{"id":1,"name":"Ashley","graveyard":"Glen Haven Memorial Cemetery"},{"id":2,"name":"Bob","graveyard":"Chapel Hill Cemetery"},{"id":3,"name":"Katie","graveyard":"My Fathers Basement"}]}}}],
+        hints: {"hints":[],"has_more_hints":true,"url":"http://railsforzombies.org/levels/2/challenges/2/next_hint.json","hints_remaining":2,"hints_text":"Hints","hint_cost":0},
+        editors: [{"url":"http://railsforzombies.org/levels/2/challenges/2","instructions":"<p>Add a validation that checks for the presence of a <code>Zombie</code>'s name</p>","initial_value":"class Zombie < ActiveRecord::Base\n  # insert validation here\nend\n","type":"text","anchor":"app/models/zombie.rb","id":1,"syntax":"ruby","snippet":"","change_event":null,"focused":true,"experiment_until_correct":null,"prompt":null,"result_prompt":null,"noisy_success":null,"welcome_message":null,"help_message":null}],
+        current_user: {"points":1750},
+        challenge: {"id":8,"title":"Validations I","number":2,"completed":false,"url":"http://railsforzombies.org/levels/2/challenges/2","path":null,"experiment":false,"possible_points":250,"switch_labs_url":"http://railsforzombies.org/levels/switch?current_exercise_id=8","level_number":2,"total_challenges":6,"instructions":"<p>Add a validation that checks for the presence of a <code>Zombie</code>'s name</p>","file_browser":{"files":null,"name":"Files"},"extra_credit_instructions":{"text":"<p>Try to verify that the validation works by trying to create a <code>Zombie</code> with no name.</p>\n","options":{"console":true}},"keep_score":true,"all_experiment":null,"reload":null,"splitter":"#########################"},
+        challenges: [{"id":7,"title":"Create Model","number":1,"instructions":"<p>Define a <code>Zombie</code> model.</p>","completed":true,"current":false,"url":"http://railsforzombies.org/levels/2/challenges/1"},{"id":8,"title":"Validations I","number":2,"instructions":"<p>Add a validation that checks for the presence of a <code>Zombie</code>'s name</p>","completed":false,"current":true,"url":"http://railsforzombies.org/levels/2/challenges/2"},{"id":9,"title":"Validations II","number":3,"instructions":"<p>Add a validation that checks for the uniqueness of a <code>Zombie</code>'s name.</p>","completed":false,"current":false,"url":"http://railsforzombies.org/levels/2/challenges/3"},{"id":10,"title":"Validations III","number":4,"instructions":"<p>Validate both the <code>uniqueness</code> and the <code>presence</code> of a <code>Zombie</code>'s name on a single line, using the new validation syntax.</p>","completed":false,"current":false,"url":"http://railsforzombies.org/levels/2/challenges/4"},{"id":11,"title":"Belongs To","number":5,"instructions":"<p>A <code>Weapon</code> belongs to a <code>Zombie</code>. Create that relationship.</p>","completed":false,"current":false,"url":"http://railsforzombies.org/levels/2/challenges/5"},{"id":12,"title":"Relationship Find","number":6,"instructions":"<p>Assuming the models and relationships are properly defined,\nfind all the weapons that belong to Zombie <code>'Ashley'</code>.</p>","completed":false,"current":false,"url":"http://railsforzombies.org/levels/2/challenges/6"}],
+        database: null
+      });
+    
+      $('#challenge-panels nav').delegate('#view-mode', 'click', function(e) {
+        e.preventDefault();
+        $('body').toggleClass('responsive');
+        $.each(CourseApp.editor_views, function(index,view){
+          if(typeof view.resize === "function"){
+            view.resize();
+          }
+        })
+      });
+    
+      // OpenBadges
+      $('a[data-assertion-url]:first').live('click', function(e){
+        e.preventDefault();
+        var url = $(this).data('assertion-url');
+        OpenBadges.issue([url], function(errors, successes) { 
+          console.log(errors); 
+          console.log(successes) 
+        });
+      });
+    
+      $('#sidebar').delegate('.change-level', 'click', function(e) {
+        $.facebox({
+          ajax: $(this).attr('href'),
+          opacity: 0.3
+        }, 'change-level');
+        e.preventDefault();
+      });
+    
+      $('#sidebar').delegate('.sidebar-shortcuts', 'click', function(e) {
+        e.preventDefault();
+        $.facebox({
+          opacity: 0.3,
+          div: '#shortcuts'
+        }, 'shortcuts');
+    
+        $('.shortcuts-close').one('click', function(e) {
+          e.preventDefault();
+          $(document).trigger('close.facebox');
+        });
+      });
+    
+      $(document).bind('reveal.facebox', function() {
+        $('#facebox .content').hide().fadeIn(200);
+        $('#facebox').css('top', $(window).height() / 2 - ($('#facebox .popup').height() / 2))
+      });
+    
+      // Prevent browser back functionality when pressing backspace
+      $(document).bind('keydown', function(e) {
+        if(e.keyCode == 8) {
+          e.preventDefault();
+        }
+      });
+    });
+  //]]>
+</script>
+
+
+      <script type="text/javascript" src="./Code School - Rails for Zombies_files/issuer.js"></script><script id="deferedjs" type="text/javascript">
+        var aa = document.getElementById("deferedjs");
+        var bb = document.createElement("script");
+bb.type = "text/javascript";
+bb.src = ("//beta.openbadges.org/issuer.js");
+aa.parentNode.insertBefore(bb,aa);
+
+      </script>
+
+
+
+</body></html>

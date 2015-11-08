@@ -1,0 +1,2545 @@
+/* BASICS */
+
+
+.CodeMirror {
+  /* Set height, width, borders, and global font properties here */
+  font-family: monospace;
+  height: 300px;
+  color: black;
+}
+
+/* PADDING */
+
+.CodeMirror-lines {
+  padding: 4px 0; /* Vertical padding around content */
+}
+.CodeMirror pre {
+  padding: 0 4px; /* Horizontal padding of content */
+}
+
+.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+  background-color: white; /* The little square between H and V scrollbars */
+}
+
+/* GUTTER */
+
+.CodeMirror-gutters {
+  border-right: 1px solid #ddd;
+  background-color: #f7f7f7;
+  white-space: nowrap;
+}
+.CodeMirror-linenumbers {}
+.CodeMirror-linenumber {
+  padding: 0 3px 0 5px;
+  min-width: 20px;
+  text-align: right;
+  color: #999;
+  white-space: nowrap;
+}
+
+.CodeMirror-guttermarker { color: black; }
+.CodeMirror-guttermarker-subtle { color: #999; }
+
+/* CURSOR */
+
+.CodeMirror div.CodeMirror-cursor {
+  border-left: 1px solid black;
+}
+/* Shown when moving in bi-directional text */
+.CodeMirror div.CodeMirror-secondarycursor {
+  border-left: 1px solid silver;
+}
+.CodeMirror.cm-fat-cursor div.CodeMirror-cursor {
+  width: auto;
+  border: 0;
+  background: #7e7;
+}
+.CodeMirror.cm-fat-cursor div.CodeMirror-cursors {
+  z-index: 1;
+}
+
+.cm-animate-fat-cursor {
+  width: auto;
+  border: 0;
+  -webkit-animation: blink 1.06s steps(1) infinite;
+  -moz-animation: blink 1.06s steps(1) infinite;
+  animation: blink 1.06s steps(1) infinite;
+}
+@-moz-keyframes blink {
+  0% { background: #7e7; }
+  50% { background: none; }
+  100% { background: #7e7; }
+}
+@-webkit-keyframes blink {
+  0% { background: #7e7; }
+  50% { background: none; }
+  100% { background: #7e7; }
+}
+@keyframes blink {
+  0% { background: #7e7; }
+  50% { background: none; }
+  100% { background: #7e7; }
+}
+
+/* Can style cursor different in overwrite (non-insert) mode */
+div.CodeMirror-overwrite div.CodeMirror-cursor {}
+
+.cm-tab { display: inline-block; text-decoration: inherit; }
+
+.CodeMirror-ruler {
+  border-left: 1px solid #ccc;
+  position: absolute;
+}
+
+/* DEFAULT THEME */
+
+.cm-s-default .cm-keyword {color: #708;}
+.cm-s-default .cm-atom {color: #219;}
+.cm-s-default .cm-number {color: #164;}
+.cm-s-default .cm-def {color: #00f;}
+.cm-s-default .cm-variable,
+.cm-s-default .cm-punctuation,
+.cm-s-default .cm-property,
+.cm-s-default .cm-operator {}
+.cm-s-default .cm-variable-2 {color: #05a;}
+.cm-s-default .cm-variable-3 {color: #085;}
+.cm-s-default .cm-comment {color: #a50;}
+.cm-s-default .cm-string {color: #a11;}
+.cm-s-default .cm-string-2 {color: #f50;}
+.cm-s-default .cm-meta {color: #555;}
+.cm-s-default .cm-qualifier {color: #555;}
+.cm-s-default .cm-builtin {color: #30a;}
+.cm-s-default .cm-bracket {color: #997;}
+.cm-s-default .cm-tag {color: #170;}
+.cm-s-default .cm-attribute {color: #00c;}
+.cm-s-default .cm-header {color: blue;}
+.cm-s-default .cm-quote {color: #090;}
+.cm-s-default .cm-hr {color: #999;}
+.cm-s-default .cm-link {color: #00c;}
+
+.cm-negative {color: #d44;}
+.cm-positive {color: #292;}
+.cm-header, .cm-strong {font-weight: bold;}
+.cm-em {font-style: italic;}
+.cm-link {text-decoration: underline;}
+.cm-strikethrough {text-decoration: line-through;}
+
+.cm-s-default .cm-error {color: #f00;}
+.cm-invalidchar {color: #f00;}
+
+.CodeMirror-composing { border-bottom: 2px solid; }
+
+/* Default styles for common addons */
+
+div.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}
+div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
+.CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }
+.CodeMirror-activeline-background {background: #e8f2ff;}
+
+/* STOP */
+
+/* The rest of this file contains styles related to the mechanics of
+   the editor. You probably shouldn't touch them. */
+
+.CodeMirror {
+  position: relative;
+  overflow: hidden;
+  background: white;
+}
+
+.CodeMirror-scroll {
+  overflow: scroll !important; /* Things will break if this is overridden */
+  /* 30px is the magic margin used to hide the element's real scrollbars */
+  /* See overflow: hidden in .CodeMirror */
+  margin-bottom: -30px; margin-right: -30px;
+  padding-bottom: 30px;
+  height: 100%;
+  outline: none; /* Prevent dragging from highlighting the element */
+  position: relative;
+}
+.CodeMirror-sizer {
+  position: relative;
+  border-right: 30px solid transparent;
+}
+
+/* The fake, visible scrollbars. Used to force redraw during scrolling
+   before actuall scrolling happens, thus preventing shaking and
+   flickering artifacts. */
+.CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+  position: absolute;
+  z-index: 6;
+  display: none;
+}
+.CodeMirror-vscrollbar {
+  right: 0; top: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.CodeMirror-hscrollbar {
+  bottom: 0; left: 0;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+.CodeMirror-scrollbar-filler {
+  right: 0; bottom: 0;
+}
+.CodeMirror-gutter-filler {
+  left: 0; bottom: 0;
+}
+
+.CodeMirror-gutters {
+  position: absolute; left: 0; top: 0;
+  z-index: 3;
+}
+.CodeMirror-gutter {
+  white-space: normal;
+  height: 100%;
+  display: inline-block;
+  margin-bottom: -30px;
+  /* Hack to make IE7 behave */
+  *zoom:1;
+  *display:inline;
+}
+.CodeMirror-gutter-wrapper {
+  position: absolute;
+  z-index: 4;
+  height: 100%;
+}
+.CodeMirror-gutter-elt {
+  position: absolute;
+  cursor: default;
+  z-index: 4;
+}
+.CodeMirror-gutter-wrapper {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.CodeMirror-lines {
+  cursor: text;
+  min-height: 1px; /* prevents collapsing before first draw */
+}
+.CodeMirror pre {
+  /* Reset some styles that the rest of the page might have set */
+  -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
+  border-width: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  margin: 0;
+  white-space: pre;
+  word-wrap: normal;
+  line-height: inherit;
+  color: inherit;
+  z-index: 2;
+  position: relative;
+  overflow: visible;
+  -webkit-tap-highlight-color: transparent;
+}
+.CodeMirror-wrap pre {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: normal;
+}
+
+.CodeMirror-linebackground {
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  z-index: 0;
+}
+
+.CodeMirror-linewidget {
+  position: relative;
+  z-index: 2;
+  overflow: auto;
+}
+
+.CodeMirror-widget {}
+
+.CodeMirror-code {
+  outline: none;
+}
+
+/* Force content-box sizing for the elements where we expect it */
+.CodeMirror-scroll,
+.CodeMirror-sizer,
+.CodeMirror-gutter,
+.CodeMirror-gutters,
+.CodeMirror-linenumber {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+.CodeMirror-measure {
+  position: absolute;
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+.CodeMirror-measure pre { position: static; }
+
+.CodeMirror div.CodeMirror-cursor {
+  position: absolute;
+  border-right: none;
+  width: 0;
+}
+
+div.CodeMirror-cursors {
+  visibility: hidden;
+  position: relative;
+  z-index: 3;
+}
+.CodeMirror-focused div.CodeMirror-cursors {
+  visibility: visible;
+}
+
+.CodeMirror-selected { background: #d9d9d9; }
+.CodeMirror-focused .CodeMirror-selected { background: #d7d4f0; }
+.CodeMirror-crosshair { cursor: crosshair; }
+.CodeMirror ::selection { background: #d7d4f0; }
+.CodeMirror ::-moz-selection { background: #d7d4f0; }
+
+.cm-searching {
+  background: #ffa;
+  background: rgba(255, 255, 0, .4);
+}
+
+/* IE7 hack to prevent it from returning funny offsetTops on the spans */
+.CodeMirror span { *vertical-align: text-bottom; }
+
+/* Used to force a border model for a node */
+.cm-force-border { padding-right: .1px; }
+
+@media print {
+  /* Hide the cursor when printing */
+  .CodeMirror div.CodeMirror-cursors {
+    visibility: hidden;
+  }
+}
+
+/* See issue #2901 */
+.cm-tab-wrap-hack:after { content: ''; }
+
+/* Help users use markselection to safely style text background */
+span.CodeMirror-selectedtext { background: none; }
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+/* line 18, ../../app/assets/stylesheets/_reset.css.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* line 27, ../../app/assets/stylesheets/_reset.css.scss */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+/* line 30, ../../app/assets/stylesheets/_reset.css.scss */
+body {
+  line-height: 1;
+}
+
+/* line 33, ../../app/assets/stylesheets/_reset.css.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 36, ../../app/assets/stylesheets/_reset.css.scss */
+blockquote, q {
+  quotes: none;
+}
+
+/* line 40, ../../app/assets/stylesheets/_reset.css.scss */
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+/* line 44, ../../app/assets/stylesheets/_reset.css.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 5, ../../app/assets/stylesheets/_editor.css.sass */
+.content-editor {
+  height: 100%;
+}
+
+/* line 8, ../../app/assets/stylesheets/_editor.css.sass */
+.CodeMirror {
+  font-size: 13px;
+  font-family: Menlo, Monaco, Courier, monospace;
+  height: 100%;
+  line-height: 1.3;
+  background-color: transparent;
+}
+
+/* line 15, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies {
+  color: white;
+  font-size: 16px;
+  line-height: 23px;
+}
+/* line 19, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .CodeMirror-selected {
+  background: rgba(83, 110, 31, 0.4) !important;
+}
+/* line 21, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .CodeMirror-gutters {
+  background: #f1edda url(/assets/bg-editor.jpg) repeat;
+  border-right: 0;
+}
+/* line 24, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .CodeMirror-linenumber {
+  color: #a4957b;
+}
+/* line 26, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .CodeMirror-cursor {
+  border-left: 2px solid #7b7f64 !important;
+}
+/* line 28, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-number {
+  color: #b9503b;
+}
+/* line 30, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-comment {
+  color: #b79b79;
+  font-style: italic;
+}
+/* line 33, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-string-2 {
+  color: red;
+}
+/* line 35, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-error {
+  border-bottom: 1px solid red;
+}
+/* line 37, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-keyword,
+.cm-s-zombies .cm-operator,
+.cm-s-zombies .cm-property {
+  color: #97813e;
+}
+/* line 45, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-def,
+.cm-s-zombies .cm-s-cobalt span.cm-tag,
+.cm-s-zombies span.cm-variable-3,
+.cm-s-zombies .cm-s-cobalt span.cm-def,
+.cm-s-zombies .cm-builtin,
+.cm-s-zombies .cm-tag,
+.cm-s-zombies .cm-attribute {
+  color: white;
+}
+/* line 53, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-atom {
+  color: #b7d65b;
+}
+/* line 55, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-string,
+.cm-s-zombies .cm-meta {
+  color: #b7d65b;
+}
+/* line 58, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-header {
+  color: #ff6400;
+}
+/* line 60, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-hr {
+  color: #aeaeae;
+}
+/* line 62, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-link {
+  color: blue;
+}
+/* line 64, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .build-error,
+.cm-s-zombies .build-warning {
+  background: #354316;
+  color: white;
+}
+/* line 70, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-tag,
+.cm-s-zombies .cm-bracket {
+  color: #97813e;
+}
+/* line 76, ../../app/assets/stylesheets/_editor.css.sass */
+.cm-s-zombies .cm-property {
+  color: white;
+}
+
+/* line 6, ../../app/assets/stylesheets/_console.css.scss */
+.cs-console {
+  color: #eee;
+  font: 16px/23px Courier, monospace;
+  padding: 10px;
+}
+/* line 13, ../../app/assets/stylesheets/_console.css.scss */
+.cs-console .cs-console-output-element,
+.cs-console .CodeMirror-code {
+  color: #eeeeee;
+}
+/* line 15, ../../app/assets/stylesheets/_console.css.scss */
+.cs-console .cs-console-output-element > div, .cs-console .cs-console-output-element > pre,
+.cs-console .CodeMirror-code > div,
+.cs-console .CodeMirror-code > pre {
+  padding-bottom: 15px;
+}
+/* line 20, ../../app/assets/stylesheets/_console.css.scss */
+.cs-console .CodeMirror-linewidget {
+  margin-left: 5px;
+  line-height: 18px;
+}
+/* line 25, ../../app/assets/stylesheets/_console.css.scss */
+.cs-console div.CodeMirror-cursor {
+  border-left: 2px solid #eeeeee;
+}
+/* line 31, ../../app/assets/stylesheets/_console.css.scss */
+.cs-console .console-success-message {
+  color: #b7d65b;
+}
+/* line 34, ../../app/assets/stylesheets/_console.css.scss */
+.cs-console .console-error-message {
+  color: #fb8a8a;
+}
+
+/* line 39, ../../app/assets/stylesheets/_console.css.scss */
+.cs-console-height {
+  height: 93%;
+}
+
+@media screen and (max-height: 800px) {
+  /* line 44, ../../app/assets/stylesheets/_console.css.scss */
+  .cs-console-height {
+    height: 91%;
+  }
+}
+@font-face {
+  font-family: 'BebasNeueRegular';
+  src: url(//d20m4dvzhiuv61.cloudfront.net/assets/BebasNeue-webfont-b28009a86274b7ab2bfd23aa5da72ffa.eot);
+  src: url(//d20m4dvzhiuv61.cloudfront.net/assets/BebasNeue-webfont.eot?#iefix) format("embedded-opentype"), url(//d20m4dvzhiuv61.cloudfront.net/assets/BebasNeue-webfont-a16bdf024993434eb180c357de057d43.woff) format("woff"), url(//d20m4dvzhiuv61.cloudfront.net/assets/BebasNeue-webfont-b4dccf906cfd6ec380a23ea9f90e5a06.ttf) format("truetype"), url(//d20m4dvzhiuv61.cloudfront.net/assets/BebasNeue-webfont.svg#BebasNeueRegular) format("svg");
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* line 78, ../../app/assets/stylesheets/application.css.scss */
+.group, #hints p, .home .home-featured, .home .home-info, .home .advanced-courses, #facebox .change-level ul {
+  zoom: 1;
+}
+/* line 81, ../../app/assets/stylesheets/application.css.scss */
+.group:before, #hints p:before, .home .home-featured:before, .home .home-info:before, .home .advanced-courses:before, #facebox .change-level ul:before, .group:after, #hints p:after, .home .home-featured:after, .home .home-info:after, .home .advanced-courses:after, #facebox .change-level ul:after {
+  content: '';
+  display: table;
+}
+/* line 85, ../../app/assets/stylesheets/application.css.scss */
+.group:after, #hints p:after, .home .home-featured:after, .home .home-info:after, .home .advanced-courses:after, #facebox .change-level ul:after {
+  clear: both;
+}
+
+/* line 89, ../../app/assets/stylesheets/application.css.scss */
+.ir, #codeschool-logo, #editor-group .loading #manual_submit b, #sidebar nav h2 .change-level, #sidebar nav h3, #sidebar footer #sidebar-envy,
+#sidebar footer #sidebar-newrelic, #sidebar-logo b, .home header .logo-header-newrelic, #view-mode {
+  background-color: transparent;
+  border: 0;
+  color: transparent;
+  font: 0/0 a;
+  text-shadow: none;
+}
+
+/* line 103, ../../app/assets/stylesheets/application.css.scss */
+html {
+  background: #000;
+  font-size: 16px;
+  height: 100%;
+}
+
+/* line 108, ../../app/assets/stylesheets/application.css.scss */
+body {
+  -webkit-transition: opacity 0.7s ease-in-out;
+  -moz-transition: opacity 0.7s ease-in-out;
+  -ms-transition: opacity 0.7s ease-in-out;
+  transition: opacity 0.7s ease-in-out;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-body-b508334adb96cf820159118f6f908e14.jpg) 0 0 no-repeat;
+  color: #75746c;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 62.5%;
+  /* 1em = 10px */
+  margin: 0 auto;
+  min-width: 815px;
+  min-height: 100%;
+  position: relative;
+}
+/* line 118, ../../app/assets/stylesheets/application.css.scss */
+body.reveal {
+  opacity: 0;
+}
+
+/* line 122, ../../app/assets/stylesheets/application.css.scss */
+a {
+  color: #9aba00;
+  text-decoration: none;
+}
+/* line 125, ../../app/assets/stylesheets/application.css.scss */
+a:hover {
+  color: #708700;
+}
+
+/* line 129, ../../app/assets/stylesheets/application.css.scss */
+h1 {
+  color: #d2d0c2;
+  font: bold 3.6em/36px BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+
+/* line 135, ../../app/assets/stylesheets/application.css.scss */
+#next, #editor-group #manual_submit, .home .home-featured .home-content .button {
+  background: #789300 url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-next-a3680b770ec193d5e978e36b47878a09.jpg) 0 0 repeat-x;
+  border-radius: 4px;
+  box-shadow: inset 0 -3px rgba(0, 0, 0, 0.4), 0 2px 5px rgba(0, 0, 0, 0.9);
+  color: #f7fdb9;
+  display: block;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+}
+/* line 143, ../../app/assets/stylesheets/application.css.scss */
+#next b, #editor-group #manual_submit b, .home .home-featured .home-content .button b {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/icon-next-43c52f9fed4f0138e6cf1f04dfe1b870.png) right 9px no-repeat;
+  display: block;
+  font: bold 3em/44px BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  height: 44px;
+  letter-spacing: 0.04em;
+  padding: 3px 10px 3px;
+  text-align: center;
+}
+/* line 153, ../../app/assets/stylesheets/application.css.scss */
+#next:hover, #editor-group #manual_submit:hover, .home .home-featured .home-content .button:hover, #next:focus, #editor-group #manual_submit:focus, .home .home-featured .home-content .button:focus {
+  color: #fff;
+}
+/* line 156, ../../app/assets/stylesheets/application.css.scss */
+#next:active, #editor-group #manual_submit:active, .home .home-featured .home-content .button:active {
+  -webkit-transform: translateY(2px);
+  -moz-transform: translateY(2px);
+  -ms-transform: translateY(2px);
+  transform: translateY(2px);
+  -webkit-backface-visibility: hidden;
+  box-shadow: inset 0 -1px rgba(0, 0, 0, 0.4), 0 2px 5px rgba(0, 0, 0, 0.9);
+}
+
+/* line 161, ../../app/assets/stylesheets/application.css.scss */
+::selection {
+  background: rgba(170, 220, 83, 0.5);
+  color: #fff;
+}
+
+/* line 165, ../../app/assets/stylesheets/application.css.scss */
+::-moz-selection {
+  background: rgba(170, 220, 83, 0.5);
+  color: #fff;
+}
+
+/* line 176, ../../app/assets/stylesheets/application.css.scss */
+#codeschool {
+  -webkit-transition: top 0.8s 1s ease-out;
+  -moz-transition: top 0.8s 1s ease-out;
+  -ms-transition: top 0.8s 1s ease-out;
+  transition: top 0.8s 1s ease-out;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-codeschool-c4b0260f20031c3ddbdf6fa00fb0a30b.png) 0 0 repeat-x;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-codeschool-top-17f6c05682dd6b2133adcd71e6059e95.png) center 0 no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-codeschool-left-7fc24566664638b2155f74eb94e9861a.png) 0 0 no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-codeschool-right-f28619f965a20a34e04dcd1f4548a68b.png) right 0 no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-codeschool-c4b0260f20031c3ddbdf6fa00fb0a30b.png) 0 0 repeat-x;
+  background-color: #000;
+  box-shadow: 0 2px 4px 3px rgba(0, 0, 0, 0.8);
+  height: 44px;
+  left: 0;
+  padding: 0 210px 0 8px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 5;
+}
+/* line 189, ../../app/assets/stylesheets/application.css.scss */
+.reveal #codeschool {
+  top: -44px;
+}
+/* line 192, ../../app/assets/stylesheets/application.css.scss */
+.lab #codeschool {
+  padding-right: 30px;
+}
+/* line 195, ../../app/assets/stylesheets/application.css.scss */
+#codeschool li {
+  float: left;
+}
+/* line 200, ../../app/assets/stylesheets/application.css.scss */
+#codeschool li a,
+#codeschool #codeschool-user,
+#codeschool #codeschool-session {
+  color: #fff;
+  display: block;
+  font: bold 1em/40px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 0 10px;
+  text-decoration: none;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.75);
+}
+/* line 208, ../../app/assets/stylesheets/application.css.scss */
+#codeschool li a:hover, #codeschool li a:focus,
+#codeschool #codeschool-user:hover,
+#codeschool #codeschool-user:focus,
+#codeschool #codeschool-session:hover,
+#codeschool #codeschool-session:focus {
+  opacity: 0.7;
+}
+/* line 212, ../../app/assets/stylesheets/application.css.scss */
+#codeschool #codeschool-user {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-codeschool-divider-34263208fcfbe0e2a83af6c2b5642af5.png) right center no-repeat;
+  float: right;
+  padding-right: 20px;
+  position: relative;
+}
+/* line 217, ../../app/assets/stylesheets/application.css.scss */
+#codeschool #codeschool-user:after {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/icon-user-eeb2c2d2d8831efbf19c3762a0a0f73c.png) no-repeat;
+  content: '';
+  display: block;
+  height: 11px;
+  left: -12px;
+  position: absolute;
+  top: 14px;
+  width: 13px;
+}
+/* line 228, ../../app/assets/stylesheets/application.css.scss */
+#codeschool #codeschool-user:hover:after, #codeschool #codeschool-user:focus:after {
+  opacity: 0.7;
+}
+/* line 232, ../../app/assets/stylesheets/application.css.scss */
+#codeschool #codeschool-session {
+  float: right;
+  padding-left: 20px;
+}
+
+/* line 237, ../../app/assets/stylesheets/application.css.scss */
+#codeschool-logo {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/logo-codeschool-d31459fe405d935b1cfd7e37ab4bf0c5.png) center no-repeat;
+  float: left;
+  height: 40px;
+  padding: 0 10px;
+  width: 25px;
+}
+/* line 245, ../../app/assets/stylesheets/application.css.scss */
+#codeschool-logo:hover, #codeschool-logo:focus {
+  opacity: 0.7;
+}
+
+/* line 249, ../../app/assets/stylesheets/application.css.scss */
+#sidebar-points {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-total-f03542c50506ca3bb42b143ed957c6bc.png) no-repeat;
+  box-shadow: 0 1px rgba(126, 155, 0, 0.14);
+  height: 39px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  width: 200px;
+}
+/* line 258, ../../app/assets/stylesheets/application.css.scss */
+.lab #sidebar-points {
+  display: none;
+}
+/* line 262, ../../app/assets/stylesheets/application.css.scss */
+#sidebar-points em,
+#sidebar-points b {
+  -webkit-mask-image: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-total-overlay-3a5bbb3d5d950cc53d053f0eb9787e9f.png);
+  -moz-mask-image: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-total-overlay-3a5bbb3d5d950cc53d053f0eb9787e9f.png);
+  -o-mask-image: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-total-overlay-3a5bbb3d5d950cc53d053f0eb9787e9f.png);
+  mask-image: url("bg-total-overlay.png");
+  display: inline-block;
+  letter-spacing: 0.07em;
+  vertical-align: middle;
+}
+/* line 268, ../../app/assets/stylesheets/application.css.scss */
+#sidebar-points em {
+  color: #beea00;
+  font: bold 3.4em/37px BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  padding: 2px 10px 0;
+  text-shadow: 0 0 15px rgba(172, 212, 0, 0.6);
+}
+/* line 274, ../../app/assets/stylesheets/application.css.scss */
+#sidebar-points b {
+  color: #fff;
+  font: bold 1.5em/35px BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  padding-top: 4px;
+  text-transform: uppercase;
+}
+
+/* line 288, ../../app/assets/stylesheets/application.css.scss */
+#notifications {
+  background: black url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-codeschool-c4b0260f20031c3ddbdf6fa00fb0a30b.png) 0 -35px repeat-x;
+  bottom: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  display: none;
+  min-width: 920px;
+  padding-top: 20px;
+  position: fixed;
+  text-align: center;
+  width: 100%;
+  z-index: 50;
+}
+/* line 300, ../../app/assets/stylesheets/application.css.scss */
+#notifications h3 {
+  color: #d2d0c2;
+  font: bold 2.8em/1.1em BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  margin: 0 0 2px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.23);
+  text-transform: uppercase;
+}
+/* line 307, ../../app/assets/stylesheets/application.css.scss */
+#notifications p {
+  color: #fff;
+  font-size: 1.6em;
+  line-height: 1.5em;
+  margin: 0 auto 8px;
+  max-width: 800px;
+}
+/* line 314, ../../app/assets/stylesheets/application.css.scss */
+#notifications .notifications-close {
+  color: #666;
+  display: block;
+  padding-bottom: 20px;
+}
+/* line 319, ../../app/assets/stylesheets/application.css.scss */
+#notifications .error {
+  border-bottom: 1px solid #1e130b;
+  padding: 10px 20px 5px;
+}
+/* line 324, ../../app/assets/stylesheets/application.css.scss */
+#notifications:hover, #notifications:focus {
+  background-color: #111;
+}
+
+/* line 337, ../../app/assets/stylesheets/application.css.scss */
+#challenge-objective {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-objective-63f4f9b3fd0273aa1a5924d0ec768f35.png) 0 bottom no-repeat;
+  min-height: 158px;
+  padding: 95px 185px 25px 215px;
+  position: relative;
+}
+/* line 342, ../../app/assets/stylesheets/application.css.scss */
+#challenge-objective h4 {
+  display: none;
+}
+/* line 345, ../../app/assets/stylesheets/application.css.scss */
+#challenge-objective p {
+  font: normal 2.2em/1.4em "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+/* line 347, ../../app/assets/stylesheets/application.css.scss */
+#challenge-objective p code {
+  color: #beea00;
+  font-family: Courier, monospace;
+  line-height: 1.1em;
+}
+
+/* line 357, ../../app/assets/stylesheets/application.css.scss */
+#challenge-points {
+  -webkit-transition: top 0.4s ease-in-out;
+  -moz-transition: top 0.4s ease-in-out;
+  -ms-transition: top 0.4s ease-in-out;
+  transition: top 0.4s ease-in-out;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-points-1a0a71485618b30b75f0f3dce244bf79.png);
+  box-shadow: 3px 8px 15px #000, 10px 10px 15px #000;
+  color: #fff;
+  height: 123px;
+  position: absolute;
+  right: 8px;
+  text-align: center;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.75), 0 0 10px rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  top: 95px;
+  width: 161px;
+}
+/* line 370, ../../app/assets/stylesheets/application.css.scss */
+#challenge-points b {
+  -webkit-animation: points 0.4s step-start 50, tv 0.6s 0.5s ease-in-out 1;
+  -moz-animation: points 0.4s step-start 50, tv 0.6s 0.5s ease-in-out 1;
+  animation: points 0.4s step-start 50, tv 0.6s 0.5s ease-in-out 1;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-points-display-d79847f624b4f779484f0314c32332ae.png);
+  font: bold 2.4em/1em BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  display: block;
+  height: 34px;
+  left: 14px;
+  padding-top: 68px;
+  position: absolute;
+  top: 10px;
+  width: 134px;
+}
+/* line 384, ../../app/assets/stylesheets/application.css.scss */
+#challenge-points em {
+  -webkit-animation: tv 0.6s 0.5s ease-in-out 1;
+  -moz-animation: tv 0.6s 0.5s ease-in-out 1;
+  animation: tv 0.6s 0.5s ease-in-out 1;
+  font: bold 6.6em/1.5em BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  position: relative;
+  z-index: 1;
+}
+
+@-webkit-keyframes points {
+  /* line 394, ../../app/assets/stylesheets/application.css.scss */
+  0% {
+    background-position: 0 0;
+  }
+
+  /* line 395, ../../app/assets/stylesheets/application.css.scss */
+  50% {
+    background-position: 0 -102px;
+  }
+}
+
+@-moz-keyframes points {
+  /* line 398, ../../app/assets/stylesheets/application.css.scss */
+  0% {
+    background-position: 0 0;
+  }
+
+  /* line 399, ../../app/assets/stylesheets/application.css.scss */
+  50% {
+    background-position: 0 -102px;
+  }
+}
+
+@keyframes points {
+  /* line 402, ../../app/assets/stylesheets/application.css.scss */
+  0% {
+    background-position: 0 0;
+  }
+
+  /* line 403, ../../app/assets/stylesheets/application.css.scss */
+  50% {
+    background-position: 0 -102px;
+  }
+}
+
+@-webkit-keyframes tv {
+  /* line 406, ../../app/assets/stylesheets/application.css.scss */
+  0% {
+    opacity: 0;
+  }
+
+  /* line 407, ../../app/assets/stylesheets/application.css.scss */
+  30% {
+    opacity: 0.2;
+  }
+
+  /* line 408, ../../app/assets/stylesheets/application.css.scss */
+  51% {
+    opacity: 0.7;
+  }
+
+  /* line 409, ../../app/assets/stylesheets/application.css.scss */
+  80% {
+    opacity: 0.2;
+  }
+
+  /* line 410, ../../app/assets/stylesheets/application.css.scss */
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes tv {
+  /* line 413, ../../app/assets/stylesheets/application.css.scss */
+  0% {
+    opacity: 0;
+  }
+
+  /* line 414, ../../app/assets/stylesheets/application.css.scss */
+  30% {
+    opacity: 0.2;
+  }
+
+  /* line 415, ../../app/assets/stylesheets/application.css.scss */
+  51% {
+    opacity: 0.7;
+  }
+
+  /* line 416, ../../app/assets/stylesheets/application.css.scss */
+  80% {
+    opacity: 0.2;
+  }
+
+  /* line 417, ../../app/assets/stylesheets/application.css.scss */
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes tv {
+  /* line 420, ../../app/assets/stylesheets/application.css.scss */
+  0% {
+    opacity: 0;
+  }
+
+  /* line 421, ../../app/assets/stylesheets/application.css.scss */
+  30% {
+    opacity: 0.2;
+  }
+
+  /* line 422, ../../app/assets/stylesheets/application.css.scss */
+  51% {
+    opacity: 0.7;
+  }
+
+  /* line 423, ../../app/assets/stylesheets/application.css.scss */
+  80% {
+    opacity: 0;
+  }
+
+  /* line 424, ../../app/assets/stylesheets/application.css.scss */
+  100% {
+    opacity: 1;
+  }
+}
+
+/* line 429, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels {
+  -webkit-transition: opacity 0.5s 0.5s ease-in-out;
+  -moz-transition: opacity 0.5s 0.5s ease-in-out;
+  -ms-transition: opacity 0.5s 0.5s ease-in-out;
+  transition: opacity 0.5s 0.5s ease-in-out;
+  margin: 0 5px 0 205px;
+  position: relative;
+}
+/* line 433, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels:after {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-panels-26f6e660974df4c398d5557ba71362f8.jpg) 0 0 no-repeat;
+  content: '';
+  display: block;
+  height: 101px;
+  left: -205px;
+  position: absolute;
+  top: 0;
+  width: 205px;
+}
+/* line 443, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav {
+  height: 48px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+/* line 450, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav ol {
+  float: left;
+  position: relative;
+}
+/* line 454, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav li {
+  float: left;
+}
+/* line 456, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav li a {
+  display: block;
+  font: bold 1.4em/48px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-align: center;
+  width: 117px;
+}
+/* line 463, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #editor-tabs {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-ee574da153f2f46c7d6d593fdbed7b6f.png) right 0 repeat-x;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-top-9815a389578aefdf403467b826b946d1.png) 0 0 no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-ee574da153f2f46c7d6d593fdbed7b6f.png) right 0 repeat-x;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.15);
+}
+/* line 467, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #editor-tabs a {
+  border-right: 1px solid rgba(0, 0, 0, 0.7);
+  box-shadow: inset -1px 0 rgba(255, 255, 255, 0.15);
+  color: #d2d0c2;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.23);
+  padding: 0 10px;
+  width: auto;
+}
+/* line 476, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #editor-tabs a:hover, #challenge-panels nav #editor-tabs a:focus, #challenge-panels nav #editor-tabs a.active {
+  color: #fff;
+}
+/* line 481, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #resource-tabs {
+  padding-left: 5px;
+}
+/* line 483, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #resource-tabs li {
+  margin-right: 2px;
+  padding-top: 5px;
+}
+/* line 486, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #resource-tabs li:first-child a {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+/* line 490, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #resource-tabs li:last-child a {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+/* line 495, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #resource-tabs a {
+  background-color: rgba(0, 0, 0, 0.2);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.05)), to(rgba(0, 0, 0, 0.2)));
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
+  background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
+  background-image: linear-gradient(top, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.75), inset 0 -1px rgba(0, 0, 0, 0.5), 0 1px rgba(255, 255, 255, 0.15);
+  color: #d2d0c2;
+  line-height: 38px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.23);
+}
+/* line 502, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #resource-tabs a:hover, #challenge-panels nav #resource-tabs a:focus {
+  background-color: rgba(0, 0, 0, 0.15);
+  color: #fff;
+}
+/* line 506, ../../app/assets/stylesheets/application.css.scss */
+#challenge-panels nav #resource-tabs a.active {
+  background: #5d5d51 url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-resources-active-541cff59cffb54140c0e6486d79c01d4.jpg) 0 bottom no-repeat;
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.75), inset 0 -1px 3px 1px rgba(0, 0, 0, 0.6), inset 0 -1px rgba(0, 0, 0, 0.5), 0 1px rgba(255, 255, 255, 0.15);
+  color: #3a3936;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+/* line 519, ../../app/assets/stylesheets/application.css.scss */
+.panel-group {
+  bottom: 5px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+/* line 525, ../../app/assets/stylesheets/application.css.scss */
+.panel-group .panel {
+  border-top: 1px solid rgba(0, 0, 0, 0.7);
+  bottom: 0;
+  display: none;
+  left: 0;
+  overflow: auto;
+  position: absolute;
+  right: 0;
+  top: 48px;
+}
+
+/* line 539, ../../app/assets/stylesheets/application.css.scss */
+#editor-group {
+  background-color: #38382f;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-top-9815a389578aefdf403467b826b946d1.png) no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-editor-aa052a07bca515a479826bff4f1db11c.jpg) repeat;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.15);
+}
+/* line 543, ../../app/assets/stylesheets/application.css.scss */
+#editor-group.active {
+  z-index: 3;
+}
+/* line 547, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .extra-credit-mode .ace_cursor-layer {
+  display: none;
+}
+/* line 551, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .panel {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.15), 0 1px rgba(255, 255, 255, 0.15);
+  bottom: 60px;
+  top: 48px;
+}
+/* line 556, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .panel.active {
+  display: block;
+}
+/* line 561, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .snippet-active .snippet {
+  background: rgba(0, 0, 0, 0.25);
+  border-top: 1px solid rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.15);
+  height: 23px;
+  left: 0;
+  padding: 14px 4px;
+  position: absolute;
+  right: 0;
+  top: 48px;
+}
+/* line 571, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .snippet-active .snippet .ace_gutter {
+  display: none;
+}
+/* line 575, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .snippet-active .panel {
+  top: 99px;
+}
+/* line 583, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .console .jquery-console-inner {
+  color: #b3b3ad;
+  font: 16px/23px Courier, monospace;
+  padding: 5px;
+}
+/* line 587, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .console .jquery-console-inner .jquery-console-cursor {
+  background: #75746c;
+}
+/* line 590, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .console .jquery-console-inner .jquery-console-message {
+  color: #fff;
+}
+/* line 593, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .console .jquery-console-inner .jquery-console-success-message {
+  color: #beea00;
+}
+/* line 601, ../../app/assets/stylesheets/application.css.scss */
+#editor-group footer {
+  bottom: 0;
+  height: 50px;
+  left: 0;
+  padding: 5px;
+  position: absolute;
+  right: 0;
+}
+/* line 608, ../../app/assets/stylesheets/application.css.scss */
+#editor-group footer p {
+  background: #2a2a24;
+  border-radius: 5px;
+  color: #FFF;
+  font: bold 1.1em/50px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-align: center;
+}
+/* line 619, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .loading #manual_submit {
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 -3px rgba(0, 0, 0, 0.4), 0 2px 5px rgba(0, 0, 0, 0.9);
+  cursor: default;
+}
+/* line 623, ../../app/assets/stylesheets/application.css.scss */
+#editor-group .loading #manual_submit b {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/icon-load-f66c8eb0d2a5b105060413c5555d4c97.gif) center no-repeat;
+}
+
+/* line 632, ../../app/assets/stylesheets/application.css.scss */
+#resource-group {
+  background: #b6b4a2 url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-resources-0c2cc31bd6248550abed5a7c675da75f.jpg) repeat;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.75);
+}
+/* line 635, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .panel {
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
+  padding: 10px;
+}
+/* line 638, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .panel.active {
+  display: block;
+}
+/* line 641, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .panel h3 {
+  color: #000;
+  font: bold 3em BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+}
+/* line 645, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .panel div {
+  color: #403f3b;
+}
+/* line 648, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .panel table {
+  background: #a9a893;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid #1a1b15;
+  border-collapse: collapse;
+  margin: 10px 0;
+  width: 100%;
+}
+/* line 655, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .panel table th {
+  background: #5a5a54 url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-editor-aa052a07bca515a479826bff4f1db11c.jpg) repeat;
+  border-right: 1px solid #1a1b15;
+  color: #d2d0c2;
+  font-size: 1.6em;
+  font-weight: bold;
+  padding: 7px;
+  text-align: left;
+}
+/* line 664, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .panel table td {
+  border: 1px solid #1a1b15;
+  color: #000;
+  font-size: 1.6em;
+  padding: 10px;
+}
+
+/* line 676, ../../app/assets/stylesheets/application.css.scss */
+#output pre {
+  color: #322a25;
+  font: normal 1.4em/19px Courier, monospace;
+  white-space: -moz-pre-wrap;
+  white-space: pre-wrap;
+}
+
+/* line 685, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file {
+  background: #fff;
+  background: rgba(255, 255, 255, 0.4);
+  border: 0;
+  bottom: -11px;
+  left: 4px;
+  padding: 15px;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+}
+/* line 695, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file a {
+  color: #75746c !important;
+  display: inline-block;
+  border-bottom: 1px solid #d7d2c7;
+  line-height: 20px;
+}
+/* line 701, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file a:hover, #resource-group .gist-file a:focus {
+  color: #9b9a93 !important;
+}
+/* line 705, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-data {
+  background: none;
+  border-bottom: 0;
+  overflow: visible;
+}
+/* line 709, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-data .line-numbers {
+  font-size: 1.4em;
+}
+/* line 711, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-data .line-numbers .line-number {
+  clear: right;
+  display: block;
+}
+/* line 717, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-meta {
+  background: #2A2A24;
+  color: #999;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.2em;
+  margin-top: 30px;
+  padding: 5px 10px;
+  overflow: visible;
+}
+/* line 726, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-meta a {
+  border: 0;
+  text-decoration: underline;
+}
+/* line 731, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax {
+  color: #75746c;
+  font: normal 1.4em/22px Courier, monospace;
+  width: 100%;
+}
+/* line 735, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax pre {
+  padding: 0 !important;
+  white-space: -moz-pre-wrap;
+  white-space: pre-wrap;
+}
+/* line 740, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .nx {
+  color: #797979;
+}
+/* line 741, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .nt {
+  color: #75962e;
+}
+/* line 742, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .na, #resource-group .gist-file .gist-syntax .kd, #resource-group .gist-file .gist-syntax .s {
+  color: #2ab7c3;
+}
+/* line 743, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .k {
+  color: #957F3D;
+}
+/* line 744, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .nb, #resource-group .gist-file .gist-syntax .nc, #resource-group .gist-file .gist-syntax .no, #resource-group .gist-file .gist-syntax .sb, #resource-group .gist-file .gist-syntax .si, #resource-group .gist-file .gist-syntax .ss, #resource-group .gist-file .gist-syntax .vi {
+  color: #62625b;
+}
+/* line 745, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .o, #resource-group .gist-file .gist-syntax .p {
+  color: #75746c;
+}
+/* line 746, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .kp, #resource-group .gist-file .gist-syntax .sr, #resource-group .gist-file .gist-syntax .s1, #resource-group .gist-file .gist-syntax .s2, #resource-group .gist-file .gist-syntax .mi, #resource-group .gist-file .gist-syntax .m {
+  color: #EF4943;
+  font-weight: normal;
+}
+/* line 747, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .c1 {
+  color: #B79B79;
+}
+/* line 748, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .n {
+  color: #34362B;
+}
+/* line 749, ../../app/assets/stylesheets/application.css.scss */
+#resource-group .gist-file .gist-syntax .ss {
+  color: #425114;
+}
+
+/* line 756, ../../app/assets/stylesheets/application.css.scss */
+#hints p {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  font: normal 1.4em/32px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  position: relative;
+  text-align: right;
+}
+/* line 765, ../../app/assets/stylesheets/application.css.scss */
+#hints ol {
+  margin-left: 22px;
+}
+/* line 768, ../../app/assets/stylesheets/application.css.scss */
+#hints li {
+  color: #3a3936;
+  font: normal 1.4em/1.3em "Helvetica Neue", Helvetica, Arial, sans-serif;
+  list-style: decimal;
+  padding-bottom: 15px;
+}
+/* line 773, ../../app/assets/stylesheets/application.css.scss */
+#hints li code {
+  color: #566b00;
+  font-family: Courier, monospace;
+  padding: 0 2px;
+}
+/* line 778, ../../app/assets/stylesheets/application.css.scss */
+#hints li strong {
+  font-weight: bold;
+}
+/* line 781, ../../app/assets/stylesheets/application.css.scss */
+#hints li pre {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  color: #322a25;
+  font: normal 1.1em/1.3em Courier, monospace;
+  margin-top: 10px;
+  overflow: auto;
+  padding: 10px 0;
+  white-space: -moz-pre-wrap;
+  white-space: pre-wrap;
+}
+/* line 792, ../../app/assets/stylesheets/application.css.scss */
+#hints li:last-child pre {
+  border-bottom: 0;
+}
+
+/* line 797, ../../app/assets/stylesheets/application.css.scss */
+#next_hint {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/icon-hint-aa910a3929527f544da5d82a0cf64c10.png) 0 center no-repeat;
+  color: #542424;
+  display: block;
+  font-weight: bold;
+  float: left;
+  padding-left: 40px;
+  text-align: left;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+/* line 807, ../../app/assets/stylesheets/application.css.scss */
+#next_hint:hover, #next_hint:focus {
+  color: #301515;
+}
+/* line 810, ../../app/assets/stylesheets/application.css.scss */
+#next_hint.loading {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/icon-hint-load-bcf3af4b958c745d9266d25f5492f255.gif) 0 center no-repeat;
+}
+
+/* line 821, ../../app/assets/stylesheets/application.css.scss */
+#sidebar {
+  bottom: 0;
+  left: 0;
+  padding: 74px 0 0;
+  position: absolute;
+  top: 0;
+  width: 200px;
+  z-index: 1;
+}
+/* line 833, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav h2 {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-sidebar-header-b2e5a427d34f510f6a3bd35491fa88f2.png) no-repeat;
+  border-bottom: 1px solid #000;
+  color: #beea00;
+  font: bold 3.2em/1em "Helvetica Neue", Helvetica, Arial, sans-serif;
+  height: 44px;
+  padding: 5px 10px 0 98px;
+  position: relative;
+  text-shadow: 0 2px 2px black;
+}
+/* line 842, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav h2 b {
+  display: none;
+}
+/* line 845, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav h2 .change-level {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-change-3dd23e7606cb31c44793a1434868033a.png) no-repeat;
+  border-radius: 4px;
+  display: block;
+  height: 38px;
+  position: absolute;
+  right: 5px;
+  top: 4px;
+  width: 39px;
+}
+/* line 855, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav h2 .change-level:active {
+  background-position: 0 1px;
+}
+/* line 860, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav h3 {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-sidebar-progress-41dd22c6d6053622a00d85aab789b0f8.jpg) no-repeat;
+  height: 28px;
+  position: relative;
+}
+/* line 865, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav h3 b {
+  display: block;
+  height: 12px;
+  left: 8px;
+  position: absolute;
+  top: 7px;
+  width: 184px;
+}
+/* line 873, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav h3 .sidebar-progress {
+  -webkit-transition: all 1s 0.8s ease-in-out;
+  -moz-transition: all 1s 0.8s ease-in-out;
+  -ms-transition: all 1s 0.8s ease-in-out;
+  transition: all 1s 0.8s ease-in-out;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-sidebar-progress-bar-22d6cf2b31471feaebe1a77c3d9a9bd4.png) no-repeat;
+  display: block;
+  height: 12px;
+}
+/* line 878, ../../app/assets/stylesheets/application.css.scss */
+.reveal #sidebar nav h3 .sidebar-progress {
+  opacity: 0;
+  width: 0 !important;
+}
+/* line 884, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav li {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-sidebar-nav-ef99544708d356d7159cc55a73bdbfe8.jpg) repeat-x;
+}
+/* line 886, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav li:first-child a {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-top-9815a389578aefdf403467b826b946d1.png) no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-sidebar-nav-overlay-1f1bf50fdebe9621012ab9b2c5acb89a.png) no-repeat;
+}
+/* line 889, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav li:nth-child(4n+2) a {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-top-9815a389578aefdf403467b826b946d1.png) no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-sidebar-nav-overlay-1f1bf50fdebe9621012ab9b2c5acb89a.png) 0 -51px no-repeat;
+}
+/* line 892, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav li:nth-child(4) a {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-top-9815a389578aefdf403467b826b946d1.png) no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-sidebar-nav-overlay-1f1bf50fdebe9621012ab9b2c5acb89a.png) 0 -102px no-repeat;
+}
+/* line 895, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav li a {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-top-9815a389578aefdf403467b826b946d1.png) no-repeat;
+  color: #202316;
+  display: block;
+  font: normal 1.8em/28px BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  padding: 12px 18px 11px;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+}
+/* line 904, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav li a:hover, #sidebar nav li a:focus {
+  background-color: rgba(172, 212, 0, 0.11);
+  color: #beea00;
+  text-shadow: 0 0 15px rgba(172, 212, 0, 0.6);
+}
+/* line 910, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav li.completed a {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #202316;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+/* line 916, ../../app/assets/stylesheets/application.css.scss */
+#sidebar nav li.current a, #sidebar nav li.current.completed a {
+  background-color: transparent;
+  color: #d2d0c2;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+/* line 926, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul {
+  background: #111;
+  height: 58px;
+  position: relative;
+}
+/* line 930, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul:after {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-codeschool-c4b0260f20031c3ddbdf6fa00fb0a30b.png) no-repeat;
+  box-shadow: inset 0 -15px 35px -5px rgba(0, 0, 0, 0.9);
+  bottom: -14px;
+  content: '';
+  display: block;
+  height: 14px;
+  left: 0;
+  position: absolute;
+  width: 200px;
+}
+/* line 941, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul li {
+  float: left;
+  font-size: 1.1em;
+  line-height: 1.3em;
+}
+/* line 946, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul a {
+  color: #848279;
+  display: block;
+  height: 58px;
+  margin-top: 13px;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.75);
+  width: 66px;
+}
+/* line 955, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul a:hover, #sidebar ul a:focus {
+  color: #FFF;
+}
+/* line 959, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul .sidebar-rewatch {
+  background-position: 21px 14px;
+}
+/* line 962, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul .sidebar-rewatch:hover, #sidebar ul .sidebar-rewatch:focus {
+  background-position: 21px -52px;
+}
+/* line 966, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul .sidebar-shortcuts {
+  width: 66px;
+}
+/* line 969, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul .sidebar-slides {
+  background-position: -52px 14px;
+}
+/* line 972, ../../app/assets/stylesheets/application.css.scss */
+#sidebar ul .sidebar-slides:hover, #sidebar ul .sidebar-slides:focus {
+  background-position: -52px -52px;
+}
+/* line 980, ../../app/assets/stylesheets/application.css.scss */
+#sidebar footer {
+  padding: 25px 0 10px 33px;
+}
+/* line 990, ../../app/assets/stylesheets/application.css.scss */
+#sidebar footer #sidebar-envy,
+#sidebar footer #sidebar-newrelic {
+  display: block;
+  opacity: 0.5;
+}
+/* line 995, ../../app/assets/stylesheets/application.css.scss */
+#sidebar footer #sidebar-envy:hover, #sidebar footer #sidebar-envy:focus,
+#sidebar footer #sidebar-newrelic:hover,
+#sidebar footer #sidebar-newrelic:focus {
+  opacity: 1;
+}
+/* line 999, ../../app/assets/stylesheets/application.css.scss */
+#sidebar footer #sidebar-envy {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/logo-envy-9eab357248e7e503c56cd4da1f0d6035.png) no-repeat;
+  height: 35px;
+  margin-bottom: 10px;
+  width: 135px;
+}
+/* line 1005, ../../app/assets/stylesheets/application.css.scss */
+#sidebar footer #sidebar-newrelic {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/logo-newrelic-2b80c2fda81643ae7e0e4ed2e0983e05.png) no-repeat;
+  height: 35px;
+  width: 135px;
+}
+/* line 1010, ../../app/assets/stylesheets/application.css.scss */
+#sidebar footer .sidebar-video {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/icn-download-a4aa2bc7936b45b7114ec1aa3d3a7c9b.png) no-repeat;
+  color: #beea00;
+  display: block;
+  font: bold 1.2em "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 5px 0 10px;
+  padding-left: 25px;
+  opacity: 0.5;
+}
+/* line 1018, ../../app/assets/stylesheets/application.css.scss */
+#sidebar footer .sidebar-video:hover {
+  opacity: 1;
+}
+
+/* line 1027, ../../app/assets/stylesheets/application.css.scss */
+#sidebar-logo {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/logo-course-c42b92b98eeb2389d0ba9af4df4e7d0b.png) no-repeat;
+  display: block;
+  height: 166px;
+  margin: 0 auto 38px;
+  position: relative;
+  text-indent: -9999em;
+  width: 169px;
+}
+/* line 1035, ../../app/assets/stylesheets/application.css.scss */
+#sidebar-logo b {
+  -webkit-animation: flicker 1.5s 0.5s linear 1;
+  -moz-animation: flicker 1.5s 0.5s linear 1;
+  animation: flicker 1.5s 0.5s linear 1;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/logo-course-glow-b8e84e4eba6a754049dd75a82b05ae6f.png) no-repeat;
+  display: block;
+  height: 96px;
+  position: absolute;
+  right: 36px;
+  top: 17px;
+  width: 95px;
+}
+
+@-webkit-keyframes flicker {
+  /* line 1050, ../../app/assets/stylesheets/application.css.scss */
+  0% {
+    opacity: 0;
+  }
+
+  /* line 1051, ../../app/assets/stylesheets/application.css.scss */
+  30% {
+    opacity: 0.2;
+  }
+
+  /* line 1052, ../../app/assets/stylesheets/application.css.scss */
+  51% {
+    opacity: 0.7;
+  }
+
+  /* line 1053, ../../app/assets/stylesheets/application.css.scss */
+  63% {
+    opacity: 0;
+  }
+
+  /* line 1054, ../../app/assets/stylesheets/application.css.scss */
+  64% {
+    opacity: 0.8;
+  }
+
+  /* line 1055, ../../app/assets/stylesheets/application.css.scss */
+  80% {
+    opacity: 0;
+  }
+
+  /* line 1056, ../../app/assets/stylesheets/application.css.scss */
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes flicker {
+  /* line 1059, ../../app/assets/stylesheets/application.css.scss */
+  0% {
+    opacity: 0;
+  }
+
+  /* line 1060, ../../app/assets/stylesheets/application.css.scss */
+  30% {
+    opacity: 0.2;
+  }
+
+  /* line 1061, ../../app/assets/stylesheets/application.css.scss */
+  51% {
+    opacity: 0.7;
+  }
+
+  /* line 1062, ../../app/assets/stylesheets/application.css.scss */
+  63% {
+    opacity: 0;
+  }
+
+  /* line 1063, ../../app/assets/stylesheets/application.css.scss */
+  64% {
+    opacity: 0.8;
+  }
+
+  /* line 1064, ../../app/assets/stylesheets/application.css.scss */
+  80% {
+    opacity: 0;
+  }
+
+  /* line 1065, ../../app/assets/stylesheets/application.css.scss */
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes flicker {
+  /* line 1068, ../../app/assets/stylesheets/application.css.scss */
+  0% {
+    opacity: 0;
+  }
+
+  /* line 1069, ../../app/assets/stylesheets/application.css.scss */
+  30% {
+    opacity: 0.2;
+  }
+
+  /* line 1070, ../../app/assets/stylesheets/application.css.scss */
+  51% {
+    opacity: 0.7;
+  }
+
+  /* line 1071, ../../app/assets/stylesheets/application.css.scss */
+  63% {
+    opacity: 0;
+  }
+
+  /* line 1072, ../../app/assets/stylesheets/application.css.scss */
+  64% {
+    opacity: 0.8;
+  }
+
+  /* line 1073, ../../app/assets/stylesheets/application.css.scss */
+  80% {
+    opacity: 0;
+  }
+
+  /* line 1074, ../../app/assets/stylesheets/application.css.scss */
+  100% {
+    opacity: 1;
+  }
+}
+
+/* line 1083, ../../app/assets/stylesheets/application.css.scss */
+#challenge.level-intro {
+  background: none;
+  padding: 95px 5px 25px 205px;
+}
+/* line 1086, ../../app/assets/stylesheets/application.css.scss */
+#challenge.level-intro h1 {
+  margin-bottom: 30px;
+  text-align: center;
+  text-shadow: 0 2px 2px black;
+}
+/* line 1090, ../../app/assets/stylesheets/application.css.scss */
+#challenge.level-intro h1 b {
+  color: #beea00;
+}
+/* line 1094, ../../app/assets/stylesheets/application.css.scss */
+#challenge.level-intro footer {
+  margin: 0 auto;
+  padding: 0 10px;
+  width: 698px;
+}
+
+/* line 1100, ../../app/assets/stylesheets/application.css.scss */
+#viddler {
+  color: #fff;
+  display: block;
+  font-size: 1.4em;
+  margin: 0 0 10px;
+  opacity: 0.4;
+  text-align: right;
+}
+/* line 1108, ../../app/assets/stylesheets/application.css.scss */
+#viddler:hover, #viddler:focus {
+  opacity: 1;
+}
+
+/* line 1115, ../../app/assets/stylesheets/application.css.scss */
+#video-chapters {
+  height: 30px;
+}
+/* line 1117, ../../app/assets/stylesheets/application.css.scss */
+#video-chapters li {
+  float: left;
+}
+/* line 1119, ../../app/assets/stylesheets/application.css.scss */
+#video-chapters li a {
+  box-shadow: inset -1px 0 rgba(0, 0, 0, 0.5), 1px 0 rgba(255, 255, 255, 0.15);
+  color: #75746c;
+  cursor: pointer;
+  display: block;
+  font-size: 1.4em;
+  font-weight: bold;
+  line-height: 30px;
+  position: relative;
+}
+/* line 1128, ../../app/assets/stylesheets/application.css.scss */
+#video-chapters li a span {
+  background: #121310;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  bottom: 35px;
+  color: #d2d0c2;
+  display: none;
+  font: normal 0.9em/1.3em "Helvetica Neue", Helvetica, Arial, sans-serif;
+  left: 50%;
+  margin-left: -75px;
+  padding: 5px 10px;
+  position: absolute;
+  text-align: center;
+  width: 130px;
+}
+/* line 1142, ../../app/assets/stylesheets/application.css.scss */
+#video-chapters li a span:after {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #121310;
+  bottom: -5px;
+  content: '';
+  height: 0;
+  left: 70px;
+  position: absolute;
+  width: 0;
+}
+/* line 1155, ../../app/assets/stylesheets/application.css.scss */
+#video-chapters li a:hover, #video-chapters li a:focus {
+  color: #beea00;
+}
+/* line 1157, ../../app/assets/stylesheets/application.css.scss */
+#video-chapters li a:hover span, #video-chapters li a:focus span {
+  display: block;
+}
+/* line 1161, ../../app/assets/stylesheets/application.css.scss */
+#video-chapters li a.active {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-resources-active-541cff59cffb54140c0e6486d79c01d4.jpg) center -1px no-repeat;
+  color: #3a3936;
+}
+/* line 1166, ../../app/assets/stylesheets/application.css.scss */
+#video-chapters li:last-child a {
+  box-shadow: none;
+}
+
+/* line 1174, ../../app/assets/stylesheets/application.css.scss */
+#video {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-editor-aa052a07bca515a479826bff4f1db11c.jpg) repeat;
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-top-9815a389578aefdf403467b826b946d1.png) 0 0 no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-editor-aa052a07bca515a479826bff4f1db11c.jpg) repeat;
+  background-color: #38382f;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.15);
+  margin: 0 auto 10px;
+  min-width: 700px;
+  max-width: 1200px;
+  padding: 10px;
+  position: relative;
+  text-align: center;
+}
+/* line 1185, ../../app/assets/stylesheets/application.css.scss */
+#video #next, #video #editor-group #manual_submit, #editor-group #video #manual_submit, #video .home .home-featured .home-content .button, .home .home-featured .home-content #video .button {
+  margin-top: 5px;
+}
+
+/* line 1192, ../../app/assets/stylesheets/application.css.scss */
+.lab #sidebar .sidebar-slides {
+  background-position: -48px 14px;
+}
+/* line 1195, ../../app/assets/stylesheets/application.css.scss */
+.lab #sidebar .sidebar-slides:hover, .lab #sidebar .sidebar-slides:focus {
+  background-position: -48px -52px;
+}
+
+/* line 1207, ../../app/assets/stylesheets/application.css.scss */
+.home #codeschool {
+  padding-right: 30px;
+  right: 0;
+}
+/* line 1210, ../../app/assets/stylesheets/application.css.scss */
+.home #codeschool #sidebar-points {
+  display: none;
+}
+/* line 1214, ../../app/assets/stylesheets/application.css.scss */
+.home .home-container {
+  margin: 0 auto;
+  padding-bottom: 120px;
+  width: 960px;
+}
+/* line 1222, ../../app/assets/stylesheets/application.css.scss */
+.home header {
+  padding-top: 65px;
+  position: relative;
+}
+/* line 1225, ../../app/assets/stylesheets/application.css.scss */
+.home header ul {
+  position: absolute;
+  right: 0;
+  top: 65px;
+}
+/* line 1229, ../../app/assets/stylesheets/application.css.scss */
+.home header ul li {
+  display: inline;
+  margin-left: 1px;
+}
+/* line 1233, ../../app/assets/stylesheets/application.css.scss */
+.home header ul .fb-like {
+  position: relative;
+  bottom: 2px;
+}
+/* line 1239, ../../app/assets/stylesheets/application.css.scss */
+.home header h1 a {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/logo-course-c42b92b98eeb2389d0ba9af4df4e7d0b.png) no-repeat;
+  display: block;
+  height: 166px;
+  margin: 0 auto 40px;
+  text-indent: -9999em;
+  width: 169px;
+}
+/* line 1248, ../../app/assets/stylesheets/application.css.scss */
+.home header .logo-header-newrelic {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/logo-newrelic-lrg-e049599464d49a9715c855e7e71f3ba1.png) no-repeat;
+  bottom: 45px;
+  display: block;
+  height: 55px;
+  opacity: 0.6;
+  position: absolute;
+  right: 0;
+  width: 200px;
+}
+/* line 1258, ../../app/assets/stylesheets/application.css.scss */
+.home header .logo-header-newrelic:hover {
+  opacity: 1;
+}
+/* line 1266, ../../app/assets/stylesheets/application.css.scss */
+.home .home-featured {
+  border-bottom: 2px dashed #75746c;
+  margin: 0 0 28px;
+  padding: 0 0 40px;
+}
+/* line 1271, ../../app/assets/stylesheets/application.css.scss */
+.home .home-featured .home-video {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-top-9815a389578aefdf403467b826b946d1.png) 0 0 no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-editor-aa052a07bca515a479826bff4f1db11c.jpg) repeat;
+  background-color: #38382f;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.15);
+  float: left;
+  padding: 10px;
+  width: 500px;
+}
+/* line 1279, ../../app/assets/stylesheets/application.css.scss */
+.home .home-featured .home-content {
+  padding-top: 15px;
+  float: right;
+  width: 400px;
+}
+/* line 1287, ../../app/assets/stylesheets/application.css.scss */
+.home .home-featured h2 {
+  color: #d2d0c2;
+  font: bold 4em/1.3em BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  margin-bottom: 14px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.23);
+  text-transform: uppercase;
+}
+/* line 1294, ../../app/assets/stylesheets/application.css.scss */
+.home .home-featured p {
+  color: #c7bbb1;
+  font-size: 1.6em;
+  line-height: 1.6em;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.23);
+}
+/* line 1305, ../../app/assets/stylesheets/application.css.scss */
+.home .home-info {
+  border-bottom: 2px dashed #75746c;
+  margin: 0 0 28px;
+  padding: 0 0 40px;
+}
+/* line 1310, ../../app/assets/stylesheets/application.css.scss */
+.home .home-info h3 {
+  color: #d2d0c2;
+  font: bold 3.6em/1.3em BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  margin: 0 0 14px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.23);
+  text-transform: uppercase;
+}
+/* line 1318, ../../app/assets/stylesheets/application.css.scss */
+.home .topics {
+  float: left;
+  width: 520px;
+}
+/* line 1321, ../../app/assets/stylesheets/application.css.scss */
+.home .topics ul {
+  border-bottom: 9px solid #38382f;
+  border-top: 10px solid #38382f;
+  margin-top: 21px;
+}
+/* line 1325, ../../app/assets/stylesheets/application.css.scss */
+.home .topics ul li {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-sidebar-nav.png) 0 0 repeat-y;
+  border-bottom: 1px solid #38382f;
+  color: #c7bbb1;
+  font-size: 1.4em;
+  font-weight: bold;
+  line-height: 20px;
+  padding: 10px 0 10px 20px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.23);
+}
+/* line 1334, ../../app/assets/stylesheets/application.css.scss */
+.home .topics ul li a {
+  color: #beea00;
+}
+/* line 1340, ../../app/assets/stylesheets/application.css.scss */
+.home .badges {
+  float: right;
+  width: 400px;
+}
+/* line 1344, ../../app/assets/stylesheets/application.css.scss */
+.home .badges ul li {
+  display: inline;
+}
+/* line 1351, ../../app/assets/stylesheets/application.css.scss */
+.home .advanced-courses li {
+  float: left;
+  margin: 20px 40px 30px 40px;
+  width: 400px;
+}
+/* line 1355, ../../app/assets/stylesheets/application.css.scss */
+.home .advanced-courses li a {
+  background-color: #38382f;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#38382f), to(#282821));
+  background-image: -webkit-linear-gradient(top, #38382f, #282821);
+  background-image: -moz-linear-gradient(top, #38382f, #282821);
+  background-image: -ms-linear-gradient(top, #38382f, #282821);
+  background-image: -o-linear-gradient(top, #38382f, #282821);
+  background-image: linear-gradient(top, #38382f, #282821);
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.2);
+  display: block;
+  padding: 20px 10px 20px 110px;
+  position: relative;
+}
+/* line 1362, ../../app/assets/stylesheets/application.css.scss */
+.home .advanced-courses li a:hover {
+  background-color: #47473d;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#47473d), to(#282821));
+  background-image: -webkit-linear-gradient(top, #47473d, #282821);
+  background-image: -moz-linear-gradient(top, #47473d, #282821);
+  background-image: -ms-linear-gradient(top, #47473d, #282821);
+  background-image: -o-linear-gradient(top, #47473d, #282821);
+  background-image: linear-gradient(top, #47473d, #282821);
+}
+/* line 1365, ../../app/assets/stylesheets/application.css.scss */
+.home .advanced-courses li a img {
+  left: -25px;
+  position: absolute;
+  top: -15px;
+}
+/* line 1370, ../../app/assets/stylesheets/application.css.scss */
+.home .advanced-courses li a strong {
+  color: #beea00;
+  display: block;
+  font: bold 3em/1em BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+/* line 1376, ../../app/assets/stylesheets/application.css.scss */
+.home .advanced-courses li a em {
+  color: #75746c;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+/* line 1389, ../../app/assets/stylesheets/application.css.scss */
+.home footer {
+  bottom: 0;
+  left: 50%;
+  margin-left: -13px;
+  position: absolute;
+}
+/* line 1394, ../../app/assets/stylesheets/application.css.scss */
+.home footer a {
+  bottom: 50px;
+  display: block;
+  opacity: 0.3;
+  padding: 0;
+  position: absolute;
+  text-indent: -9999em;
+}
+/* line 1401, ../../app/assets/stylesheets/application.css.scss */
+.home footer a.logo-footer-envy {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/logo-envy-9eab357248e7e503c56cd4da1f0d6035.png) no-repeat;
+  height: 40px;
+  right: 10px;
+  width: 107px;
+}
+/* line 1407, ../../app/assets/stylesheets/application.css.scss */
+.home footer a.logo-footer-newrelic {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/logo-newrelic-2b80c2fda81643ae7e0e4ed2e0983e05.png) no-repeat;
+  height: 35px;
+  left: 10px;
+  width: 135px;
+}
+/* line 1414, ../../app/assets/stylesheets/application.css.scss */
+.home footer a:hover, .home footer a:focus {
+  opacity: 1;
+}
+
+/* line 1429, ../../app/assets/stylesheets/application.css.scss */
+#facebox {
+  background: #000;
+  background-color: #111111;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#111111), to(black));
+  background-image: -webkit-linear-gradient(top, #111111, black);
+  background-image: -moz-linear-gradient(top, #111111, black);
+  background-image: -ms-linear-gradient(top, #111111, black);
+  background-image: -o-linear-gradient(top, #111111, black);
+  background-image: linear-gradient(top, #111111, black);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 0 0 10px rgba(0, 0, 0, 0.4);
+  left: 0;
+  position: absolute;
+  top: 0;
+  z-index: 100;
+}
+/* line 1437, ../../app/assets/stylesheets/application.css.scss */
+#facebox .popup {
+  position: relative;
+}
+/* line 1440, ../../app/assets/stylesheets/application.css.scss */
+#facebox .close {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/icn-close-df361729a43e69120149779ca5d9e769.png) no-repeat;
+  display: block;
+  height: 32px;
+  position: absolute;
+  right: -5px;
+  text-indent: -9999em;
+  top: -5px;
+  width: 32px;
+}
+
+/* line 1451, ../../app/assets/stylesheets/application.css.scss */
+#facebox_overlay {
+  background: #000;
+  height: 100%;
+  left: 0px;
+  position: fixed;
+  top: 0px;
+  width: 100%;
+}
+
+/* line 1459, ../../app/assets/stylesheets/application.css.scss */
+.facebox_hide {
+  z-index: -100;
+}
+
+/* line 1462, ../../app/assets/stylesheets/application.css.scss */
+.facebox_overlayBG {
+  z-index: 99;
+}
+
+/* line 1468, ../../app/assets/stylesheets/application.css.scss */
+.success {
+  border-radius: 5px;
+  padding: 15px 5px 75px;
+  position: relative;
+  width: 500px;
+}
+/* line 1473, ../../app/assets/stylesheets/application.css.scss */
+.success h2 {
+  color: #d2d0c2;
+  font: bold 5em BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  margin: 0 0 10px;
+  padding: 0 0 8px;
+  text-align: center;
+  text-transform: uppercase;
+}
+/* line 1481, ../../app/assets/stylesheets/application.css.scss */
+.success h3 {
+  font-size: 1.6em;
+  font-weight: bold;
+  line-height: 1.3em;
+  margin: 0 0 10px;
+  text-align: center;
+}
+/* line 1488, ../../app/assets/stylesheets/application.css.scss */
+.success p {
+  font-size: 1.4em;
+  line-height: 1.3em;
+  margin: 0 0 20px;
+  padding: 0 15px;
+  text-align: center;
+}
+/* line 1494, ../../app/assets/stylesheets/application.css.scss */
+.success p .play-extra-credit, .success p .button-signup {
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  background: #111;
+  border-radius: 3px;
+  color: #beea00;
+  display: block;
+  font-weight: bold;
+  margin: 0 auto;
+  padding: 7px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  text-transform: uppercase;
+  width: 180px;
+}
+/* line 1506, ../../app/assets/stylesheets/application.css.scss */
+.success p .play-extra-credit:hover, .success p .button-signup:hover {
+  background: #222;
+}
+/* line 1511, ../../app/assets/stylesheets/application.css.scss */
+.success .share-stuff {
+  text-align: center;
+}
+/* line 1514, ../../app/assets/stylesheets/application.css.scss */
+.success .achievements {
+  margin-bottom: 10px;
+}
+/* line 1524, ../../app/assets/stylesheets/application.css.scss */
+.success .achievements ul,
+.success .achievements ul li {
+  margin: 0 auto;
+  width: 118px;
+}
+/* line 1529, ../../app/assets/stylesheets/application.css.scss */
+.success .button-signup {
+  background: #43493B;
+  color: #FFF;
+  text-shadow: none;
+}
+/* line 1534, ../../app/assets/stylesheets/application.css.scss */
+.success .button-signup:hover {
+  background: #292d24;
+}
+/* line 1538, ../../app/assets/stylesheets/application.css.scss */
+.success #next, .success #editor-group #manual_submit, #editor-group .success #manual_submit, .success .home .home-featured .home-content .button, .home .home-featured .home-content .success .button {
+  bottom: 5px;
+  left: 5px;
+  position: absolute;
+  right: 5px;
+}
+/* line 1544, ../../app/assets/stylesheets/application.css.scss */
+.success .success-close {
+  display: none;
+}
+
+/* line 1552, ../../app/assets/stylesheets/application.css.scss */
+.shortcuts ul {
+  width: 360px;
+  padding: 10px;
+}
+/* line 1556, ../../app/assets/stylesheets/application.css.scss */
+.shortcuts li {
+  font-size: 1.2em;
+  font-weight: bold;
+  line-height: 60px;
+  padding: 10px;
+}
+/* line 1561, ../../app/assets/stylesheets/application.css.scss */
+.shortcuts li:last-child {
+  border: 0;
+}
+/* line 1564, ../../app/assets/stylesheets/application.css.scss */
+.shortcuts li span {
+  background: #3a3936;
+  background-color: #3a3936;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#3a3936), to(#31312e));
+  background-image: -webkit-linear-gradient(top, #3a3936, #31312e);
+  background-image: -moz-linear-gradient(top, #3a3936, #31312e);
+  background-image: -ms-linear-gradient(top, #3a3936, #31312e);
+  background-image: -o-linear-gradient(top, #3a3936, #31312e);
+  background-image: linear-gradient(top, #3a3936, #31312e);
+  border-radius: 5px;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: inline-block;
+  line-height: 60px;
+  margin: 0 10px;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  width: 60px;
+}
+/* line 1576, ../../app/assets/stylesheets/application.css.scss */
+.shortcuts li span:first-child {
+  margin-left: 0;
+}
+/* line 1581, ../../app/assets/stylesheets/application.css.scss */
+.shortcuts .shortcuts-close {
+  display: none;
+}
+
+/* line 1589, ../../app/assets/stylesheets/application.css.scss */
+#facebox .change-level ul {
+  overflow: hidden;
+  width: 200px;
+}
+/* line 1594, ../../app/assets/stylesheets/application.css.scss */
+#facebox .change-level li {
+  border-bottom: 1px solid #222;
+  font: bold 3em BebasNeueRegular, "Arial Narrow", Impact, Arial, sans-serif;
+  margin: 10px -5px;
+  padding-bottom: 5px;
+  position: relative;
+  text-align: center;
+}
+/* line 1601, ../../app/assets/stylesheets/application.css.scss */
+#facebox .change-level li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+/* line 1606, ../../app/assets/stylesheets/application.css.scss */
+#facebox .change-level li a,
+#facebox .change-level li b {
+  color: #75746c;
+  font-size: 1.5em;
+}
+/* line 1609, ../../app/assets/stylesheets/application.css.scss */
+#facebox .change-level li a span,
+#facebox .change-level li b span {
+  font-size: .8em;
+  margin-left: 40px;
+}
+/* line 1615, ../../app/assets/stylesheets/application.css.scss */
+#facebox .change-level li a:hover,
+#facebox .change-level li a:focus {
+  color: #a7a6a0;
+}
+/* line 1618, ../../app/assets/stylesheets/application.css.scss */
+#facebox .change-level li b {
+  opacity: 0.5;
+}
+/* line 1626, ../../app/assets/stylesheets/application.css.scss */
+.lab-1 #facebox .change-level #lab-1 a, .lab-2 #facebox .change-level #lab-2 a, .lab-3 #facebox .change-level #lab-3 a, .lab-4 #facebox .change-level #lab-4 a, .lab-5 #facebox .change-level #lab-5 a {
+  color: #beea00;
+}
+
+@media screen and (min-width: 1080px) {
+  /* line 1639, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge {
+    background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-challenge-ce1eabbeb68be7865b496e4fa0ae6770.png) right 115px no-repeat;
+  }
+  /* line 1642, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-objective {
+    padding-right: 265px;
+  }
+  /* line 1645, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-points {
+    top: 54px;
+  }
+  /* line 1649, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-panels #editor-tabs {
+    background: url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-top-9815a389578aefdf403467b826b946d1.png) 0 0 no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-right-c5da82145d7ed68eed62450e4b3b789c.png) right 0 no-repeat, url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-editor-ee574da153f2f46c7d6d593fdbed7b6f.png) right 0 repeat-x;
+    left: 0;
+    position: absolute;
+    right: 50%;
+    top: 0;
+  }
+  /* line 1655, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-panels #editor-tabs a {
+    border: none;
+    box-shadow: none;
+  }
+  /* line 1659, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-panels #editor-tabs .editor-active {
+    color: #fff;
+  }
+  /* line 1663, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-panels #resource-tabs {
+    left: 50%;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  /* line 1668, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-panels #resource-tabs a {
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.75), inset 0 -1px rgba(0, 0, 0, 0.5), 0 1px rgba(255, 255, 255, 0.75);
+    color: #3a3936;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+  }
+  /* line 1673, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-panels #resource-tabs a:hover, .responsive #challenge-panels #resource-tabs a:focus {
+    color: #201f1d;
+  }
+  /* line 1676, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-panels #resource-tabs a.resource-active {
+    background: #5d5d51 url(//d20m4dvzhiuv61.cloudfront.net/assets/bg-tabs-resources-active-541cff59cffb54140c0e6486d79c01d4.jpg) 0 bottom no-repeat;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.75), inset 0 -1px 3px 1px rgba(0, 0, 0, 0.6), inset 0 -1px rgba(0, 0, 0, 0.5), 0 1px rgba(255, 255, 255, 0.75);
+    color: #3a3936;
+  }
+  /* line 1684, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #editor-group {
+    right: 50%;
+    width: 50%;
+    z-index: 1;
+  }
+  /* line 1688, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #editor-group .editor-active {
+    display: block;
+  }
+  /* line 1692, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #resource-group {
+    left: 50%;
+    width: 50%;
+  }
+  /* line 1695, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #resource-group .resource-active {
+    display: block;
+  }
+}
+/* line 1704, ../../app/assets/stylesheets/application.css.scss */
+#view-mode {
+  background: url(//d20m4dvzhiuv61.cloudfront.net/assets/icon-view-3ed122589e46e352569c4469611db7ae.png) 0 -10px no-repeat;
+  bottom: 53px;
+  display: block;
+  height: 10px;
+  opacity: 0.4;
+  position: absolute;
+  right: 0;
+  width: 33px;
+}
+/* line 1715, ../../app/assets/stylesheets/application.css.scss */
+#view-mode:hover, #view-mode:focus {
+  opacity: 0.9;
+}
+
+/* line 1719, ../../app/assets/stylesheets/application.css.scss */
+.responsive #view-mode {
+  background-position: 0 0;
+}
+
+@media screen and (max-width: 1079px) {
+  /* line 1723, ../../app/assets/stylesheets/application.css.scss */
+  #view-mode {
+    display: none;
+  }
+}
+/* line 1734, ../../app/assets/stylesheets/application.css.scss */
+#extra-credit-instructions {
+  display: none;
+}
+
+@media screen and (min-width: 1350px) {
+  /* line 1745, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge {
+    background: none;
+  }
+
+  /* line 1748, ../../app/assets/stylesheets/application.css.scss */
+  .responsive #challenge-points {
+    top: 95px;
+  }
+}
+@media screen and (max-height: 900px) {
+  /* line 1755, ../../app/assets/stylesheets/application.css.scss */
+  #sidebar footer #sidebar-envy,
+  #sidebar footer #sidebar-newrelic,
+  #sidebar footer .sidebar-video {
+    display: none;
+  }
+}

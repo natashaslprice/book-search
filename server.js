@@ -106,20 +106,20 @@ app.get('/recommendations', function(req, res) {
 				res.render('recommendations', { user: user, books: books } );
 			}
 			else {
-				// find all books in these users
+			// 	// find all books in these users
 				db.Book.find( { usersReadEnjoyed: { $in: users } } , function(err, books) {
-					console.log('books', books);
-					console.log('done');
-					for (var i = 0; i < books.length; i++) {
-						for (var j = 0; j < user.booksReadEnjoyed.length; j++) {
-							if (books[i] && user.booksReadEnjoyed[j]) {
-								if (books[i].title === user.booksReadEnjoyed[j].title) {
-									books.splice(i, 1);
-								}
-							}
-						}
-					}
-					console.log("allBooks found are: ", books);
+					console.log('books', books.length);
+			// 		console.log('done');
+			// 		for (var i = 0; i < books.length; i++) {
+			// 			for (var j = 0; j < user.booksReadEnjoyed.length; j++) {
+			// 				if (books[i] && user.booksReadEnjoyed[j]) {
+			// 					if (books[i].title === user.booksReadEnjoyed[j].title) {
+			// 						books.splice(i, 1);
+			// 					}
+			// 				}
+			// 			}
+			// 		}
+			// 		console.log("allBooks found are: ", books);
 					res.render('recommendations', { user: user, books: books } );
 				});
 			}
